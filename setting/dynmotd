@@ -1,0 +1,131 @@
+
+
+# ------------------------------------------------------------------------------
+#
+# Author        :   Tainvecs
+# Created Date  :   2017-01-18
+# Last Updated  :   2017-03-12
+#
+# ------------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------------------
+# color variables
+# ------------------------------------------------------------------------------
+
+
+D="\033[01;30m" # Dark Gray
+R="\033[01;31m" # RED
+G="\033[01;32m" # GREEN
+Y="\033[01;33m" # Yellow
+B="\033[01;34m" # BLUE
+M="\033[01;35m" # Magenta
+C="\033[01;36m" # Cyan
+W="\033[01;37m" # WHITE
+RESET="\033[0m"
+
+
+# ------------------------------------------------------------------------------
+# system information
+# ------------------------------------------------------------------------------
+
+
+# date
+DATE=`date +%Y-%m-%d\ %H:%M:%S`
+
+
+# hostname
+HOSTNAME=`hostname`
+
+
+# kernel
+KERNEL=`uname -r`
+
+
+# uptime
+boottime=`sysctl -n kern.boottime | cut -c9-18`
+unixtime=`date +%s`
+upsec=$((unixtime-boottime))
+
+seconds=$((upsec%60))
+minutes=$((upsec / 60))
+hours=$((minutes / 60 ))
+days=$((hours / 24))
+
+minutes=$((minutes%60))
+hours=$((hours%24))
+
+if (( $seconds < 10 )); then seconds='0'$seconds;  fi
+if (( $minutes < 10 )); then minutes='0'$minutes;  fi
+if (( $hours < 10 )); then hours='0'$hours;  fi
+if (( $days < 2 )); then days=$days' day, ';  else  days=$days' days, '; fi
+
+UPTIME=$days$hours':'$minutes':'$seconds
+
+
+# memory
+_os_type=`uname`
+if [ "$_os_type" == 'Linux' ]; then
+
+    CPU=`cat /proc/cpuinfo | grep -m 1 "model name" | awk -F ": " '{print $2}'`
+    MEMORY=`free -m | head -n 2 | tail -n 1 | awk {'print $3'}`MB out of `free -m | head -n 2 | tail -n 1 | awk {'print $2'}`MB
+
+elif [ "$_os_type" == 'Darwin' ]; then
+
+    TEMP_STR=`sysctl machdep.cpu.brand_string | cut -d ":" -f 2`
+    CPU=${TEMP_STR:1}
+
+
+    MEM_FREE_BLOCKS=$(vm_stat | grep free | awk '{ print $3 }' | sed 's/\.//')
+    MEM_FREE=$((($MEM_FREE_BLOCKS+SPECULATIVE_BLOCKS)*4096/1048576))
+
+    TEMP_STR=`sysctl hw.memsize | cut -d ":" -f 2`
+    MEM_TOTAL=$((${TEMP_STR:1}/1048576))
+
+    MEMORY='Unused: '$MEM_FREE' MB, Total: '$MEM_TOTAL' MB'
+
+fi
+
+
+# process
+TEMP_STR=`ps aux | grep $USER | wc -l`
+TEMP_NUM=${TEMP_STR//[[:blank:]]/}
+PROCESSES=$TEMP_NUM" of "`ulimit -u`" MAX"
+
+
+# disk
+DISK_USED=`df -h | grep /dev | head -n 1 | awk {'print $3'}`
+DISK_TOTAL=`df -h | grep /dev | head -n 1 | awk {'print $2'}`
+DISK=${DISK_USED%?}" used out of "${DISK_TOTAL%?}
+
+
+# address
+ADDRESS=`IP=$(curl -s ip.vostron.net |  awk '{print $NF}'); echo -n "$IP"`
+
+
+# ------------------------------------------------------------------------------
+# motd ascii
+# ------------------------------------------------------------------------------
+
+
+echo -e "                                                                    "
+echo -e "    $M _____             _                                            "
+echo -e "    |_   _|  __ _     (_)    _ _     __ __    ___     ___     __    "
+echo -e "      | |   / _\` |    | |   | ' \    \ V /   / -_)   (_-<    / _|   "
+echo -e "     _|_|_  \__,_|   _|_|_  |_||_|   _\_/_   \___|   /__/_   \__|_  "
+echo -e "   _|\"\"\"\"\"|_|\"\"\"\"\"|_|\"\"\"\"\"|_|\"\"\"\"\"|_|\"\"\"\"\"|_|\"\"\"\"\"|_|\"\"\"\"\"|_|\"\"\"\"\"| "
+echo -e "   \"\`-0-0-'\"\`-0-0-'\"\`-0-0-'\"\`-0-0-'\"\`-0-0-'\"\`-0-0-'\"\`-0-0-'\"\`-0-0-' "
+echo -e " $W "
+echo -e "#===========================:$R Information $W:===========================#"
+echo -e "   $R Date         $W=     $B$DATE "
+echo -e "   $R User         $W=     $B$USER "
+echo -e "   $R Hostname     $W=     $B$HOSTNAME "
+echo -e "   $R Kernel       $W=     $B$KERNEL "
+echo -e "   $R Uptime       $W=     $B$UPTIME "
+echo -e "   $R CPU          $W=     $B$CPU "
+echo -e "   $R Memory       $W=     $B$MEMORY "
+echo -e "   $R Disk         $W=     $B$DISK "
+echo -e "   $R Processes    $W=     $B$PROCESSES "
+echo -e "   $R ADDRESS      $W=     $B$ADDRESS "
+echo -e "$W#=====================================================================#$RESET"
+echo -e " "

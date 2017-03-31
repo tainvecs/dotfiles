@@ -1,0 +1,126 @@
+
+
+# ------------------------------------------------------------------------------
+#
+# Author        :   Tainvecs
+# Created Date  :   2016-09-15
+# Last Updated  :   2017-03-12
+#
+# ------------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------------------
+# parameter
+# ------------------------------------------------------------------------------
+
+
+OS_TYPE=`uname`
+
+MOTD_FILE='/etc/dynmotd'
+
+
+# ------------------------------------------------------------------------------
+# bash alias
+# ------------------------------------------------------------------------------
+
+
+if [ "$OS_TYPE" == 'Linux' ]; then
+
+    alias ls='ls --color=auto'                  # ls with color
+    alias ll='ls --color=auto -hl'              # list file
+    alias la='ls --color=auto -a'               # show all file
+    alias lh='ls --color=auto -hld .?*'         # show hidden files
+    alias meminfo='free -html'                  # show memory information
+
+elif [ "$OS_TYPE" == 'Darwin' ]; then
+
+    alias ls='ls -G'                            # ls with color
+    alias ll='ls -Ghl'                          # list file
+    alias la='ls -Ga'                           # show all file
+    alias lh='ls -Ghld .?*'                     # show hidden files
+
+fi
+
+
+alias tc2u='iconv -f big5 -t utf-8 '$1      # convert big5 to utf-8
+alias u2tc='iconv -f utf-8 -t big5 '$1      # convert utf-8 to big5
+alias sc2u='iconv -f gbk -t utf-8 '$1       # convert gbk to utf-8
+alias u2sc='iconv -f utf-8 -t gbk '$1       # convert utf-8 to gbk
+
+
+# ------------------------------------------------------------------------------
+# bash function
+# ------------------------------------------------------------------------------
+
+
+if [ "$OS_TYPE" == 'Darwin' ]; then
+
+    # defined for switching mac finder mode that
+    # -t for to show hidden files, and -f for not to show hidden files
+
+    macfm() {
+
+        if [ "$1" == "-t" ]; then
+            defaults write com.apple.finder AppleShowAllFiles TRUE
+            killall Finder
+            echo "Finder show hidden file mode was setted to True."
+        elif [ "$1" == "-f" ]; then
+            defaults write com.apple.finder AppleShowAllFiles FALSE
+            killall Finder
+            echo "Finder show hidden file mode was setted to False."
+        else
+            echo "Finder show hidden file mode is unknown."
+        fi
+    }
+
+    meminfo-mac() {
+        top -l 1 -s 0 | grep PhysMem    # show physical memory informaiton
+        sysctl vm.swapusage             # show swap information
+    }
+
+
+    sc2tc() {
+        iconv -f gbk -t utf8 $1 > $1'.temp'
+        cconv -f UTF8-CN -t UTF8-TW $1'.temp' > $2
+        rm -f $1'.temp'
+    }
+
+
+    if [ -f $MOTD_FILE ]; then
+        motd() {
+            clear
+            php -f $MOTD_FILE | bash
+        }
+    fi
+
+fi
+
+
+extract(){
+
+    if [ -f $1 ]; then
+        case $1 in
+            *.tar)      tar xvf $1      ;;
+            *.gz)       gunzip $1       ;;
+            *.tar.gz)   tar zxvf $1     ;;
+            *.bz)       bunzip2 $1      ;;
+            *.tar.bz)   tar jxvf $1     ;;
+            *.bz2)      bunzip2 $1      ;;
+            *.tar.bz2)  tar jxvf $1     ;;
+            *.xz)       xz -d $1        ;;
+            *.tar.xz)   tar Jxvf $1     ;;
+            *.Z)        uncompress $1   ;;
+            *.tar.Z)    tar Zxvf $1     ;;
+            *.tgz)      tar zxvf $1     ;;
+            *.tar.tgz)  tar zxvf $1     ;;
+            *.7z)       7z x $1         ;;
+            *.zip)      unzip $1        ;;
+            *.rar)      unrar e $1      ;;
+            *.tbz2)     tar jxvf $1     ;;
+            *)          echo "'$1' cannot be extracted via extract()" ;;
+        esac
+    else
+        echo "'$1' is not a valid file"
+    fi
+
+}
