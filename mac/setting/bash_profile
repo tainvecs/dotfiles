@@ -1,0 +1,178 @@
+
+
+# ------------------------------------------------------------------------------
+# parameter
+# ------------------------------------------------------------------------------
+
+
+OS_TYPE=`uname`
+MOTD_FILE='/etc/dynmotd'
+
+
+# ------------------------------------------------------------------------------
+# option
+# ------------------------------------------------------------------------------
+
+
+shopt -s checkwinsize
+export TERM=xterm-256color
+
+export PS1="\[$(tput bold)\]\[\033[38;5;228m\]\u\[$(tput sgr0)\]\[$(tput sgr0)\]\[\033[38;5;15m\]@\[$(tput bold)\]\[$(tput sgr0)\]\[\033[38;5;156m\]\h\[$(tput sgr0)\]\[$(tput sgr0)\]\[\033[38;5;15m\]:\[$(tput bold)\]\[$(tput sgr0)\]\[\033[38;5;222m\][\w]\[$(tput sgr0)\]\[$(tput sgr0)\]\[\033[38;5;15m\]\\$ \[$(tput sgr0)\]"
+
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US.UTF-8
+export LC_ALL="en_US.UTF-8"
+
+export VISUAL=vim
+export EDITOR="$VISUAL"
+export GIT_EDITOR="$VISUAL"
+
+
+# ------------------------------------------------------------------------------
+# bash alias
+# ------------------------------------------------------------------------------
+
+
+alias l='ls -CF'
+alias lsgroup='cut -d: -f1 /etc/group | sort'
+
+
+if [ "$OS_TYPE" == 'Linux' ]; then
+
+    alias ls='ls --color=auto'                          # ls with color
+    alias ll='ls --color=auto -hl'                      # list file
+    alias la='ls --color=auto -a'                       # show all file
+    alias lh='ls --color=auto -hld .?*'                 # show hidden files
+
+    alias dir='du -h -d 1 | sort -hr'                   # show disk usage of current directory
+    alias meminfo='free -html'                          # show memory information
+    alias sysinfo="cat /etc/lsb-release && uname -a"    # show system info of ubuntu
+
+elif [ "$OS_TYPE" == 'Darwin' ]; then
+
+    alias ls='ls -G'                                    # ls with color
+    alias ll='ls -Ghl'                                  # list file
+    alias la='ls -Ga'                                   # show all file
+    alias lh='ls -Ghld .?*'                             # show hidden files
+
+    if ! hash gsort 2>/dev/null; then                   # show disk usage of current directory
+        alias dir='du -hs'
+    else
+        alias dir='du -h -d 1 | gsort -hr'
+    fi
+
+fi
+
+if hash python3 2>/dev/null; then
+    alias python="python3"
+fi
+
+
+# ------------------------------------------------------------------------------
+# bash function
+# ------------------------------------------------------------------------------
+
+
+extract(){
+
+    if [ -f $1 ]; then
+        case $1 in
+            *.tar)      tar xvf $1      ;;
+            *.gz)       gunzip $1       ;;
+            *.tar.gz)   tar zxvf $1     ;;
+            *.bz)       bunzip2 $1      ;;
+            *.tar.bz)   tar jxvf $1     ;;
+            *.bz2)      bunzip2 $1      ;;
+            *.tar.bz2)  tar jxvf $1     ;;
+            *.xz)       xz -d $1        ;;
+            *.tar.xz)   tar Jxvf $1     ;;
+            *.Z)        uncompress $1   ;;
+            *.tar.Z)    tar Zxvf $1     ;;
+            *.tgz)      tar zxvf $1     ;;
+            *.tar.tgz)  tar zxvf $1     ;;
+            *.7z)       7z x $1         ;;
+            *.zip)      unzip $1        ;;
+            *.rar)      unrar e $1      ;;
+            *.tbz2)     tar jxvf $1     ;;
+            *)          echo "'$1' cannot be extracted via extract()" ;;
+        esac
+    else
+        echo "'$1' is not a valid file"
+    fi
+
+}
+
+if [ -f $MOTD_FILE ]; then
+
+    motd() {
+        clear
+        php -f $MOTD_FILE | bash
+    }
+
+    php -f /etc/dynmotd | bash
+
+fi
+
+space_file(){
+    tmp_str=$(head -c $1 < /dev/zero | tr '\0' ' ')
+    sed "s_^_${tmp_str}_" $2 > $3
+}
+
+if hash jupyter 2>/dev/null; then
+
+    jpn-server(){
+    
+        case $1 in
+            "local" )
+                jupyter notebook --no-browser;;
+            "ssh" )
+                jupyter notebook --no-browser --port=$2;;
+            * ) echo "format jpn-server {local|ssh} ssh_port";;
+        esac
+    }
+    
+    jpn-client(){
+    
+        case $1 in
+            "Start"|"start" )
+                ssh -N -f -L localhost:$2:localhost:$2 $3;;
+            "Stop"|"stop" )
+                for pid in $(ps aux | grep -E "[localhost]:$2.*$3" | awk '{print $2}'); do
+                    echo $pid;
+                    kill -9 $pid;
+                done;;
+            * ) echo "format: jpn-client {start|stop} ssh_port ssh_host";;
+        esac
+    
+    }
+
+fi
+
+
+# ------------------------------------------------------------------------------
+# mac function
+# ------------------------------------------------------------------------------
+
+
+# defined for switching mac finder mode that
+# -t for to show hidden files, and -f for not to show hidden files
+
+macfm() {
+
+    if [ "$1" == "-t" ]; then
+        defaults write com.apple.finder AppleShowAllFiles TRUE
+        killall Finder
+        echo "Finder show hidden file mode was setted to True."
+    elif [ "$1" == "-f" ]; then
+        defaults write com.apple.finder AppleShowAllFiles FALSE
+        killall Finder
+        echo "Finder show hidden file mode was setted to False."
+    else
+        echo "Finder show hidden file mode is unknown."
+    fi
+}
+
+meminfo() {
+    top -l 1 -s 0 | grep PhysMem    # show physical memory informaiton
+    sysctl vm.swapusage             # show swap information
+}
