@@ -91,7 +91,7 @@ if [ "$OS_TYPE" == 'Darwin' ]; then
             cconv -f UTF8-CN -t UTF8-TW $1'.temp' > $2
             rm -f $1'.temp'
         }
-    }
+    fi
 
     if [ -f $MOTD_FILE ]; then
         motd() {
