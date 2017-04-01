@@ -4,7 +4,7 @@
 #
 # Author        :   Tainvecs
 # Created Date  :   2016-09-15
-# Last Updated  :   2017-03-12
+# Last Updated  :   2017-04-01
 #
 # ------------------------------------------------------------------------------
 
@@ -31,6 +31,7 @@ if [ "$OS_TYPE" == 'Linux' ]; then
     alias la='ls --color=auto -a'               # show all file
     alias lh='ls --color=auto -hld .?*'         # show hidden files
     alias meminfo='free -html'                  # show memory information
+    alias dir='du -h -d 1 | sort -hr'           # show disk usage of current directory
 
 elif [ "$OS_TYPE" == 'Darwin' ]; then
 
@@ -38,6 +39,12 @@ elif [ "$OS_TYPE" == 'Darwin' ]; then
     alias ll='ls -Ghl'                          # list file
     alias la='ls -Ga'                           # show all file
     alias lh='ls -Ghld .?*'                     # show hidden files
+
+    if ! hash gsort 2>/dev/null; then           # show disk usage of current directory
+        alias dir='du -hs'
+    else
+        alias dir='du -h -d 1 | gsort -hr'
+    fi
 
 fi
 
@@ -78,13 +85,13 @@ if [ "$OS_TYPE" == 'Darwin' ]; then
         sysctl vm.swapusage             # show swap information
     }
 
-
-    sc2tc() {
-        iconv -f gbk -t utf8 $1 > $1'.temp'
-        cconv -f UTF8-CN -t UTF8-TW $1'.temp' > $2
-        rm -f $1'.temp'
+    if ! hash cconv 2>/dev/null; then
+        sc2tc() {
+            iconv -f gbk -t utf8 $1 > $1'.temp'
+            cconv -f UTF8-CN -t UTF8-TW $1'.temp' > $2
+            rm -f $1'.temp'
+        }
     }
-
 
     if [ -f $MOTD_FILE ]; then
         motd() {
