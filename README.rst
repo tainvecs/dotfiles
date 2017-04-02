@@ -1,11 +1,11 @@
 
 Overview
 ========
-Scripts for automatically setup setting files, and install mac apps, mac packages and python3 packages. 
+Scripts for automatically setup setting files, and install mac apps, mac packages and python3 packages.
 
 Requirements
 ============
-* Mac OSX
+* macOS Sierra
 * Python 3.5+
 
 Setting Files
@@ -18,18 +18,17 @@ Setting Files
 Setup Setting Files
 ===================
 run mac.setting.setup.sh with the following command ::
-    
+
     bash mac.setting.setup.sh
 
 Install Packages
 ================
 run mac.package.install.sh with the following command ::
-    
+
     bash mac.package.install.sh
-    
+
 Install Mac APPs
 ================
 run mac.app.install.sh with the following command ::
-    
+
     bash mac.app.install.sh
-    
