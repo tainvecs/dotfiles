@@ -85,7 +85,7 @@ if [ "$OS_TYPE" == 'Darwin' ]; then
         sysctl vm.swapusage             # show swap information
     }
 
-    if ! hash cconv 2>/dev/null; then
+    if hash cconv 2>/dev/null; then
         sc2tc() {
             iconv -f gbk -t utf8 $1 > $1'.temp'
             cconv -f UTF8-CN -t UTF8-TW $1'.temp' > $2
