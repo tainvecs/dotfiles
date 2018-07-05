@@ -4,7 +4,6 @@
 #
 # Author        :   Tainvecs
 # Created Date  :   2017-04-02
-# Last Updated  :   2017-04-02
 #
 # ------------------------------------------------------------------------------
 
@@ -81,9 +80,6 @@ install_mac_application 'steam' 'steam'
 
 # mipony
 install_mac_application 'mipony' 'mipony'
-
-# bilibili
-install_mac_application 'bilibili' 'bilibili'
 
 
 # ------------------------------------------------------------------------------

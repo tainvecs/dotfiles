@@ -4,7 +4,6 @@
 #
 # Author        :   Tainvecs
 # Created Date  :   2017-04-02
-# Last Updated  :   2017-04-02
 #
 # ------------------------------------------------------------------------------
 
@@ -70,6 +69,9 @@ install_mac_package p7zip
 # ------------------------------------------------------------------------------
 
 
+brew install python3
+
+
 echo "Checking python3 packages..."
 
 # numpy
@@ -83,3 +85,4 @@ install_python_package 'matplotlib'
 
 # scipy
 install_python_package 'scipy'
+

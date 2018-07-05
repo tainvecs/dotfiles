@@ -4,7 +4,6 @@
 #
 # Author        :   Tainvecs
 # Created Date  :   2017-03-10
-# Last Updated  :   2017-03-12
 #
 # ------------------------------------------------------------------------------
 
@@ -86,7 +85,7 @@ fi
 
 if ! [ -d $VIM_COLOR_TRG_DIR ]; then
 
-    mkdir $VIM_COLOR_TRG_DIR
+    mkdir -p $VIM_COLOR_TRG_DIR
     cp -r $VIM_COLOR_RES_DIR $VIM_COLOR_TRG_DIR
 
 fi
