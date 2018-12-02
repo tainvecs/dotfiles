@@ -24,6 +24,6 @@ run ubuntu.app.install.sh the following command ::
 
 Setup Setting Files
 ===================
-run system.setting.setup with the following command (git and vim should be installed by ubuntu.package.install.sh in advance)::
+run system.setting.setup with the following command (git and vim should be installed by ubuntu.package.install.sh in advance) ::
 
     bash system.setting.setup
