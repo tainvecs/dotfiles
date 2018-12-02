@@ -4,7 +4,6 @@
 #
 # Author        :   Tainvecs
 # Created Date  :   2017-01-18
-# Last Updated  :   2017-03-12
 #
 # ------------------------------------------------------------------------------
 
@@ -30,8 +29,15 @@ RESET="\033[0m"
 # ------------------------------------------------------------------------------
 
 
+_os_type=`uname`
+
+
 # date
 DATE=`date +%Y-%m-%d\ %H:%M:%S`
+
+
+# username
+USERNAME=`whoami`
 
 
 # hostname
@@ -43,32 +49,39 @@ KERNEL=`uname -r`
 
 
 # uptime
-boottime=`sysctl -n kern.boottime | cut -c9-18`
-unixtime=`date +%s`
-upsec=$((unixtime-boottime))
+if [ "$_os_type" == 'Linux' ]; then
 
-seconds=$((upsec%60))
-minutes=$((upsec / 60))
-hours=$((minutes / 60 ))
-days=$((hours / 24))
+    UPTIME=`uptime -p`
 
-minutes=$((minutes%60))
-hours=$((hours%24))
+elif [ "$_os_type" == 'Darwin' ]; then
 
-if (( $seconds < 10 )); then seconds='0'$seconds;  fi
-if (( $minutes < 10 )); then minutes='0'$minutes;  fi
-if (( $hours < 10 )); then hours='0'$hours;  fi
-if (( $days < 2 )); then days=$days' day, ';  else  days=$days' days, '; fi
+    boottime=`sysctl -n kern.boottime | cut -c9-18`
+    unixtime=`date +%s`
+    upsec=$((unixtime-boottime))
 
-UPTIME=$days$hours':'$minutes':'$seconds
+    seconds=$((upsec%60))
+    minutes=$((upsec / 60))
+    hours=$((minutes / 60 ))
+    days=$((hours / 24))
+
+    minutes=$((minutes%60))
+    hours=$((hours%24))
+
+    if (( $seconds < 10 )); then seconds='0'$seconds;  fi
+    if (( $minutes < 10 )); then minutes='0'$minutes;  fi
+    if (( $hours < 10 )); then hours='0'$hours;  fi
+    if (( $days < 2 )); then days=$days' day, ';  else  days=$days' days, '; fi
+
+    UPTIME=$days$hours':'$minutes':'$seconds
+
+fi
 
 
 # memory
-_os_type=`uname`
 if [ "$_os_type" == 'Linux' ]; then
 
     CPU=`cat /proc/cpuinfo | grep -m 1 "model name" | awk -F ": " '{print $2}'`
-    MEMORY=`free -m | head -n 2 | tail -n 1 | awk {'print $3'}`MB out of `free -m | head -n 2 | tail -n 1 | awk {'print $2'}`MB
+    MEMORY=`free -m | head -n 2 | tail -n 1 | awk {'print $3'}`'MB out of '`free -m | head -n 2 | tail -n 1 | awk {'print $2'}`'MB'
 
 elif [ "$_os_type" == 'Darwin' ]; then
 
@@ -87,16 +100,22 @@ elif [ "$_os_type" == 'Darwin' ]; then
 fi
 
 
-# process
-TEMP_STR=`ps aux | grep $USER | wc -l`
-TEMP_NUM=${TEMP_STR//[[:blank:]]/}
-PROCESSES=$TEMP_NUM" of "`ulimit -u`" MAX"
-
-
 # disk
 DISK_USED=`df -h | grep /dev | head -n 1 | awk {'print $3'}`
 DISK_TOTAL=`df -h | grep /dev | head -n 1 | awk {'print $2'}`
-DISK=${DISK_USED%?}" used out of "${DISK_TOTAL%?}
+
+if [ "$_os_type" == 'Linux' ]; then
+    DISK=${DISK_USED}" used out of "${DISK_TOTAL}
+elif [ "$_os_type" == 'Darwin' ]; then
+    DISK=${DISK_USED%?}" used out of "${DISK_TOTAL%?}
+fi
+
+
+# process
+TEMP_STR=`ps aux | grep $USERNAME | wc -l`
+TEMP_NUM=${TEMP_STR//[[:blank:]]/}
+
+PROCESSES=$TEMP_NUM" of "`ulimit -u`" MAX"
 
 
 # address
@@ -118,7 +137,7 @@ echo -e "   \"\`-0-0-'\"\`-0-0-'\"\`-0-0-'\"\`-0-0-'\"\`-0-0-'\"\`-0-0-'\"\`-0-0
 echo -e " $W "
 echo -e "#===========================:\033[01;5;31m Information $RESET$W:===========================#"
 echo -e "   $R Date         $W=     $B$DATE "
-echo -e "   $R User         $W=     $B$USER "
+echo -e "   $R User         $W=     $B$USERNAME "
 echo -e "   $R Hostname     $W=     $B$HOSTNAME "
 echo -e "   $R Kernel       $W=     $B$KERNEL "
 echo -e "   $R Uptime       $W=     $B$UPTIME "
@@ -129,4 +148,3 @@ echo -e "   $R Processes    $W=     $B$PROCESSES "
 echo -e "   $R ADDRESS      $W=     $B$ADDRESS "
 echo -e "$W#=====================================================================#$RESET"
 echo -e " "
-

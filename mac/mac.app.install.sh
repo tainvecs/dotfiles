@@ -27,7 +27,7 @@ install_mac_application() {
 
 
 # ------------------------------------------------------------------------------
-# mac applications
+# mac applications: for list of all app, run command brew search --casks
 # ------------------------------------------------------------------------------
 
 
@@ -51,11 +51,17 @@ install_mac_application 'adobe acrobat reader dc' 'adobe-reader'
 # atom
 install_mac_application 'atom' 'atom'
 
+# iina
+install_mac_application 'iina' 'iina'
+
+# keka
+install_mac_application 'keka' 'keka'
+
+# evenote
+install_mac_application 'evernote' 'evernote'
+
 # insomniax
 install_mac_application 'insomniax' 'insomniax'
-
-# flux
-install_mac_application 'flux' 'flux'
 
 # appcleaner
 install_mac_application 'appcleaner' 'appcleaner'

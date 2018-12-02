@@ -36,7 +36,7 @@ install_python_package() {
 
 
 # ------------------------------------------------------------------------------
-# mac packages
+# mac packages: more information on https://formulae.brew.sh/formula/
 # ------------------------------------------------------------------------------
 
 
@@ -47,6 +47,18 @@ echo "Checking mac packages..."
 if ! hash brew 2>/dev/null; then
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 fi
+
+# git
+install_mac_package git
+
+# docker
+install_mac_package docker
+
+# tmux
+install_mac_package tmux
+
+# vim
+install_mac_package vim
 
 # coreutils
 install_mac_package coreutils
@@ -78,11 +90,10 @@ echo "Checking python3 packages..."
 install_python_package 'numpy'
 
 # beautifulsoup4
-install_python_package 'beautifulsoup4'
+#install_python_package 'beautifulsoup4'
 
 # matplotlib
-install_python_package 'matplotlib'
+#install_python_package 'matplotlib'
 
 # scipy
-install_python_package 'scipy'
-
+#install_python_package 'scipy'

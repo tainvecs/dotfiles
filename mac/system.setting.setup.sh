@@ -16,7 +16,11 @@
 # motd
 MOTD_FILE=./setting/dynmotd
 MOTD_PATH=/etc/dynmotd
-MOTD_CMD_FILE=/etc/profile
+
+
+#  bashrc
+BASHRC_FILE=./setting/bashrc
+BASHRC_PATH=~/.bashrc
 
 
 #  bash_profile
@@ -38,18 +42,31 @@ VIMRC_FILE=./setting/vimrc
 VIMRC_PATH=~/.vimrc
 
 
+# vundle
+VUNDLE_PATH=~/.vim/bundle
+
+
+OS_TYPE=`uname`
+
+
 # ------------------------------------------------------------------------------
 # motd : ./dynmotd
 # ------------------------------------------------------------------------------
 
 
-if ! grep -Fxq 'php -f '$MOTD_PATH' | bash' $MOTD_CMD_FILE ; then
+sudo cp -i $MOTD_FILE $MOTD_PATH
 
-    echo $'\n'"php -f $MOTD_PATH | bash"$'\n' | sudo tee -a $MOTD_CMD_FILE > /dev/null
+
+# ------------------------------------------------------------------------------
+# bashrc : ./bashrc
+# ------------------------------------------------------------------------------
+
+
+if [ -f $BASHRC_FILE ]; then
+
+    cp -i $BASHRC_FILE $BASHRC_PATH
 
 fi
-
-sudo cp -i $MOTD_FILE $MOTD_PATH
 
 
 # ------------------------------------------------------------------------------
@@ -74,6 +91,7 @@ if [ -f $SSH_CONFIG_FILE ]; then
     fi
 
     cp -i $SSH_CONFIG_FILE $SSH_CONFIG_PATH
+    ssh-keygen
 
 fi
 
@@ -83,12 +101,49 @@ fi
 # ------------------------------------------------------------------------------
 
 
-if ! [ -d $VIM_COLOR_TRG_DIR ]; then
+if [ -d $VIM_COLOR_RES_DIR ]; then
 
-    mkdir -p $VIM_COLOR_TRG_DIR
-    cp -r $VIM_COLOR_RES_DIR $VIM_COLOR_TRG_DIR
+    if ! [ -d $VIM_COLOR_TRG_DIR ]; then
+
+        mkdir -p $VIM_COLOR_TRG_DIR
+
+    fi
+
+    if [ "$OS_TYPE" == 'Linux' ]; then
+
+        cp -RT $VIM_COLOR_RES_DIR $VIM_COLOR_TRG_DIR
+
+    elif [ "$OS_TYPE" == 'Darwin' ]; then
+
+        cp -r $VIM_COLOR_RES_DIR $VIM_COLOR_TRG_DIR
+
+    fi
 
 fi
 
-
 cp -i $VIMRC_FILE $VIMRC_PATH
+
+
+# ------------------------------------------------------------------------------
+# vundle
+# ------------------------------------------------------------------------------
+
+
+if ! [ -d $VUNDLE_PATH ]; then
+    mkdir -p $VUNDLE_PATH
+    git clone https://github.com/VundleVim/Vundle.vim.git $VUNDLE_PATH'/Vundle.vim'
+fi
+
+if [ -d $VUNDLE_PATH'/Vundle.vim' ]; then
+    vim +PluginInstall +qall
+fi
+
+
+# ------------------------------------------------------------------------------
+# locales
+# ------------------------------------------------------------------------------
+
+
+if [ "$OS_TYPE" == 'Linux' ]; then
+    dpkg-reconfigure -f noninteractive locales
+fi

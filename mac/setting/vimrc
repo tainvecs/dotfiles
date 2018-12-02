@@ -91,12 +91,12 @@ set laststatus=2                    " always show status line
 
 set t_Co=256
 
+colorscheme desertEx
 " colorscheme autumn
 " colorscheme autumn2
 " colorscheme blackbeauty
 " colorscheme calmar256-light
 " colorscheme darkburn
-colorscheme desertEx
 " colorscheme gentooish
 " colorscheme herald
 " colorscheme inkpot
@@ -113,3 +113,43 @@ colorscheme desertEx
 " colorscheme tir_black
 " colorscheme torte
 " colorscheme xoria256
+
+
+" ------------------------------------------------------------------------------
+" vundle
+" ------------------------------------------------------------------------------
+
+
+if !empty(glob('~/.vim/bundle/Vundle.vim'))
+
+    set nocompatible                " required
+    filetype off                    " required
+
+
+    " set the runtime path to include Vundle and initialize
+
+    set rtp+=~/.vim/bundle/Vundle.vim
+    call vundle#begin()
+
+
+    " let Vundle manage Vundle, required
+
+    Plugin 'gmarik/Vundle.vim'
+
+
+    " Add all your plugins here
+
+    Plugin 'itchyny/lightline.vim'
+
+    " All of your Plugins must be added before the following line
+
+
+    call vundle#end()               " required
+    filetype plugin indent on       " required
+
+
+    " Setting related to plugins
+
+    let g:lightline = { 'colorscheme': 'Tomorrow_Night_Blue' }
+
+endif

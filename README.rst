@@ -1,34 +1,17 @@
 
 Overview
 ========
-Scripts for automatically setup setting files, and install mac apps, mac packages and python3 packages.
+Shell scripts that automatically setup system setting files, and install apps and packages for Ubuntu and Mac OS.
 
 Requirements
 ============
+* Ubuntu 18.04.1
 * macOS Sierra
-* Python 3.5+
 
-Setting Files
-=============
-* setting/bash_profile : the bash login shell ~/.bash_profile
-* setting/vimrc : the vim setting file ~/.vimrc
-* setting/ssh_config : the ~/.ssh/config file
-* setting/dynmotd : a dynamic motd file that show system information
+Public
+======
+* public version
 
-Setup Setting Files
-===================
-run mac.setting.setup.sh with the following command ::
-
-    bash mac.setting.setup.sh
-
-Install Packages
-================
-run mac.package.install.sh with the following command ::
-
-    bash mac.package.install.sh
-
-Install Mac APPs
-================
-run mac.app.install.sh with the following command ::
-
-    bash mac.app.install.sh
+Private
+=======
+* private version
