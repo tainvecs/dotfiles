@@ -147,7 +147,7 @@ elif [ "$OS_TYPE" == 'Darwin' ]; then
 fi
 
 
-if [ -x iconv ]; then
+if hash iconv 2>/dev/null; then
 
     alias tc2u='iconv -f big5 -t utf-8 '$1      # convert big5 to utf-8
     alias u2tc='iconv -f utf-8 -t big5 '$1      # convert utf-8 to big5
@@ -157,7 +157,7 @@ if [ -x iconv ]; then
 fi
 
 
-if [ -x python3 ]; then
+if hash python3 2>/dev/null; then
     alias python="python3"
 fi
 
