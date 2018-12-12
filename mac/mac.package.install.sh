@@ -89,11 +89,20 @@ echo "Checking python3 packages..."
 # numpy
 install_python_package 'numpy'
 
-# beautifulsoup4
-#install_python_package 'beautifulsoup4'
-
 # matplotlib
-#install_python_package 'matplotlib'
+install_python_package 'matplotlib'
+
+# beautifulsoup4
+install_python_package 'beautifulsoup4'
 
 # scipy
-#install_python_package 'scipy'
+install_python_package 'scipy'
+
+# pandas
+install_python_package 'pandas'
+
+# ipython
+install_python_package 'ipython'
+
+# jupyter
+install_python_package 'jupyter'

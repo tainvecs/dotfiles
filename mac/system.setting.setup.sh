@@ -33,6 +33,11 @@ SSH_CONFIG_FILE=./setting/ssh_config
 SSH_CONFIG_DIR=~/.ssh
 SSH_CONFIG_PATH=$SSH_CONFIG_DIR'/config'
 
+# ipython_config
+IPYTHON_FILE=./setting/ipython_config.py
+IPYTHON_DIR=~/.ipython/profile_default/
+IPYTHON_PATH=$IPYTHON_DIR'/ipython_config.py'
+
 
 # vimrc
 VIM_COLOR_RES_DIR=./vim-colors/
@@ -97,6 +102,39 @@ fi
 
 
 # ------------------------------------------------------------------------------
+# ipython_config.py : ~/.ipython/profile_default/ipython_config.py
+# ------------------------------------------------------------------------------
+
+
+if [ -f $IPYTHON_FILE ]; then
+
+    if ! [ -d $IPYTHON_DIR ]; then
+
+        mkdir -p $IPYTHON_DIR
+
+    fi
+
+    cp -i $IPYTHON_FILE $IPYTHON_PATH
+
+fi
+
+
+# ------------------------------------------------------------------------------
+# tmux configuration
+# ------------------------------------------------------------------------------
+
+
+CUR_DIR=$PWD
+
+cd
+git clone https://github.com/gpakosz/.tmux.git
+ln -s -f .tmux/.tmux.conf
+cp .tmux/.tmux.conf.local .
+
+cd $CUR_DIR
+
+
+# ------------------------------------------------------------------------------
 # vimrc : ./vimrc
 # ------------------------------------------------------------------------------
 
@@ -146,4 +184,5 @@ fi
 
 if [ "$OS_TYPE" == 'Linux' ]; then
     dpkg-reconfigure -f noninteractive locales
+    sudo locale-gen en_US.UTF-8
 fi

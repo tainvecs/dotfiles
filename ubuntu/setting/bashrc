@@ -112,6 +112,7 @@ shopt -s checkwinsize
 export TERM=xterm-256color
 export LANG=en_US.UTF-8
 export LANGUAGE=en_US.UTF-8
+export LC_ALL="en_US.UTF-8"
 
 
 # ------------------------------------------------------------------------------
@@ -120,6 +121,7 @@ export LANGUAGE=en_US.UTF-8
 
 
 alias l='ls -CF'
+alias lsgroup='cut -d: -f1 /etc/group | sort'
 
 
 if [ "$OS_TYPE" == 'Linux' ]; then
@@ -146,7 +148,6 @@ elif [ "$OS_TYPE" == 'Darwin' ]; then
 
 fi
 
-
 if hash iconv 2>/dev/null; then
 
     alias tc2u='iconv -f big5 -t utf-8 '$1      # convert big5 to utf-8
@@ -156,9 +157,12 @@ if hash iconv 2>/dev/null; then
 
 fi
 
-
 if hash python3 2>/dev/null; then
     alias python="python3"
+fi
+
+if hash jupyter 2>/dev/null; then
+    alias jpn="jupyter notebook"
 fi
 
 
@@ -206,7 +210,6 @@ if [ -f $MOTD_FILE ]; then
     php -f /etc/dynmotd | bash
 
 fi
-
 
 if hash cconv 2>/dev/null; then
 

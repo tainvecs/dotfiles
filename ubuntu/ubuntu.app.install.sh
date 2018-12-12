@@ -22,11 +22,14 @@ sudo apt-get -y install htop
 sudo apt-get -y install dialog
 sudo apt-get -y install locales
 sudo apt-get -y install less vim
+sudo apt-get -y install php
 sudo apt-get -y install python3
 sudo apt-get -y install python3-pip python3-dev build-essential
 sudo pip3 install --upgrade pip
-sudo pip3 install --upgrade virtualenv
-sudo apt-get -y install php
+sudo pip3 install virtualenv
+sudo pip3 install numpy matplotlib scipy pandas
+sudo pip3 install beautifulsoup4
+sudo pip3 install ipython jupyter
 
 #sudo apt-get -y install lsb-release lsb-core
 
