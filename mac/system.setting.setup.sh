@@ -1,4 +1,5 @@
 
+#!bin/bash
 
 # ------------------------------------------------------------------------------
 #
@@ -59,7 +60,7 @@ OS_TYPE=`uname`
 # ------------------------------------------------------------------------------
 
 
-sudo cp -i $MOTD_FILE $MOTD_PATH
+sudo cp $MOTD_FILE $MOTD_PATH
 
 
 # ------------------------------------------------------------------------------
@@ -69,7 +70,7 @@ sudo cp -i $MOTD_FILE $MOTD_PATH
 
 if [ -f $BASHRC_FILE ]; then
 
-    cp -i $BASHRC_FILE $BASHRC_PATH
+    cp $BASHRC_FILE $BASHRC_PATH
 
 fi
 
@@ -79,7 +80,7 @@ fi
 # ------------------------------------------------------------------------------
 
 
-cp -i $BASH_PROFILE_FILE $BASH_PROFILE_PATH
+cp $BASH_PROFILE_FILE $BASH_PROFILE_PATH
 
 
 # ------------------------------------------------------------------------------
@@ -95,7 +96,7 @@ if [ -f $SSH_CONFIG_FILE ]; then
 
     fi
 
-    cp -i $SSH_CONFIG_FILE $SSH_CONFIG_PATH
+    cp $SSH_CONFIG_FILE $SSH_CONFIG_PATH
     ssh-keygen
 
 fi
@@ -114,7 +115,7 @@ if [ -f $IPYTHON_FILE ]; then
 
     fi
 
-    cp -i $IPYTHON_FILE $IPYTHON_PATH
+    cp $IPYTHON_FILE $IPYTHON_PATH
 
 fi
 
@@ -159,7 +160,7 @@ if [ -d $VIM_COLOR_RES_DIR ]; then
 
 fi
 
-cp -i $VIMRC_FILE $VIMRC_PATH
+cp $VIMRC_FILE $VIMRC_PATH
 
 
 # ------------------------------------------------------------------------------
