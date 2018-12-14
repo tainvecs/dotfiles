@@ -14,6 +14,7 @@ Setting Files
 * setting/vimrc : the vim setting file ~/.vimrc
 * setting/ssh_config : the ~/.ssh/config file
 * setting/dynmotd : a dynamic motd file that shows system information
+* setting/ipython_config.py : the ipython config file ~/.ipython/profile_default
 
 
 Install Packages
