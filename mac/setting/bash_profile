@@ -16,9 +16,16 @@ MOTD_FILE='/etc/dynmotd'
 
 shopt -s checkwinsize
 export TERM=xterm-256color
+
+export PS1="\[$(tput bold)\]\[\033[38;5;228m\]\u\[$(tput sgr0)\]\[$(tput sgr0)\]\[\033[38;5;15m\]@\[$(tput bold)\]\[$(tput sgr0)\]\[\033[38;5;156m\]\h\[$(tput sgr0)\]\[$(tput sgr0)\]\[\033[38;5;15m\]:\[$(tput bold)\]\[$(tput sgr0)\]\[\033[38;5;222m\][\w]\[$(tput sgr0)\]\[$(tput sgr0)\]\[\033[38;5;15m\]\\$ \[$(tput sgr0)\]"
+
 export LANG=en_US.UTF-8
 export LANGUAGE=en_US.UTF-8
 export LC_ALL="en_US.UTF-8"
+
+export VISUAL=vim
+export EDITOR="$VISUAL"
+export GIT_EDITOR="$VISUAL"
 
 
 # ------------------------------------------------------------------------------
@@ -126,6 +133,11 @@ if hash cconv 2>/dev/null; then
     }
 
 fi
+
+space_file(){
+    tmp_str=$(head -c $1 < /dev/zero | tr '\0' ' ')
+    sed "s_^_${tmp_str}_" $2 > $3
+}
 
 
 # ------------------------------------------------------------------------------

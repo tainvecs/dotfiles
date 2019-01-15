@@ -119,7 +119,7 @@ PROCESSES=$TEMP_NUM" of "`ulimit -u`" MAX"
 
 
 # address
-ADDRESS=`IP=$(curl -s ip.vostron.net |  awk '{print $NF}'); echo -n "$IP"`
+#ADDRESS=`IP=$(curl -s ip.vostron.net |  awk '{print $NF}'); echo -n "$IP"`
 
 
 # ------------------------------------------------------------------------------
@@ -145,6 +145,6 @@ echo -e "   $R CPU          $W=     $B$CPU "
 echo -e "   $R Memory       $W=     $B$MEMORY "
 echo -e "   $R Disk         $W=     $B$DISK "
 echo -e "   $R Processes    $W=     $B$PROCESSES "
-echo -e "   $R ADDRESS      $W=     $B$ADDRESS "
+#echo -e "   $R ADDRESS      $W=     $B$ADDRESS "
 echo -e "$W#=====================================================================#$RESET"
 echo -e " "
