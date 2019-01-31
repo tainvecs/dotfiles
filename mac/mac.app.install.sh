@@ -1,14 +1,6 @@
 
 
 # ------------------------------------------------------------------------------
-#
-# Author        :   Tainvecs
-# Created Date  :   2017-04-02
-#
-# ------------------------------------------------------------------------------
-
-
-# ------------------------------------------------------------------------------
 # function
 # ------------------------------------------------------------------------------
 
@@ -48,11 +40,11 @@ install_mac_application 'firefox' 'firefox'
 # adobe reader
 install_mac_application 'adobe acrobat reader dc' 'adobe-reader'
 
-# atom
-install_mac_application 'atom' 'atom'
-
 # iina
 install_mac_application 'iina' 'iina'
+
+# vlc
+install_mac_application 'vlc' 'vlc'
 
 # keka
 install_mac_application 'keka' 'keka'
@@ -69,28 +61,8 @@ install_mac_application 'appcleaner' 'appcleaner'
 # teamviewer
 install_mac_application 'teamviewer' 'teamviewer'
 
+# atom
+install_mac_application 'atom' 'atom'
+
 # filezilla
 install_mac_application 'filezilla' 'filezilla'
-
-# vlc
-install_mac_application 'vlc' 'vlc'
-
-# kid3
-install_mac_application 'kid3' 'kid3'
-
-# aegisub
-install_mac_application 'aegisub' 'aegisub'
-
-# steam
-install_mac_application 'steam' 'steam'
-
-# mipony
-install_mac_application 'mipony' 'mipony'
-
-
-# ------------------------------------------------------------------------------
-# other applications (will not be installed by this script)
-# ------------------------------------------------------------------------------
-
-# app in App Store e.g., pages and Xcode
-# microsoft office

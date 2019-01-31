@@ -1,23 +1,15 @@
 
 
 # ------------------------------------------------------------------------------
-#
-# Author        :   Tainvecs
-# Created Date  :   2016-09-15
-#
-# ------------------------------------------------------------------------------
-
-
-# ------------------------------------------------------------------------------
 # Setting
 # ------------------------------------------------------------------------------
 
 
 Host *
-  IgnoreUnknown AddKeysToAgent,UseKeychain
-  AddKeysToAgent yes
-  UseKeychain yes
-  IdentityFile ~/.ssh/id_rsa
+    IgnoreUnknown AddKeysToAgent,UseKeychain
+    AddKeysToAgent yes
+    UseKeychain yes
+    IdentityFile ~/.ssh/id_rsa
 
 
 # ------------------------------------------------------------------------------
@@ -25,6 +17,6 @@ Host *
 # ------------------------------------------------------------------------------
 
 
- Host ptt
-   HostName ptt.cc
-   User bbsu
+Host ptt
+    HostName ptt.cc
+    User bbsu

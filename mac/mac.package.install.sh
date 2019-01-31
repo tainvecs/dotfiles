@@ -1,14 +1,6 @@
 
 
 # ------------------------------------------------------------------------------
-#
-# Author        :   Tainvecs
-# Created Date  :   2017-04-02
-#
-# ------------------------------------------------------------------------------
-
-
-# ------------------------------------------------------------------------------
 # function
 # ------------------------------------------------------------------------------
 
@@ -63,9 +55,6 @@ install_mac_package vim
 # coreutils
 install_mac_package coreutils
 
-# cconv
-install_mac_package cconv
-
 # wget
 install_mac_package wget
 
@@ -75,34 +64,5 @@ install_mac_package unrar
 # 7z
 install_mac_package p7zip
 
-
-# ------------------------------------------------------------------------------
-# python3 packages
-# ------------------------------------------------------------------------------
-
-
-brew install python3
-
-
-echo "Checking python3 packages..."
-
-# numpy
-install_python_package 'numpy'
-
-# matplotlib
-install_python_package 'matplotlib'
-
-# beautifulsoup4
-install_python_package 'beautifulsoup4'
-
-# scipy
-install_python_package 'scipy'
-
-# pandas
-install_python_package 'pandas'
-
-# ipython
-install_python_package 'ipython'
-
-# jupyter
-install_python_package 'jupyter'
+# python3
+install_mac_package python3

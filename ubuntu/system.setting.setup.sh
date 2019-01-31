@@ -1,13 +1,4 @@
 
-#!bin/bash
-
-# ------------------------------------------------------------------------------
-#
-# Author        :   Tainvecs
-# Created Date  :   2017-03-10
-#
-# ------------------------------------------------------------------------------
-
 
 # ------------------------------------------------------------------------------
 # parameter
@@ -34,6 +25,7 @@ SSH_CONFIG_FILE=./setting/ssh_config
 SSH_CONFIG_DIR=~/.ssh
 SSH_CONFIG_PATH=$SSH_CONFIG_DIR'/config'
 
+
 # ipython_config
 IPYTHON_FILE=./setting/ipython_config.py
 IPYTHON_DIR=~/.ipython/profile_default/
@@ -50,6 +42,11 @@ VIMRC_PATH=~/.vimrc
 
 # vundle
 VUNDLE_PATH=~/.vim/bundle
+
+
+# set up default time zone seletoion (edit and uncomment TZ_AREA and TZ_CITY)
+# TZ_AREA=America
+# TZ_CITY=Los_Angeles
 
 
 OS_TYPE=`uname`
@@ -97,7 +94,18 @@ if [ -f $SSH_CONFIG_FILE ]; then
     fi
 
     cp $SSH_CONFIG_FILE $SSH_CONFIG_PATH
-    ssh-keygen
+
+    # ssh key generation
+    if [ "${DEBIAN_FRONTEND}" != 'noninteractive' ]; then
+        while true; do
+            read -p "Do you wish to generate ssh key?" yn
+            case $yn in
+                [Yy]* ) ssh-keygen; break;;
+                [Nn]* ) exit;;
+                * ) echo "Please answer yes or no.";;
+                esac
+        done
+    fi
 
 fi
 
@@ -125,14 +133,11 @@ fi
 # ------------------------------------------------------------------------------
 
 
-CUR_DIR=$PWD
-
-cd
-git clone https://github.com/gpakosz/.tmux.git
-ln -s -f .tmux/.tmux.conf
-cp .tmux/.tmux.conf.local .
-
-cd $CUR_DIR
+if ! [ -d .tmux ] && ! [ -f ~/.tmux.conf ] && ! [ -f ~/.tmux.conf.local ]; then
+    git clone https://github.com/gpakosz/.tmux.git ~/.tmux/
+    ln -sf ~/.tmux/.tmux.conf ~/.tmux.conf
+    cp ~/.tmux/.tmux.conf.local ~/.tmux.conf.local
+fi
 
 
 # ------------------------------------------------------------------------------
@@ -184,6 +189,22 @@ fi
 
 
 if [ "$OS_TYPE" == 'Linux' ]; then
-    dpkg-reconfigure -f noninteractive locales
+    sudo dpkg-reconfigure -f noninteractive locales
     sudo locale-gen en_US.UTF-8
+fi
+
+
+# ------------------------------------------------------------------------------
+# time zone
+# ------------------------------------------------------------------------------
+
+
+# change the selection of time zone
+if ! [ -z "$TZ_AREA" ] && ! [ -z "$TZ_CITY" ] && [ "$OS_TYPE" == 'Linux' ]; then
+    sudo echo "tzdata tzdata/Areas select "$TZ_AREA | debconf-set-selections
+    sudo echo "tzdata tzdata/Zones/"$TZ_AREA" select "$TZ_CITY | debconf-set-selections
+    sudo rm -f /etc/localtime /etc/timezone
+    sudo dpkg-reconfigure -f noninteractive tzdata
+elif [ "$OS_TYPE" == 'Linux' ] && [ "${DEBIAN_FRONTEND}" != 'noninteractive' ]; then
+    sudo dpkg-reconfigure tzdata
 fi

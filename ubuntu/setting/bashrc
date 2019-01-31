@@ -91,8 +91,6 @@ fi
 #    . /etc/bash_completion
 #fi
 
-alias sysinfo="cat /etc/lsb-release && uname -a"
-
 
 # ------------------------------------------------------------------------------
 # parameter
@@ -133,34 +131,27 @@ alias lsgroup='cut -d: -f1 /etc/group | sort'
 
 if [ "$OS_TYPE" == 'Linux' ]; then
 
-    alias ls='ls --color=auto'                  # ls with color
-    alias ll='ls --color=auto -hl'              # list file
-    alias la='ls --color=auto -a'               # show all file
-    alias lh='ls --color=auto -hld .?*'         # show hidden files
-    alias meminfo='free -html'                  # show memory information
-    alias dir='du -h -d 1 | sort -hr'           # show disk usage of current directory
+    alias ls='ls --color=auto'                          # ls with color
+    alias ll='ls --color=auto -hl'                      # list file
+    alias la='ls --color=auto -a'                       # show all file
+    alias lh='ls --color=auto -hld .?*'                 # show hidden files
+
+    alias dir='du -h -d 1 | sort -hr'                   # show disk usage of current directory
+    alias meminfo='free -html'                          # show memory information
+    alias sysinfo="cat /etc/lsb-release && uname -a"    # show system info of ubuntu
 
 elif [ "$OS_TYPE" == 'Darwin' ]; then
 
-    alias ls='ls -G'                            # ls with color
-    alias ll='ls -Ghl'                          # list file
-    alias la='ls -Ga'                           # show all file
-    alias lh='ls -Ghld .?*'                     # show hidden files
+    alias ls='ls -G'                                    # ls with color
+    alias ll='ls -Ghl'                                  # list file
+    alias la='ls -Ga'                                   # show all file
+    alias lh='ls -Ghld .?*'                             # show hidden files
 
-    if ! hash gsort 2>/dev/null; then           # show disk usage of current directory
+    if ! hash gsort 2>/dev/null; then                   # show disk usage of current directory
         alias dir='du -hs'
     else
         alias dir='du -h -d 1 | gsort -hr'
     fi
-
-fi
-
-if hash iconv 2>/dev/null; then
-
-    alias tc2u='iconv -f big5 -t utf-8 '$1      # convert big5 to utf-8
-    alias u2tc='iconv -f utf-8 -t big5 '$1      # convert utf-8 to big5
-    alias sc2u='iconv -f gbk -t utf-8 '$1       # convert gbk to utf-8
-    alias u2sc='iconv -f utf-8 -t gbk '$1       # convert utf-8 to gbk
 
 fi
 
@@ -215,16 +206,6 @@ if [ -f $MOTD_FILE ]; then
     }
 
     php -f /etc/dynmotd | bash
-
-fi
-
-if hash cconv 2>/dev/null; then
-
-    sc2tc() {
-        iconv -f gbk -t utf8 $1 > $1'.temp'
-        cconv -f UTF8-CN -t UTF8-TW $1'.temp' > $2
-        rm -f $1'.temp'
-    }
 
 fi
 
