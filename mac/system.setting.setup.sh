@@ -98,12 +98,12 @@ if [ -f $SSH_CONFIG_FILE ]; then
     # ssh key generation
     if [ "${DEBIAN_FRONTEND}" != 'noninteractive' ]; then
         while true; do
-            read -p "Do you wish to generate ssh key?" yn
+            read -p "Do you wish to generate ssh key? " yn
             case $yn in
                 [Yy]* ) ssh-keygen; break;;
                 [Nn]* ) exit;;
                 * ) echo "Please answer yes or no.";;
-                esac
+            esac
         done
     fi
 
@@ -153,11 +153,11 @@ if [ -d $VIM_COLOR_RES_DIR ]; then
 
     fi
 
-    if [ "$OS_TYPE" == 'Linux' ]; then
+    if [ "$OS_TYPE" = 'Linux' ]; then
 
         cp -RT $VIM_COLOR_RES_DIR $VIM_COLOR_TRG_DIR
 
-    elif [ "$OS_TYPE" == 'Darwin' ]; then
+    elif [ "$OS_TYPE" = 'Darwin' ]; then
 
         cp -r $VIM_COLOR_RES_DIR $VIM_COLOR_TRG_DIR
 
@@ -188,7 +188,7 @@ fi
 # ------------------------------------------------------------------------------
 
 
-if [ "$OS_TYPE" == 'Linux' ]; then
+if [ "$OS_TYPE" = 'Linux' ]; then
     sudo dpkg-reconfigure -f noninteractive locales
     sudo locale-gen en_US.UTF-8
 fi
@@ -200,11 +200,11 @@ fi
 
 
 # change the selection of time zone
-if ! [ -z "$TZ_AREA" ] && ! [ -z "$TZ_CITY" ] && [ "$OS_TYPE" == 'Linux' ]; then
+if ! [ -z "$TZ_AREA" ] && ! [ -z "$TZ_CITY" ] && [ "$OS_TYPE" = 'Linux' ]; then
     sudo echo "tzdata tzdata/Areas select "$TZ_AREA | debconf-set-selections
     sudo echo "tzdata tzdata/Zones/"$TZ_AREA" select "$TZ_CITY | debconf-set-selections
     sudo rm -f /etc/localtime /etc/timezone
     sudo dpkg-reconfigure -f noninteractive tzdata
-elif [ "$OS_TYPE" == 'Linux' ] && [ "${DEBIAN_FRONTEND}" != 'noninteractive' ]; then
+elif [ "$OS_TYPE" = 'Linux' ] && [ "${DEBIAN_FRONTEND}" != 'noninteractive' ]; then
     sudo dpkg-reconfigure tzdata
 fi

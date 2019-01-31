@@ -11,7 +11,7 @@ install_mac_application() {
 
     osascript -e "id of application \"$1\"" &>/dev/null
 
-    if [ $? == 1 ]; then
+    if [ $? = 1 ]; then
         brew cask install $2
     fi
 

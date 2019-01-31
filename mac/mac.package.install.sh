@@ -9,7 +9,7 @@ install_mac_package() {
 
     brew ls --versions $1 &>/dev/null
 
-    if [ $? == 1 ]; then
+    if [ $? = 1 ]; then
         brew install $1
     fi
 
@@ -20,7 +20,7 @@ install_python_package() {
 
     pip3 freeze | grep $1"==*" &>/dev/null
 
-    if [ $? == 1 ]; then
+    if [ $? = 1 ]; then
         sudo pip3 install $1
     fi
 
