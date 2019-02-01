@@ -101,7 +101,7 @@ if [ -f $SSH_CONFIG_FILE ]; then
             read -p "Do you wish to generate ssh key? " yn
             case $yn in
                 [Yy]* ) ssh-keygen; break;;
-                [Nn]* ) exit;;
+                [Nn]* ) break;;
                 * ) echo "Please answer yes or no.";;
             esac
         done
