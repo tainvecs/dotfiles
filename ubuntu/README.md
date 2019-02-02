@@ -58,6 +58,16 @@
         + **space_file( )**
             - add space to each line of a file
             - format: space_file "n_space" "in_file" "out_file"
+        + **jpn-server( )**
+            - start an jupyter notebook server
+            - format: jpn-server {local|ssh} "ssh_port"
+            - Option "local" starts an localhost server. 
+            - Option "ssh" starts a server that able to be accessed by ssh connections.
+        + **jpn-client( )**
+            - start a ssh connection to the jupyter ssh server and map it to localhost "ssh_port"
+            - format: jpn-client {start|stop} "ssh_port" "ssh_host"
+            - Option "start" starts a ssh connection to jpn-server "ssh_host" with "ssh_port" and map it to localhost "ssh_port".
+            - Option "stop" closes the ssh connection.
 
 * **/setting/vimrc**
     - set basic vim setting
