@@ -93,12 +93,13 @@ fi
 
 
 # disk
-DISK_USED=`df -h | grep /dev | head -n 1 | awk {'print $3'}`
-DISK_TOTAL=`df -h | grep /dev | head -n 1 | awk {'print $2'}`
-
 if [ "$_os_type" == 'Linux' ]; then
+    DISK_USED=`df -h --total | grep total | head -n 1 | awk {'print $3'}`
+    DISK_TOTAL=`df -h --total | grep total | head -n 1 | awk {'print $2'}`
     DISK=${DISK_USED}" used out of "${DISK_TOTAL}
 elif [ "$_os_type" == 'Darwin' ]; then
+    DISK_USED=`df -h | grep /dev | head -n 1 | awk {'print $3'}`
+    DISK_TOTAL=`df -h | grep /dev | head -n 1 | awk {'print $2'}`
     DISK=${DISK_USED%?}" used out of "${DISK_TOTAL%?}
 fi
 
