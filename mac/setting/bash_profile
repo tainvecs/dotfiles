@@ -67,10 +67,6 @@ if hash python3 2>/dev/null; then
     alias python="python3"
 fi
 
-if hash jupyter 2>/dev/null; then
-    alias jpn="jupyter notebook"
-fi
-
 
 # ------------------------------------------------------------------------------
 # bash function
@@ -121,6 +117,36 @@ space_file(){
     tmp_str=$(head -c $1 < /dev/zero | tr '\0' ' ')
     sed "s_^_${tmp_str}_" $2 > $3
 }
+
+if hash jupyter 2>/dev/null; then
+
+    jpn-server(){
+    
+        case $1 in
+            "local" )
+                jupyter notebook --no-browser;;
+            "ssh" )
+                jupyter notebook --no-browser --port=$2;;
+            * ) echo "format jpn-server {local|ssh} ssh_port";;
+        esac
+    }
+    
+    jpn-client(){
+    
+        case $1 in
+            "Start"|"start" )
+                ssh -N -f -L localhost:$2:localhost:$2 $3;;
+            "Stop"|"stop" )
+                for pid in $(ps aux | grep -E "[localhost]:$2.*$3" | awk '{print $2}'); do
+                    echo $pid;
+                    kill -9 $pid;
+                done;;
+            * ) echo "format: jpn-client {start|stop} ssh_port ssh_host";;
+        esac
+    
+    }
+
+fi
 
 
 # ------------------------------------------------------------------------------
