@@ -211,8 +211,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-(add-to-list 'auto-mode-alist '("\\.zsh\\'" . sh-mode)
-             'auto-mode-alist '("\\.sh\\'" . sh-mode))
+;; add several elements at the end (may create double entries,
+;; but that would not hurt)
+(setq auto-mode-alist
+    (append auto-mode-alist
+            '(("\\.zsh\\'" . sh-mode)
+              ("\\.sh\\'" . sh-mode))))
 
 
 (use-package yaml-mode
@@ -410,13 +414,14 @@
   :mode (("\\.clj\\'" . clojure-mode)
          ("\\.edn\\'" . clojure-mode))
   :init
-  (add-hook 'clojure-mode-hook #'yas-minor-mode)
+  ;;(add-hook 'clojure-mode-hook #'yas-minor-mode)
   (add-hook 'clojure-mode-hook #'linum-mode)
   (add-hook 'clojure-mode-hook #'subword-mode)
   (add-hook 'clojure-mode-hook #'smartparens-mode)
-  (add-hook 'clojure-mode-hook #'rainbow-delimiters-mode)
+  ;;(add-hook 'clojure-mode-hook #'rainbow-delimiters-mode)
   (add-hook 'clojure-mode-hook #'eldoc-mode)
-  (add-hook 'clojure-mode-hook #'idle-highlight-mode))
+  ;;(add-hook 'clojure-mode-hook #'idle-highlight-mode)
+  )
 
 
 (use-package cider
