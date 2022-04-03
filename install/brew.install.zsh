@@ -45,7 +45,7 @@ brew install --cask iterm2
 
 # jdk
 # brew install --cask oracle-jdk
-# brew install openjdk
+brew install openjdk
 
 # kubectl
 brew install kubectl

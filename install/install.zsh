@@ -30,18 +30,18 @@ if [[ $OS_TYPE = "Darwin" ]]; then
     # ----- zsh
 
     # zshenv
-    DOTFILES_ZSHENV_PATH="$DOTFILES_CONFIG/zsh/.zshenv"
-    if [[ ! -f "~/.zshenv" ]] && [[ -f $DOTFILES_ZSHENV_PATH ]]; then
-        ln -s $DOTFILES_ZSHENV_PATH ~
+    DOTFILES_ZSH_HOME="$DOTFILES_HOME/.zsh"
+    if [[ ! -f "~/.zshenv" ]] && [[ -f "$DOTFILES_ZSH_HOME/.zshenv" ]]; then
+        ln -s "$DOTFILES_ZSH_HOME/.zshenv" ~
     else
         echo "Please Link $DOTFILES_ZSHENV_PATH to ~/.zshenv"
-        cat dotfiles/config/zsh/.zshenv >> .zshenv
+        cat dotfiles/config/zsh/.zshenv >> ~/.zshenv
     fi
-    source $DOTFILES_ZSHENV_PATH
+    source "$DOTFILES_ZSH_HOME/.zshenv"
 
     # initialize
-    if [[ -f "$ZDOTDIR/.zshrc_initialize.zsh" ]]; then 
-        source "$ZDOTDIR/.zshrc_initialize.zsh"
+    if [[ -f "$DOTFILES_ZSH_HOME/.zshrc_initialize.zsh" ]]; then
+        source "$DOTFILES_ZSH_HOME/.zshrc_initialize.zsh"
     fi
 
 
@@ -52,8 +52,9 @@ if [[ $OS_TYPE = "Darwin" ]]; then
     # ----- install plugins
     zsh $DOTFILES_INSTALL/zinit.install.zsh
 
+
     # ----- config and set up
-    
+
     # config
     if [[ -f "$DOTFILES_CONFIG/dotfiles/.config.zsh" ]]; then
         source "$DOTFILES_CONFIG/dotfiles/.config.zsh"
@@ -66,6 +67,61 @@ if [[ $OS_TYPE = "Darwin" ]]; then
     zsh $DOTFILES_INSTALL/emacs.install.zsh
 
     # apply template
-    zsh $DOTFILES_INSTALL/template.apply.zsh
+    # zsh $DOTFILES_INSTALL/template.apply.zsh
+
+
+elif [[ $OS_TYPE = "Linux" ]]; then
+
+
+    # ----- resource
+    zsh $DOTFILES_INSTALL/resources.install.zsh
+
+
+    # ----- home
+    zsh $DOTFILES_INSTALL/home.build.zsh
+
+
+    # ----- zsh
+
+    # zshenv
+    DOTFILES_ZSH_HOME="$DOTFILES_HOME/.zsh"
+    if [[ ! -f "~/.zshenv" ]] && [[ -f "$DOTFILES_ZSH_HOME/.zshenv" ]]; then
+        ln -s "$DOTFILES_ZSH_HOME/.zshenv" ~
+    else
+        echo "Please Link $DOTFILES_ZSHENV_PATH to ~/.zshenv"
+        cat dotfiles/config/zsh/.zshenv >> ~/.zshenv
+    fi
+    source "$DOTFILES_ZSH_HOME/.zshenv"
+
+    # initialize
+    if [[ -f "$DOTFILES_ZSH_HOME/.zshrc_initialize.zsh" ]]; then
+        source "$DOTFILES_ZSH_HOME/.zshrc_initialize.zsh"
+    fi
+
+
+    # ----- install apps
+    zsh $DOTFILES_INSTALL/apt.install.zsh
+
+
+    # ----- install plugins
+    zsh $DOTFILES_INSTALL/zinit.install.zsh
+
+
+    # ----- config and set up
+
+    # config
+    if [[ -f "$DOTFILES_CONFIG/dotfiles/.config.zsh" ]]; then
+        source "$DOTFILES_CONFIG/dotfiles/.config.zsh"
+    fi
+
+    # set up vim
+    zsh $DOTFILES_INSTALL/vim.install.zsh
+
+    # set up emacs
+    zsh $DOTFILES_INSTALL/emacs.install.zsh
+
+    # apply template
+    # zsh $DOTFILES_INSTALL/template.apply.zsh
+
 
 fi
