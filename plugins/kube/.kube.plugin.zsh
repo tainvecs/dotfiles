@@ -20,7 +20,7 @@ if type kubectl >/dev/null; then
     if ! typeset -f kcns > /dev/null; then
         function kcns() {
             case $1 in
-                (*) kubectl config set-context --current --namespace="" ;;
+                (*) kubectl config set-context --current --namespace=$1 ;;
             esac
         }
     fi
