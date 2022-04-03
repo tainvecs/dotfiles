@@ -28,7 +28,6 @@ if [[ $OS_TYPE = "Darwin" ]]; then
 
 
     # ----- zsh
-
     # zshenv
     DOTFILES_ZSH_HOME="$DOTFILES_HOME/.zsh"
     if [[ ! -f "~/.zshenv" ]] && [[ -f "$DOTFILES_ZSH_HOME/.zshenv" ]]; then
@@ -49,12 +48,11 @@ if [[ $OS_TYPE = "Darwin" ]]; then
     zsh $DOTFILES_INSTALL/brew.install.zsh
 
 
-    # ----- install plugins
+    # ----- install plugins manager
     zsh $DOTFILES_INSTALL/zinit.install.zsh
 
 
     # ----- config and set up
-
     # config
     if [[ -f "$DOTFILES_CONFIG/dotfiles/.config.zsh" ]]; then
         source "$DOTFILES_CONFIG/dotfiles/.config.zsh"
@@ -70,6 +68,10 @@ if [[ $OS_TYPE = "Darwin" ]]; then
     # zsh $DOTFILES_INSTALL/template.apply.zsh
 
 
+    # ----- start a new zsh shell and invoke plugins installation
+    zsh
+
+
 elif [[ $OS_TYPE = "Linux" ]]; then
 
 
@@ -82,7 +84,6 @@ elif [[ $OS_TYPE = "Linux" ]]; then
 
 
     # ----- zsh
-
     # zshenv
     DOTFILES_ZSH_HOME="$DOTFILES_HOME/.zsh"
     if [[ ! -f "~/.zshenv" ]] && [[ -f "$DOTFILES_ZSH_HOME/.zshenv" ]]; then
@@ -103,12 +104,11 @@ elif [[ $OS_TYPE = "Linux" ]]; then
     zsh $DOTFILES_INSTALL/apt.install.zsh
 
 
-    # ----- install plugins
+    # ----- install plugins manager
     zsh $DOTFILES_INSTALL/zinit.install.zsh
 
 
     # ----- config and set up
-
     # config
     if [[ -f "$DOTFILES_CONFIG/dotfiles/.config.zsh" ]]; then
         source "$DOTFILES_CONFIG/dotfiles/.config.zsh"
@@ -122,6 +122,10 @@ elif [[ $OS_TYPE = "Linux" ]]; then
 
     # apply template
     # zsh $DOTFILES_INSTALL/template.apply.zsh
+
+
+    # ----- start a new zsh shell and invoke plugins installation
+    zsh
 
 
 fi
