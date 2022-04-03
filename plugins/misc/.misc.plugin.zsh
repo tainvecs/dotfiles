@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 
 
-alias shell-which="echo $0"
+alias shell-which="echo $SHELL"
 
 shell-change(){
     shell_target=$(which $1)
@@ -60,7 +60,7 @@ alias wget="wget --hsts-file "$ZSH_RESOURCES_DIR"/wget-hsts "
 # list completion
 function comp-ls() {
 
-    # https://stackoverflow.com/questions/40010848/how-to-list-all-zsh-autocompletions 
+    # https://stackoverflow.com/questions/40010848/how-to-list-all-zsh-autocompletions
     for command completion in ${(kv)_comps:#-*(-|-,*)}
     do
         printf "%-32s %s\n" $command $completion

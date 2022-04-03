@@ -562,7 +562,7 @@ home/.python/*
 !home/.python/.pyenv/
 home/.python/.ipython/*
 home/.python/nltk_data/*
-home/.python/.pyenv/*
+home/.python/.pyenv/**
 !home/.python/**/.gitkeep
 
 # .ssh
