@@ -584,6 +584,10 @@ home/.vim/.backup/*
 home/.vim/.swp/*
 !home/.vim/.undo/
 home/.vim/.undo/*
+!home/.vim/colors/
+home/.vim/colors/*
+!home/.vim/bundle/
+home/.vim/bundle/*
 !home/.vim/**/.gitkeep
 
 # .vpn
