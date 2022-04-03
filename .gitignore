@@ -562,8 +562,11 @@ home/.python/*
 !home/.python/.pyenv/
 home/.python/.ipython/*
 home/.python/nltk_data/*
-home/.python/.pyenv/**
+home/.python/.pyenv/*
 !home/.python/**/.gitkeep
+!home/.python/.pyenv/shims
+home/.python/.pyenv/shims/*
+home/.python/.pyenv/shims/.gitkeep
 
 # .ssh
 home/.ssh/*
@@ -614,6 +617,10 @@ home/.zsh/.zsh_sessions/*
 !cache/
 cache/*
 
+!cache/**/.gitkeep
+
+!home/**/.gitkeep
+
 
 # ----- config
 # aws
@@ -648,6 +655,8 @@ config/vpn/*.ovpn
 
 # ----- share
 share/*
+
+!share/**/.gitkeep
 
 
 # ----- resources
