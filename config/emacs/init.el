@@ -334,8 +334,8 @@
 (use-package all-the-icons
   :ensure t
   :config
-  (let ((font-dest (concat (getenv "HOME") "/Library/Fonts/")))
-    (unless (file-exists-p (concat font-dest "all-the-icons.ttf"))
+  (let ((font-dest (getenv "FONTS_DIR")))
+    (unless (file-exists-p (concat font-dest "/all-the-icons.ttf"))
       (all-the-icons-install-fonts t))))
 
 

@@ -143,12 +143,19 @@ PYTHON_CONFIG_DST="$PYTHON_HOME/.pythonrc"
 # home
 SSH_HOME="$DOTFILES_HOME/.ssh"
 mkdir -p "$SSH_HOME/ssh_keys"
-touch $SSH_HOME/ssh_keys/.gitkeep
+touch $SSH_HOME/authorized_keys $SSH_HOME/ssh_keys/.gitkeep
 
 # config
 SSH_CONFIG_SRC="$DOTFILES_CONFIG/ssh/config"
 SSH_CONFIG_DST="$SSH_HOME/config"
 [[ -f $SSH_CONFIG_SRC ]] && [[ ! -f $SSH_CONFIG_DST ]] && ln -s $SSH_CONFIG_SRC $SSH_CONFIG_DST
+
+# sshd_config
+SSHD_CONFIG_ROOT_SRC="/etc/ssh/sshd_config"
+SSHD_CONFIG_SRC="$DOTFILES_CONFIG/ssh/sshd_config"
+SSHD_CONFIG_DST="$SSH_HOME/sshd_config"
+[[ -f $SSHD_CONFIG_ROOT_SRC ]] && [[ ! -f $SSHD_CONFIG_SRC ]] && ln -s $SSHD_CONFIG_ROOT_SRC $SSHD_CONFIG_SRC
+[[ -f $SSHD_CONFIG_SRC ]] && [[ ! -f $SSHD_CONFIG_DST ]] && ln -s $SSHD_CONFIG_SRC $SSHD_CONFIG_DST
 
 
 # ------------------------------------------------------------------------------

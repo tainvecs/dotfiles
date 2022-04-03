@@ -305,7 +305,8 @@ fi
 # ------------------------------------------------------------------------------
 
 
-if [[ ${DOTFILES_PLUGINS["copybuffer"]} = "true" ]]; then
+# macOS
+if [[ $SYS_NAME = "mac" ]] && [[ ${DOTFILES_PLUGINS["copybuffer"]} = "true" ]]; then
 
     # copy stdin to clipboard
     zinit ice wait"2" lucid

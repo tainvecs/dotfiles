@@ -32,6 +32,9 @@ export XDG_CONFIG_HOME=${DOTFILES[CONFIG_DIR]}
 # home
 DOTFILES[HOME_DIR]="${DOTFILES[ROOT_DIR]}/home"
 
+# share
+export XDG_DATA_HOME="${DOTFILES[ROOT_DIR]}/share"
+
 # plugins
 DOTFILES[PLUGINS_DIR]="${DOTFILES[ROOT_DIR]}/plugins"
 
@@ -179,7 +182,18 @@ export LC_ALL=en_US.UTF-8
 export TERM=xterm-256color
 
 
-# connection
-export SSH_PORT=22000
-export VPN_PORT=11940
+# fonts
+if [[ $SYS_NAME = "mac" ]]; then
 
+    export FONTS_DIR="$HOME/Library/Fonts"
+
+elif [[ $SYS_NAME = "linux" ]]; then
+
+    export FONTS_DIR="$XDG_DATA_HOME/fonts"
+
+fi
+
+
+# connection
+export SSH_PORT=22
+export VPN_PORT=1194

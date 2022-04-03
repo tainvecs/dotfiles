@@ -6,6 +6,8 @@
 # activation script
 if [[ $SYS_NAME == mac ]]; then
     AUTOENV_SCRIPT_PATH="$BREW_HOME/opt/autoenv/activate.sh"
+elif [[ $SYS_NAME == mac ]]; then
+    AUTOENV_SCRIPT_PATH="${DOTFILES[HOME_DIR]}/.autoenv/autoenv.git/activate.sh"
 fi
 
 # apply config and activate autoenv
@@ -101,17 +103,11 @@ if type go >/dev/null; then
 
     export GO_HOME="${DOTFILES[HOME_DIR]}/.go"
 
-    if [[ -d "$BREW_HOME/opt/go" ]]; then
-        export GOROOT="$BREW_HOME/opt/go"
-    elif [[ -d "/usr/local/go" ]]; then
-        export GOROOT=/usr/local/go
-    fi
-
     export GOLIB=$GO_HOME/golib
     export GOCODE=$GO_HOME/gocode
 
     export GOPATH=$GOLIB:$GOCODE
-    export PATH=$GOLIB/bin:$GOROOT/bin:$PATH
+    export PATH=$GOLIB/bin:$PATH
 
 fi
 
@@ -166,7 +162,7 @@ if type python >/dev/null; then
     # ----- python
 
     # home
-    PYTHON_HOME="${DOTFILES[HOME_DIR]}/.python"
+    export PYTHON_HOME="${DOTFILES[HOME_DIR]}/.python"
 
     # config
     if [[ -f "$PYTHON_HOME/.pythonrc" ]]; then
@@ -198,14 +194,21 @@ if type python >/dev/null; then
 
     # ----- pyenv
 
-    if type pyenv >/dev/null; then
+    if type pyenv >/dev/null || [[ -d "$PYTHON_HOME/.pyenv/pyenv.git" ]]; then
+
+        # home
+        export PYENV_HOME="$PYTHON_HOME/.pyenv"
 
         # root
-        export PYENV_ROOT="$PYTHON_HOME/.pyenv"
-        [[ -d $PYENV_ROOT ]] || mkdir -p $PYENV_ROOT
+        if [[ -d "$PYENV_HOME/pyenv.git" ]]; then
+            export PYENV_ROOT="$PYENV_HOME/pyenv.git"
+            PATH="$PYENV_ROOT/bin:$PATH"
+        else
+            export PYENV_ROOT=$PYENV_HOME
+        fi
 
         # shims
-        PYENV_SHIMS_PATH="$PYENV_ROOT/shims"
+        PYENV_SHIMS_PATH="$PYENV_HOME/shims"
         [[ -d $PYENV_SHIMS_PATH ]] || mkdir -p $PYENV_SHIMS_PATH
         PATH="$PYENV_SHIMS_PATH:$PATH"
 
@@ -218,17 +221,22 @@ if type python >/dev/null; then
         }
 
         # link brew installed python
-        pyenv-ln-brew(){
-            ln -s $(brew --cellar python)/* $PYENV_ROOT/versions/
-        }
+        if type brew >/dev/null; then
+            pyenv-ln-brew(){
+                ln -s $(brew --cellar python)/* $PYENV_HOME/versions/
+            }
+        fi
 
     fi
 
 
     # ----- ipython
 
+    # home
+    export IPYTHON_HOME="$PYTHON_HOME/.ipython"
+
     # root
-    export IPYTHONDIR="$PYTHON_HOME/.ipython"
+    export IPYTHONDIR=$IPYTHON_HOME
 
     # ipython use the same version as python
     alias ipython="python -c 'import IPython; IPython.terminal.ipapp.launch_new_instance()'"
