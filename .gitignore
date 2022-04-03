@@ -523,6 +523,10 @@ zsdoc/data
 
 # ----- home
 
+# .autoenv
+home/.autoenv/*
+!home/.autoenv/.gitkeep
+
 # .aws
 home/.aws/*
 home/.aws/config
@@ -564,6 +568,7 @@ home/.python/.pyenv/*
 # .ssh
 home/.ssh/*
 !home/.ssh/config.template
+!home/.ssh/sshd_config.template
 !home/.ssh/ssh_keys
 home/.ssh/ssh_keys/*
 !home/.ssh/**/.gitkeep
@@ -628,12 +633,17 @@ config/kube/config
 
 # ssh
 config/ssh/config
+config/ssh/sshd_config
 config/ssh/ssh_keys/*
 
 # vpn
 config/vpn/*.ovpn
 
 !config/**/.gitkeep
+
+
+# ----- share
+share/*
 
 
 # ----- resources

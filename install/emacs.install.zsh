@@ -1,3 +1,8 @@
+DOTFILES_ROOT="$(dirname $(cd $(dirname $0) >/dev/null 2>&1; pwd -P;))"
+
+DOTFILES_HOME="$DOTFILES_ROOT/home"
+
+
 # load init
 emacs --load "$DOTFILES_HOME/.emacs/init.el" --batch
 
