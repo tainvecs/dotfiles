@@ -19,6 +19,9 @@ OS_TYPE=`uname`
 if [[ $OS_TYPE = "Darwin" ]]; then
 
 
+    # ----- download resources
+    zsh $DOTFILES_INSTALL/download.zsh
+
     # ----- resource
     zsh $DOTFILES_INSTALL/resources.install.zsh
 
@@ -73,6 +76,10 @@ if [[ $OS_TYPE = "Darwin" ]]; then
 
 
 elif [[ $OS_TYPE = "Linux" ]]; then
+
+
+    # ----- download resources
+    zsh $DOTFILES_INSTALL/download.zsh
 
 
     # ----- resource
