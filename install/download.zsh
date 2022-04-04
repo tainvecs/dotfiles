@@ -17,20 +17,6 @@ fi
 
 
 # ------------------------------------------------------------------------------
-# vim color
-# ------------------------------------------------------------------------------
-
-
-VIM_COLORS_DST="$DOTFILES_RESOURCES/vim/colors"
-mkdir -p $VIM_COLORS_DST
-
-if [[ ! -f "$VIM_COLORS_DST/desertEx.vim" ]]; then
-    wget -O "$VIM_COLORS_DST/desertEx.vim" \
-         "https://raw.githubusercontent.com/vim-scripts/desertEx/master/colors/desertEx.vim"
-fi
-
-
-# ------------------------------------------------------------------------------
 # fonts
 # ------------------------------------------------------------------------------
 
@@ -76,4 +62,32 @@ fi
 if [[ ! -f "$FONTS_DST/SourceCodePro-Medium.ttf" ]]; then
     wget -O "$FONTS_DST/SourceCodePro-Medium.ttf" \
          "https://github.com/adobe-fonts/source-code-pro/blob/release/TTF/SourceCodePro-Medium.ttf?raw=true"
+fi
+
+
+# ------------------------------------------------------------------------------
+# git: delta theme config
+# ------------------------------------------------------------------------------
+
+
+DELTA_THEME_DST="$DOTFILES_RESOURCES/git"
+mkdir -p $DELTA_THEME_DST
+
+if [[ ! -f "$DELTA_THEME_DST/themes.gitconfig" ]]; then
+    wget -O "$DELTA_THEME_DST/themes.gitconfig" \
+         "https://raw.githubusercontent.com/dandavison/delta/master/themes.gitconfig"
+fi
+
+
+# ------------------------------------------------------------------------------
+# vim color
+# ------------------------------------------------------------------------------
+
+
+VIM_COLORS_DST="$DOTFILES_RESOURCES/vim/colors"
+mkdir -p $VIM_COLORS_DST
+
+if [[ ! -f "$VIM_COLORS_DST/desertEx.vim" ]]; then
+    wget -O "$VIM_COLORS_DST/desertEx.vim" \
+         "https://raw.githubusercontent.com/vim-scripts/desertEx/master/colors/desertEx.vim"
 fi
