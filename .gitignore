@@ -562,8 +562,11 @@ home/.python/*
 !home/.python/.pyenv/
 home/.python/.ipython/*
 home/.python/nltk_data/*
-home/.python/.pyenv/**
+home/.python/.pyenv/*
 !home/.python/**/.gitkeep
+!home/.python/.pyenv/shims
+home/.python/.pyenv/shims/*
+home/.python/.pyenv/shims/.gitkeep
 
 # .ssh
 home/.ssh/*
@@ -584,6 +587,10 @@ home/.vim/.backup/*
 home/.vim/.swp/*
 !home/.vim/.undo/
 home/.vim/.undo/*
+!home/.vim/colors/
+home/.vim/colors/*
+!home/.vim/bundle/
+home/.vim/bundle/*
 !home/.vim/**/.gitkeep
 
 # .vpn
@@ -603,12 +610,17 @@ home/.zsh/.zinit/*
 home/.zsh/.zsh_sessions/*
 
 !home/.zsh/.zsh_complete/
+home/.zsh/.zsh_complete/*
 
 !home/.zsh/**/.gitkeep
 
 # .cache
 !cache/
 cache/*
+
+!cache/**/.gitkeep
+
+!home/**/.gitkeep
 
 
 # ----- config
@@ -624,6 +636,7 @@ config/docker/docker.gitlab_login.sh
 
 # git
 config/git/config
+config/git/themes.gitconfig
 
 # iterm
 config/iterm2/AppSupport
@@ -645,10 +658,17 @@ config/vpn/*.ovpn
 # ----- share
 share/*
 
+!share/**/.gitkeep
+
 
 # ----- resources
 resources/z/*
 resources/less/*
 resources/autoenv/*
+resources/fonts/*
+resources/iterm/*
+resources/git/*
+resources/vim/*
+resources/test/*
 
 !resources/**/.gitkeep

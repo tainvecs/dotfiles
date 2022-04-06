@@ -70,6 +70,17 @@ EMACS_INIT_DST="$EMACS_HOME/init.el"
 
 
 # ------------------------------------------------------------------------------
+# git: delta
+# ------------------------------------------------------------------------------
+
+
+# config
+GIT_THEME_SRC="$DOTFILES_RESOURCES/git/themes.gitconfig"
+GIT_THEME_DST="$DOTFILES_CONFIG/git/themes.gitconfig"
+[[ -f $GIT_THEME_SRC ]] && [[ ! -f $GIT_THEME_DST ]] && ln -s $GIT_THEME_SRC $GIT_THEME_DST
+
+
+# ------------------------------------------------------------------------------
 # go
 # ------------------------------------------------------------------------------
 

@@ -186,6 +186,7 @@
 (global-set-key (kbd "C-d") 'backward-word)
 
 ;; delete word
+;; fork from http://xahlee.info/emacs/emacs/emacs_kill-ring.html
 (defun my-delete-word (arg)
   "Delete characters forward until encountering the end of a word.
   With argument, do this that many times.
@@ -208,6 +209,7 @@
 (global-set-key (kbd "<C-backspace>") 'my-backward-delete-word)
 
 ;; move to the beginning of the line
+;; fork from https://emacsredux.com/blog/2013/05/22/smarter-navigation-to-the-beginning-of-a-line/
 (defun smarter-move-beginning-of-line (arg)
   "Move point back to indentation of beginning of line.
 
