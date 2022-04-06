@@ -610,6 +610,7 @@ home/.zsh/.zinit/*
 home/.zsh/.zsh_sessions/*
 
 !home/.zsh/.zsh_complete/
+home/.zsh/.zsh_complete/*
 
 !home/.zsh/**/.gitkeep
 
@@ -635,6 +636,7 @@ config/docker/docker.gitlab_login.sh
 
 # git
 config/git/config
+config/git/themes.gitconfig
 
 # iterm
 config/iterm2/AppSupport
@@ -663,5 +665,10 @@ share/*
 resources/z/*
 resources/less/*
 resources/autoenv/*
+resources/fonts/*
+resources/iterm/*
+resources/git/*
+resources/vim/*
+resources/test/*
 
 !resources/**/.gitkeep

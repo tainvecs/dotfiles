@@ -22,6 +22,7 @@ if [[ $OS_TYPE = "Darwin" ]]; then
     # ----- download resources
     zsh $DOTFILES_INSTALL/download.zsh
 
+
     # ----- resource
     zsh $DOTFILES_INSTALL/resources.install.zsh
 

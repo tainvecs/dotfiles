@@ -130,6 +130,11 @@ if type kubectl >/dev/null; then
     [[ -d "$KUBE_HOME/cache" ]] || madir -p "$KUBE_HOME/cache"
     alias kubectl="kubectl --cache-dir $KUBE_HOME/cache "
 
+    ZSH_COMPLETE_DIR="${DOTFILES[HOME_DIR]}/.zsh/.zsh_complete"
+    KUBE_COMPLETE_FILE="$ZSH_COMPLETE_DIR/_kubectl"
+
+    [[ -f $KUBE_COMPLETE_FILE ]] ||  kubectl completion zsh > $KUBE_COMPLETE_FILE
+
 fi
 
 
