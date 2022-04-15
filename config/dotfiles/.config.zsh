@@ -315,4 +315,5 @@ if [[ -f $BREW_HOME/bin/vim ]]; then
 
     alias vi="$BREW_HOME/bin/vim "
     alias vim="$BREW_HOME/bin/vim "
+
 fi
