@@ -312,8 +312,19 @@ fi
 
 # mac: use vim installed by brew
 if [[ -f $BREW_HOME/bin/vim ]]; then
-
     alias vi="$BREW_HOME/bin/vim "
     alias vim="$BREW_HOME/bin/vim "
+fi
 
+
+# ------------------------------------------------------------------------------
+# volta
+# ------------------------------------------------------------------------------
+
+
+# home
+export VOLTA_HOME="${DOTFILES[HOME_DIR]}/.volta"
+
+if [[ -d $VOLTA_HOME/bin ]]; then
+    export PATH=$VOLTA_HOME/bin:$PATH
 fi

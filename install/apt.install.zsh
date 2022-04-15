@@ -134,3 +134,7 @@ sudo apt install -y tree
 
 # htop
 sudo apt install -y htop
+
+# volta
+export VOLTA_HOME="$DOTFILES_HOME/.volta"
+curl https://get.volta.sh | bash

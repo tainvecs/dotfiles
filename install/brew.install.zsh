@@ -1,3 +1,10 @@
+DOTFILES_ROOT="$(dirname $(cd $(dirname $0) >/dev/null 2>&1; pwd -P;))"
+
+DOTFILES_HOME="$DOTFILES_ROOT/home"
+DOTFILES_CONFIG="$DOTFILES_ROOT/config"
+DOTFILES_RESOURCES="$DOTFILES_ROOT/resources"
+
+
 # homebrew
 if ! type brew >/dev/null; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -79,6 +86,10 @@ brew install tree
 
 # vim
 brew install vim
+
+# volta
+export VOLTA_HOME="$DOTFILES_HOME/.volta"
+curl https://get.volta.sh | bash
 
 # watch
 brew install watch

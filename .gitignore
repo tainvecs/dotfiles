@@ -593,6 +593,11 @@ home/.vim/colors/*
 home/.vim/bundle/*
 !home/.vim/**/.gitkeep
 
+# .volta
+home/.volta/*
+home/.volta/cache/*
+!home/.volta/**/.gitkeep
+
 # .vpn
 home/.vpn/*
 !home/.vpn/.gitkeep
