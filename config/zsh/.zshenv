@@ -69,6 +69,7 @@ declare -a PLUGIN_ARR=(
     "dotfiles-kube"
     "dotfiles-mac"
     "dotfiles-misc"
+    "dotfiles-update"
     "dotfiles-vim"
 
 )
