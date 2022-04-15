@@ -161,6 +161,12 @@
   (require 'use-package)
   (setq use-package-verbose t))
 
+(use-package auto-package-update
+  :ensure t
+  :config
+  ;; delete the old version on updates.
+  (setq auto-package-update-delete-old-versions t))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Require
