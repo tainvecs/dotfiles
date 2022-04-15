@@ -69,6 +69,12 @@ if type kubectl >/dev/null; then
     alias kdcj="kubectl describe cronjob "
     alias kdelcj="kubectl delete cronjob "
 
+    # job
+    alias kgj="kubectl get job "
+    alias kej="kubectl edit job "
+    alias kdj="kubectl describe job "
+    alias kdelj="kubectl delete job "
+
     # secret
     alias kgsec="kubectl get secret "
     alias kdsec="kubectl describe secret "
@@ -92,11 +98,11 @@ if type kubectl >/dev/null; then
     # alias kdi="kubectl describe ingress "
     # alias kdeli="kubectl delete ingress "
 
-    # # configmap
-    # alias kgcm="kubectl get configmaps "
-    # alias kecm="kubectl edit configmap "
-    # alias kdcm="kubectl describe configmap "
-    # alias kdelcm="kubectl delete configmap "
+    # configmap
+    alias kgcm="kubectl get configmaps "
+    alias kecm="kubectl edit configmap "
+    alias kdcm="kubectl describe configmap "
+    alias kdelcm="kubectl delete configmap "
 
     # # rollout
     # alias kgrs="kubectl get rs "
