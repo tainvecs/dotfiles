@@ -6,7 +6,7 @@
 # activation script
 if [[ $SYS_NAME == mac ]]; then
     AUTOENV_SCRIPT_PATH="$BREW_HOME/opt/autoenv/activate.sh"
-elif [[ $SYS_NAME == mac ]]; then
+elif [[ $SYS_NAME == linux ]]; then
     AUTOENV_SCRIPT_PATH="${DOTFILES[HOME_DIR]}/.autoenv/autoenv.git/activate.sh"
 fi
 
@@ -89,6 +89,47 @@ if type emacs >/dev/null; then
 
     if [[ -f "$EMACS_HOME/init.el" ]]; then
         alias emacs='emacs -q --load "$EMACS_HOME/init.el"'
+    fi
+
+fi
+
+
+# ------------------------------------------------------------------------------
+# gcp
+# ------------------------------------------------------------------------------
+
+
+if type gcp >/dev/null; then
+
+    # home
+    GCP_HOME="${DOTFILES[HOME_DIR]}/.gcp"
+
+    # config
+    GCP_CONFIG_DIR="${DOTFILES[CONFIG_DIR]}/gcp"
+    export CLOUDSDK_CONFIG=$GCP_CONFIG_DIR
+
+    # completion and path files
+    if [[ $SYS_NAME == mac ]]; then
+
+        #GCP_COMP_FILE="$BREW_HOME/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"
+        #GCP_PATH_FILE="$BREW_HOME/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
+
+        GCP_COMP_FILE="$GCP_HOME/google-cloud-sdk/completion.zsh.inc"
+        GCP_PATH_FILE="$GCP_HOME/google-cloud-sdk/path.zsh.inc"
+
+    elif [[ $SYS_NAME == linux ]]; then
+
+        GCP_COMP_FILE="$GCP_HOME/google-cloud-sdk/completion.zsh.inc"
+        GCP_PATH_FILE="$GCP_HOME/google-cloud-sdk/path.zsh.inc"
+
+    fi
+
+    if [ -f $GCP_COMP_FILE ]; then
+        source $GCP_COMP_FILE
+    fi
+
+    if [ -f $GCP_PATH_FILE ]; then
+        source $GCP_PATH_FILE
     fi
 
 fi

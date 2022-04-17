@@ -40,6 +40,9 @@ brew install --cask emacs
 
 # gcp
 # brew install --cask google-cloud-sdk
+GCP_HOME="$DOTFILES_HOME/.gcp"
+curl https://sdk.cloud.google.com > "$GCP_HOME/install.sh"
+bash install.sh --disable-prompts --install-dir=$GCP_HOME
 
 # golang
 brew install go
