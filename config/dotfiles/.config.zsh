@@ -98,38 +98,26 @@ fi
 # gcp
 # ------------------------------------------------------------------------------
 
+# home
+GCP_HOME="${DOTFILES[HOME_DIR]}/.gcp"
+
+# path
+GCP_PATH_FILE="$GCP_HOME/google-cloud-sdk/path.zsh.inc"
+if [ -f $GCP_PATH_FILE ]; then
+    source $GCP_PATH_FILE
+fi
 
 if type gcloud >/dev/null; then
-
-    # home
-    GCP_HOME="${DOTFILES[HOME_DIR]}/.gcp"
 
     # config
     GCP_CONFIG_DIR="${DOTFILES[CONFIG_DIR]}/gcp"
     export CLOUDSDK_CONFIG=$GCP_CONFIG_DIR
 
-    # completion and path files
-    if [[ $SYS_NAME == mac ]]; then
-
-        #GCP_COMP_FILE="$BREW_HOME/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"
-        #GCP_PATH_FILE="$BREW_HOME/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
-
-        GCP_COMP_FILE="$GCP_HOME/google-cloud-sdk/completion.zsh.inc"
-        GCP_PATH_FILE="$GCP_HOME/google-cloud-sdk/path.zsh.inc"
-
-    elif [[ $SYS_NAME == linux ]]; then
-
-        GCP_COMP_FILE="$GCP_HOME/google-cloud-sdk/completion.zsh.inc"
-        GCP_PATH_FILE="$GCP_HOME/google-cloud-sdk/path.zsh.inc"
-
-    fi
+    # completion
+    GCP_COMP_FILE="$GCP_HOME/google-cloud-sdk/completion.zsh.inc"
 
     if [ -f $GCP_COMP_FILE ]; then
         source $GCP_COMP_FILE
-    fi
-
-    if [ -f $GCP_PATH_FILE ]; then
-        source $GCP_PATH_FILE
     fi
 
     alias gcp="gcloud compute "
