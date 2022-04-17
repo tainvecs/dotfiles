@@ -2,7 +2,9 @@ DOTFILES_ROOT="$(dirname $(cd $(dirname $0) >/dev/null 2>&1; pwd -P;))"
 
 DOTFILES_RESOURCES="$DOTFILES_ROOT/resources"
 DOTFILES_DATA="$DOTFILES_ROOT/share"
+
 OS_TYPE=`uname`
+
 
 # fonts
 FONTS_RESOURCES_SRC="$DOTFILES_RESOURCES/fonts"
