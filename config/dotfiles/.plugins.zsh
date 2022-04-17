@@ -108,7 +108,7 @@ fi
 # exa: replacement for ls
 if [[ ${DOTFILES_PLUGINS["exa"]} = "true" ]]; then
 
-    zinit ice wait"0c" lucid from"gh-r" as"program" mv"exa* -> exa" pick"/bin/exa"
+    zinit ice wait"0c" lucid from"gh-r" as"program" pick"/bin/exa"
     zinit light ogham/exa
 
     alias ls="exa -l --color auto "
