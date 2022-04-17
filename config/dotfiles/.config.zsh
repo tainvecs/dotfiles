@@ -192,7 +192,7 @@ fi
 # ------------------------------------------------------------------------------
 
 
-if type python >/dev/null; then
+if type python >/dev/null || type python3 >/dev/null; then
 
 
     # ----- python
