@@ -99,7 +99,7 @@ fi
 # ------------------------------------------------------------------------------
 
 
-if type gcp >/dev/null; then
+if type gcloud >/dev/null; then
 
     # home
     GCP_HOME="${DOTFILES[HOME_DIR]}/.gcp"
@@ -131,6 +131,8 @@ if type gcp >/dev/null; then
     if [ -f $GCP_PATH_FILE ]; then
         source $GCP_PATH_FILE
     fi
+
+    alias gcp="gcloud compute "
 
 fi
 
