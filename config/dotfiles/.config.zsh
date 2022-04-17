@@ -6,7 +6,7 @@
 # activation script
 if [[ $SYS_NAME == mac ]]; then
     AUTOENV_SCRIPT_PATH="$BREW_HOME/opt/autoenv/activate.sh"
-elif [[ $SYS_NAME == mac ]]; then
+elif [[ $SYS_NAME == linux ]]; then
     AUTOENV_SCRIPT_PATH="${DOTFILES[HOME_DIR]}/.autoenv/autoenv.git/activate.sh"
 fi
 
@@ -90,6 +90,37 @@ if type emacs >/dev/null; then
     if [[ -f "$EMACS_HOME/init.el" ]]; then
         alias emacs='emacs -q --load "$EMACS_HOME/init.el"'
     fi
+
+fi
+
+
+# ------------------------------------------------------------------------------
+# gcp
+# ------------------------------------------------------------------------------
+
+# home
+GCP_HOME="${DOTFILES[HOME_DIR]}/.gcp"
+
+# path
+GCP_PATH_FILE="$GCP_HOME/google-cloud-sdk/path.zsh.inc"
+if [ -f $GCP_PATH_FILE ]; then
+    source $GCP_PATH_FILE
+fi
+
+if type gcloud >/dev/null; then
+
+    # config
+    GCP_CONFIG_DIR="${DOTFILES[CONFIG_DIR]}/gcp"
+    export CLOUDSDK_CONFIG=$GCP_CONFIG_DIR
+
+    # completion
+    GCP_COMP_FILE="$GCP_HOME/google-cloud-sdk/completion.zsh.inc"
+
+    if [ -f $GCP_COMP_FILE ]; then
+        source $GCP_COMP_FILE
+    fi
+
+    alias gcp="gcloud compute "
 
 fi
 
@@ -312,8 +343,19 @@ fi
 
 # mac: use vim installed by brew
 if [[ -f $BREW_HOME/bin/vim ]]; then
-
     alias vi="$BREW_HOME/bin/vim "
     alias vim="$BREW_HOME/bin/vim "
+fi
 
+
+# ------------------------------------------------------------------------------
+# volta
+# ------------------------------------------------------------------------------
+
+
+# home
+export VOLTA_HOME="${DOTFILES[HOME_DIR]}/.volta"
+
+if [[ -d $VOLTA_HOME/bin ]]; then
+    export PATH=$VOLTA_HOME/bin:$PATH
 fi

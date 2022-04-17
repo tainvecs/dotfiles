@@ -540,6 +540,10 @@ home/.docker/*
 # .emacs
 home/.emacs/*
 
+# .gcp
+home/.gcp/*
+!home/.gcp/**/.gitkeep
+
 # .go
 home/.go/*
 !home/.go/golib/
@@ -593,6 +597,11 @@ home/.vim/colors/*
 home/.vim/bundle/*
 !home/.vim/**/.gitkeep
 
+# .volta
+home/.volta/*
+home/.volta/cache/*
+!home/.volta/**/.gitkeep
+
 # .vpn
 home/.vpn/*
 !home/.vpn/.gitkeep
@@ -633,6 +642,9 @@ config/clojure/*
 
 # docker
 config/docker/docker.gitlab_login.sh
+
+# gcp
+config/gcp/*
 
 # git
 config/git/config

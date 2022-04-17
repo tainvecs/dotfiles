@@ -1,3 +1,10 @@
+DOTFILES_ROOT="$(dirname $(cd $(dirname $0) >/dev/null 2>&1; pwd -P;))"
+
+DOTFILES_HOME="$DOTFILES_ROOT/home"
+DOTFILES_CONFIG="$DOTFILES_ROOT/config"
+DOTFILES_RESOURCES="$DOTFILES_ROOT/resources"
+
+
 # homebrew
 if ! type brew >/dev/null; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -33,6 +40,12 @@ brew install --cask emacs
 
 # gcp
 # brew install --cask google-cloud-sdk
+GCP_HOME="$DOTFILES_HOME/.gcp"
+GCP_CONFIG_DIR="${DOTFILES[CONFIG_DIR]}/gcp"
+export CLOUDSDK_CONFIG=$GCP_CONFIG_DIR
+
+curl https://sdk.cloud.google.com > "$GCP_HOME/install.sh"
+bash "$GCP_HOME/install.sh" --disable-prompts --install-dir=$GCP_HOME
 
 # golang
 brew install go
@@ -79,6 +92,10 @@ brew install tree
 
 # vim
 brew install vim
+
+# volta
+export VOLTA_HOME="$DOTFILES_HOME/.volta"
+curl https://get.volta.sh | bash
 
 # watch
 brew install watch

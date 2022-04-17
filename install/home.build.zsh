@@ -70,6 +70,20 @@ EMACS_INIT_DST="$EMACS_HOME/init.el"
 
 
 # ------------------------------------------------------------------------------
+# gcp
+# ------------------------------------------------------------------------------
+
+
+# home
+GCP_HOME="$DOTFILES_HOME/.gcp"
+mkdir -p $GCP_HOME
+
+# config
+GCP_CONFIG_DIR="$DOTFILES_CONFIG/gcp"
+mkdir -p $GCP_CONFIG_DIR
+
+
+# ------------------------------------------------------------------------------
 # git: delta
 # ------------------------------------------------------------------------------
 
@@ -209,6 +223,16 @@ VIM_CONFIG_DST="$VIM_HOME/.vimrc"
 VIM_COLORS_SRC="$DOTFILES_RESOURCES/vim/colors"
 VIM_COLORS_DST="$VIM_HOME/colors"
 [[ -d $VIM_COLORS_SRC ]] && [[ -d $VIM_COLORS_DST ]] && cp $VIM_COLORS_SRC/* $VIM_COLORS_DST
+
+
+# ------------------------------------------------------------------------------
+# volta
+# ------------------------------------------------------------------------------
+
+
+# home
+VOLTA_HOME="$DOTFILES_HOME/.volta"
+mkdir -p $VOLTA_HOME
 
 
 # ------------------------------------------------------------------------------
