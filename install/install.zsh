@@ -72,10 +72,6 @@ if [[ $OS_TYPE = "Darwin" ]]; then
     # zsh $DOTFILES_INSTALL/template.apply.zsh
 
 
-    # ----- start a new zsh shell and invoke plugins installation
-    zsh
-
-
 elif [[ $OS_TYPE = "Linux" ]]; then
 
 
@@ -130,10 +126,6 @@ elif [[ $OS_TYPE = "Linux" ]]; then
 
     # apply template
     # zsh $DOTFILES_INSTALL/template.apply.zsh
-
-
-    # ----- start a new zsh shell and invoke plugins installation
-    zsh
 
 
 fi
