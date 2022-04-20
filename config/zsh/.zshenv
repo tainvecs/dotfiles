@@ -35,6 +35,43 @@ DOTFILES[HOME_DIR]="${DOTFILES[ROOT_DIR]}/home"
 # share
 export XDG_DATA_HOME="${DOTFILES[ROOT_DIR]}/share"
 
+# apps
+declare -a APPS_ARR=(
+
+    "7z"
+    "alt-tab"
+    "autoenv"
+    "aws"
+    "clojure"
+    "coreutils"
+    "docker"
+    "elasticsearch"
+    "emacs"
+    "gcp"
+    "golang"
+    "htop"
+    "iterm"
+    "jdk"
+    "kube"
+    "openvpn"
+    "peco"
+    "python"
+    "pyenv"
+    "svn"
+    "tmux"
+    "tree"
+    "vim"
+    "volta"
+    "watch"
+
+)
+
+declare -A DOTFILES_APPS
+for a_name in "${APPS_ARR[@]}"; do
+    DOTFILES_APPS["$a_name"]="true"
+done
+
+
 # plugins
 DOTFILES[PLUGINS_DIR]="${DOTFILES[ROOT_DIR]}/plugins"
 

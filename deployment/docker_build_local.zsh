@@ -6,6 +6,7 @@ VCS_REF="<VCS_REF>"
 
 docker build \
        --no-cache \
+       --progress "plain" \
        -f "$DOTFILES_ROOT/deployment/Dockerfile" \
        -t tainvecs/dotfiles:local-test \
        --build-arg BUILD_VERSION="$BUILD_VERSION" \

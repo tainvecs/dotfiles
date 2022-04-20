@@ -245,7 +245,7 @@ fi
 # lazydocker
 if [[ ${DOTFILES_PLUGINS["lazydocker"]} = "true" ]]; then
 
-    zinit ice wait"2" lucid as"program" from"gh-r" mv"lazydocker* -> lazydocker"
+    zinit ice wait"2" lucid as"program" from"gh-r" pick"lazydocker"
     zinit light 'jesseduffield/lazydocker'
 
     alias dtop="lazydocker "
@@ -274,8 +274,18 @@ fi
 # duf: disk usage
 if [[ ${DOTFILES_PLUGINS["duf"]} = "true" ]]; then
 
-    zinit ice wait"2" lucid from"gh-r" as"program" mv="duf* -> duf" pick"usr/bin/duf"
-    zinit light muesli/duf
+
+    if [[ $SYS_NAME == mac ]]; then
+
+        zinit ice wait"2" lucid from"gh-r" as"program" mv="duf* -> duf" pick"duf"
+        zinit light muesli/duf
+
+    elif [[ $SYS_NAME == linux ]]; then
+
+        zinit ice wait"2" lucid from"gh-r" as"program" bpick='*.deb' pick"usr/bin/duf"
+        zinit light muesli/duf
+
+    fi
 
     alias df="duf -width 200 "
 

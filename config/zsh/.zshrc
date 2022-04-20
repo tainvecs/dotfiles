@@ -16,7 +16,7 @@
 # ------------------------------------------------------------------------------
 
 
-[[ -f "${DOTFILES[CONFIG_DIR]}/dotfiles/.plugins.zsh" ]] && source "${DOTFILES[CONFIG_DIR]}/dotfiles/.plugins.zsh"
+[[ -f "$ZDOTDIR/.zshrc_plugins.zsh" ]] && source "$ZDOTDIR/.zshrc_plugins.zsh"
 
 
 # ------------------------------------------------------------------------------
@@ -24,7 +24,7 @@
 # ------------------------------------------------------------------------------
 
 
-[[ -f "${DOTFILES[CONFIG_DIR]}/dotfiles/.config.zsh" ]] && source "${DOTFILES[CONFIG_DIR]}/dotfiles/.config.zsh"
+[[ -f "$ZDOTDIR/.zshrc_apps.zsh" ]] && source "$ZDOTDIR/.zshrc_apps.zsh"
 
 
 # ------------------------------------------------------------------------------
