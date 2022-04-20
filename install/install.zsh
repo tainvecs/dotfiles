@@ -58,8 +58,8 @@ if [[ $OS_TYPE = "Darwin" ]]; then
 
     # ----- config and set up
     # config
-    if [[ -f "$DOTFILES_CONFIG/dotfiles/.config.zsh" ]]; then
-        source "$DOTFILES_CONFIG/dotfiles/.config.zsh"
+    if [[ -f "$DOTFILES_ZSH_HOME/.zshrc_apps.zsh" ]]; then
+        source "$DOTFILES_ZSH_HOME/.zshrc_apps.zsh"
     fi
 
     # set up vim
@@ -114,8 +114,8 @@ elif [[ $OS_TYPE = "Linux" ]]; then
 
     # ----- config and set up
     # config
-    if [[ -f "$DOTFILES_CONFIG/dotfiles/.config.zsh" ]]; then
-        source "$DOTFILES_CONFIG/dotfiles/.config.zsh"
+    if [[ -f "$DOTFILES_ZSH_HOME/.zshrc_apps.zsh" ]]; then
+        source "$DOTFILES_ZSH_HOME/.zshrc_apps.zsh"
     fi
 
     # set up vim

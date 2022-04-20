@@ -270,6 +270,14 @@ ZSHRC_INIT_SRC="$DOTFILES_CONFIG/zsh/.zshrc_initialize.zsh"
 ZSHRC_INIT_DST="$ZSH_HOME/.zshrc_initialize.zsh"
 [[ -f $ZSHRC_INIT_SRC ]] && [[ ! -f $ZSHRC_INIT_DST ]] && ln -s $ZSHRC_INIT_SRC $ZSHRC_INIT_DST
 
+ZSGRC_PLUGINS_SRC="$DOTFILES_CONFIG/zsh/.zshrc_plugins.zsh"
+ZSGRC_PLUGINS_DST="$ZSH_HOME/.zshrc_plugins.zsh"
+[[ -f $ZSGRC_PLUGINS_SRC ]] && [[ ! -f $ZSGRC_PLUGINS_DST ]] && ln -s $ZSGRC_PLUGINS_SRC $ZSGRC_PLUGINS_DST
+
+ZSHRC_APPS_SRC="$DOTFILES_CONFIG/zsh/.zshrc_apps.zsh"
+ZSHRC_APPS_DST="$ZSH_HOME/.zshrc_apps.zsh"
+[[ -f $ZSHRC_APPS_SRC ]] && [[ ! -f $ZSHRC_APPS_DST ]] && ln -s $ZSHRC_APPS_SRC $ZSHRC_APPS_DST
+
 ZSGRC_FINAL_SRC="$DOTFILES_CONFIG/zsh/.zshrc_finalize.zsh"
 ZSGRC_FINAL_DST="$ZSH_HOME/.zshrc_finalize.zsh"
 [[ -f $ZSGRC_FINAL_SRC ]] && [[ ! -f $ZSGRC_FINAL_DST ]] && ln -s $ZSGRC_FINAL_SRC $ZSGRC_FINAL_DST
