@@ -13,89 +13,138 @@ brew update
 xcode-select --install
 
 # alt-tab
-brew install alt-tab
+if [[ ${DOTFILES_APPS["alt-tab"]} = "true" ]]; then
+    brew install alt-tab
+fi
 
 # autoenv
-brew install autoenv
+if [[ ${DOTFILES_APPS["autoenv"]} = "true" ]]; then
+    brew install autoenv
+fi
 
 # aws
-brew install awscli
+if [[ ${DOTFILES_APPS["aws"]} = "true" ]]; then
+    brew install awscli
+fi
 
 # clojure
-brew install clojure/tools/clojure
+if [[ ${DOTFILES_APPS["clojure"]} = "true" ]]; then
+    brew install clojure/tools/clojure
+fi
 
 # coreutils, wget, and curl
 brew install coreutils wget curl
 
 # docker
-brew install --cask docker
+if [[ ${DOTFILES_APPS["docker"]} = "true" ]]; then
+    brew install --cask docker
+fi
 
 # elasticsearch
-brew tap elastic/tap
-brew install elastic/tap/elasticsearch-full
-# sudo brew services start elasticsearch-full
+if [[ ${DOTFILES_APPS["elasticsearch"]} = "true" ]]; then
+    brew tap elastic/tap
+    brew install elastic/tap/elasticsearch-full
+    # sudo brew services start elasticsearch-full
+fi
 
 # emacs
-brew install --cask emacs
+if [[ ${DOTFILES_APPS["emacs"]} = "true" ]]; then
+    brew install --cask emacs
+fi
 
 # gcp
-# brew install --cask google-cloud-sdk
-GCP_HOME="$DOTFILES_HOME/.gcp"
-GCP_CONFIG_DIR="${DOTFILES[CONFIG_DIR]}/gcp"
-export CLOUDSDK_CONFIG=$GCP_CONFIG_DIR
+if [[ ${DOTFILES_APPS["gcp"]} = "true" ]]; then
+    # brew install --cask google-cloud-sdk
+    GCP_HOME="$DOTFILES_HOME/.gcp"
+    GCP_CONFIG_DIR="${DOTFILES[CONFIG_DIR]}/gcp"
+    export CLOUDSDK_CONFIG=$GCP_CONFIG_DIR
 
-curl https://sdk.cloud.google.com > "$GCP_HOME/install.sh"
-bash "$GCP_HOME/install.sh" --disable-prompts --install-dir=$GCP_HOME
+    curl https://sdk.cloud.google.com > "$GCP_HOME/install.sh"
+    bash "$GCP_HOME/install.sh" --disable-prompts --install-dir=$GCP_HOME
+fi
 
 # golang
-brew install go
+if [[ ${DOTFILES_APPS["golang"]} = "true" ]]; then
+    brew install go
+fi
 
 # htop
-brew install htop
+if [[ ${DOTFILES_APPS["htop"]} = "true" ]]; then
+    brew install htop
+fi
 
-# iterm2
-brew install --cask iterm2
+# iterm
+if [[ ${DOTFILES_APPS["iterm"]} = "true" ]]; then
+    brew install --cask iterm2
+fi
 
 # jdk
-# brew install --cask oracle-jdk
-brew install openjdk
+if [[ ${DOTFILES_APPS["jdk"]} = "true" ]]; then
+    # brew install --cask oracle-jdk
+    brew install openjdk
+fi
 
-# kubectl
-brew install kubectl
+# kube
+if [[ ${DOTFILES_APPS["kube"]} = "true" ]]; then
+    brew install kubectl
+fi
 
 # openvpn
-brew install openvpn
-# sudo brew services start openvpn
+if [[ ${DOTFILES_APPS["openvpn"]} = "true" ]]; then
+    brew install openvpn
+    # sudo brew services start openvpn
+fi
 
 # p7zip
-brew install p7zip
+brew install unzip
+if [[ ${DOTFILES_APPS["7z"]} = "true" ]]; then
+    brew install p7zip
+fi
 
 # peco
-brew install peco
-
-# pyenv
-brew install openssl readline sqlite3 xz zlib
-brew install pyenv
-brew install pyenv-virtualenv
+if [[ ${DOTFILES_APPS["peco"]} = "true" ]]; then
+    brew install peco
+fi
 
 # python
-# brew install python
+if [[ ${DOTFILES_APPS["python"]} = "true" ]]; then
+    # brew install python
+fi
+
+# pyenv
+if [[ ${DOTFILES_APPS["pyenv"]} = "true" ]]; then
+    brew install openssl readline sqlite3 xz zlib
+    brew install pyenv
+    brew install pyenv-virtualenv
+fi
 
 # svn
-brew install subversion
+if [[ ${DOTFILES_APPS["svn"]} = "true" ]]; then
+    brew install subversion
+fi
 
 # tmux
-brew install tmux
+if [[ ${DOTFILES_APPS["tmux"]} = "true" ]]; then
+    brew install tmux
+fi
 
 # tree
-brew install tree
+if [[ ${DOTFILES_APPS["tree"]} = "true" ]]; then
+    brew install tree
+fi
 
 # vim
-brew install vim
+if [[ ${DOTFILES_APPS["vim"]} = "true" ]]; then
+    brew install vim
+fi
 
 # volta
-export VOLTA_HOME="$DOTFILES_HOME/.volta"
-curl https://get.volta.sh | bash
+if [[ ${DOTFILES_APPS["volta"]} = "true" ]]; then
+    export VOLTA_HOME="$DOTFILES_HOME/.volta"
+    curl https://get.volta.sh | bash -s -- --skip-setup
+fi
 
 # watch
-brew install watch
+if [[ ${DOTFILES_APPS["watch"]} = "true" ]]; then
+    brew install watch
+fi
