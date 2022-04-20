@@ -20,8 +20,9 @@ source $DOTFILES_HOME/.zsh/.zshenv
 # install zinit
 ZINIT_HOME="$DOTFILES_ROOT/home/.zsh/.zinit"
 git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME/zinit.git"
+source $ZINIT_HOME/zinit.git/zinit.zsh
 
 
 # source zinit packages
-source "${ZINIT_HOME}/zinit.git/zinit.zsh"
+source $DOTFILES_CONFIG/zsh/.zshrc_plugins.zsh
 zsh
