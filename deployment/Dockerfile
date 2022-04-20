@@ -41,7 +41,8 @@ SHELL ["/bin/zsh", "-c"]
 
 
 # clone and install dotfiles
-RUN git clone https://github.com/tainvecs/dotfiles.git
+# RUN git clone https://github.com/tainvecs/dotfiles.git
+ADD . /root/dotfiles
 RUN cd dotfiles && zsh ./install/install.zsh
 
 ENTRYPOINT ["/bin/zsh"]
