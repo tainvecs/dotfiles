@@ -466,6 +466,7 @@
 
   (global-set-key (kbd "C-c C-p") 'flycheck-previous-error)
   (global-set-key (kbd "C-c C-n") 'flycheck-next-error)
+  (global-set-key (kbd "C-c C-l") 'flycheck-list-errors)
 
   (add-hook 'after-init-hook #'global-flycheck-mode))
 
