@@ -316,6 +316,12 @@
   :config (setq anzu-cons-mode-line-p nil))
 
 
+(use-package which-key
+  :ensure t
+  :config
+  (which-key-mode))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; File mode
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
