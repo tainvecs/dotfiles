@@ -64,7 +64,7 @@
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 
-(setq iso-transl-char-map nil)
+(defvar iso-transl-char-map nil)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -122,6 +122,11 @@
 
 ;; quit Emacs directly even if there are running processes
 (setq confirm-kill-processes nil)
+
+
+;; on macOS, ls doesn't support the --dired option while on Linux it is supported.
+(when (string= system-type "darwin")
+  (defvar dired-use-ls-dired nil))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -273,6 +278,12 @@
   (global-set-key (kbd "C-<") 'mc/mark-previous-like-this))
 
 
+;; "C-=" <-> "C-- C-="
+(use-package expand-region
+  :ensure t
+  :bind ("C-=" . er/expand-region))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; General Package
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -305,12 +316,22 @@
   :config (setq anzu-cons-mode-line-p nil))
 
 
+(use-package which-key
+  :ensure t
+  :config
+  (which-key-mode))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; File mode
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-(add-to-list 'auto-mode-alist '("\\.sh\\'" . sh-mode))
+;; shell mode
+(add-to-list 'auto-mode-alist '("\\.sh\\'"  . sh-mode))
+(add-to-list 'auto-mode-alist '("\\.zsh\\'" . sh-mode))
+(add-to-list 'auto-mode-alist '("\\.env\\'" . sh-mode))
+
 
 (use-package yaml-mode
   :ensure t
@@ -350,7 +371,9 @@
 (use-package company
   :ensure t
   :config
-  (setq company-idle-delay 0.3)
+  (setq company-idle-delay 0.1)
+  (setq company-minimum-prefix-length 1)
+
   (global-company-mode t))
 
 
@@ -375,7 +398,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;  Git and Change Tracking
+;; Git and Change Tracking
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
@@ -429,6 +452,10 @@
   :config (editorconfig-mode 1))
 
 
+(use-package smartparens
+  :ensure t)
+
+
 (use-package flycheck
   :ensure t
   :init (global-flycheck-mode)
@@ -439,8 +466,42 @@
 
   (global-set-key (kbd "C-c C-p") 'flycheck-previous-error)
   (global-set-key (kbd "C-c C-n") 'flycheck-next-error)
+  (global-set-key (kbd "C-c C-l") 'flycheck-list-errors)
 
   (add-hook 'after-init-hook #'global-flycheck-mode))
+
+
+(use-package lsp-mode
+  :ensure t
+
+  :commands (lsp lsp-deferred)
+
+  :init
+  (setq lsp-keymap-prefix "C-c l")
+  (setq lsp-signature-auto-activate nil)
+
+  :config
+  (defvar lsp-diagnostic-package :none)
+  (defvar lsp-prefer-flymake nil) ;; use flycheck, not flymake
+  (lsp-enable-which-key-integration t))
+
+
+(use-package lsp-ui
+  :ensure t
+  :hook (lsp-deferred . lsp-ui-mode)
+
+  :init
+  (setq lsp-ui-doc-enable t
+	    lsp-ui-doc-use-webkit nil
+        lsp-ui-doc-show-with-cursor t
+        lsp-ui-doc-delay 0.2
+        lsp-ui-doc-include-signature t
+        lsp-ui-doc-position 'top
+   	    lsp-ui-doc-border (face-foreground 'default)
+        lsp-ui-doc-show-with-mouse nil)
+
+  (setq lsp-ui-sideline-enable t
+        lsp-ui-sideline-ignore-duplicate t))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -448,20 +509,20 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-(use-package lsp-mode
-  :ensure t
-  :init
-  (setq lsp-keymap-prefix "C-c l")
-  :hook ((go-mode . lsp))
-  :commands lsp)
-
 (use-package go-autocomplete
   :ensure t)
+
 
 ;; go mode
 (use-package go-mode
   :ensure t
   :mode (("\\.go\\'" . go-mode))
+
+  :hook ((go-mode . lsp-deferred)
+         (go-mode . company-mode)
+         (go-mode . (lambda () (setq tab-width 4)))
+         (go-mode . smartparens-mode))
+
   :config
 
   ;; lsp
@@ -480,13 +541,7 @@
 
   ;; go def
   (global-set-key (kbd"C-c C-c") 'godef-jump)
-  (global-set-key (kbd"C-c C-d") 'godef-jump-other-window)
-
-  ;; go mode
-  (add-hook 'go-mode-hook
-          (lambda ()
-            (setq go-packages-function 'go-packages-go-list)
-            (setq tab-width 8))))
+  (global-set-key (kbd"C-c C-d") 'godef-jump-other-window))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -510,9 +565,9 @@
   :defer t
   :diminish subword-mode
   :config
+  (defvar cider-prompt-save-file-on-load 'always-save)
   (setq cider-repl-display-in-current-window t
         cider-repl-use-clojure-font-lock t
-        cider-prompt-save-file-on-load 'always-save
         cider-font-lock-dynamically '(macro core function var)
         nrepl-hide-special-buffers t
         cider-overlays-use-font-lock t))
@@ -523,10 +578,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-(use-package smartparens
-  :ensure t
-  :config
-  (add-hook 'js-mode-hook #'smartparens-mode))
+(add-hook 'js-mode-hook #'smartparens-mode)
 
 
 (use-package js-auto-format-mode
