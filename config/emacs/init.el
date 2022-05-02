@@ -471,25 +471,58 @@
   (add-hook 'after-init-hook #'global-flycheck-mode))
 
 
+(use-package lsp-mode
+  :ensure t
+
+  :commands (lsp lsp-deferred)
+
+  :init
+  (setq lsp-keymap-prefix "C-c l")
+  (setq lsp-signature-auto-activate nil)
+
+  :config
+  (defvar lsp-diagnostic-package :none)
+  (defvar lsp-prefer-flymake nil) ;; use flycheck, not flymake
+  (lsp-enable-which-key-integration t))
+
+
+(use-package lsp-ui
+  :ensure t
+  :hook (lsp-deferred . lsp-ui-mode)
+
+  :init
+  (setq lsp-ui-doc-enable t
+	    lsp-ui-doc-use-webkit nil
+        lsp-ui-doc-show-with-cursor t
+        lsp-ui-doc-delay 0.2
+        lsp-ui-doc-include-signature t
+        lsp-ui-doc-position 'top
+   	    lsp-ui-doc-border (face-foreground 'default)
+        lsp-ui-doc-show-with-mouse nil)
+
+  (setq lsp-ui-sideline-enable t
+        lsp-ui-sideline-ignore-duplicate t))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Go
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-(use-package lsp-mode
-  :ensure t
-  :init
-  (setq lsp-keymap-prefix "C-c l")
-  :hook ((go-mode . lsp))
-  :commands lsp)
-
 (use-package go-autocomplete
   :ensure t)
+
 
 ;; go mode
 (use-package go-mode
   :ensure t
   :mode (("\\.go\\'" . go-mode))
+
+  :hook ((go-mode . lsp-deferred)
+         (go-mode . company-mode)
+         (go-mode . (lambda () (setq tab-width 4)))
+         (go-mode . smartparens-mode))
+
   :config
 
   ;; lsp
@@ -508,13 +541,7 @@
 
   ;; go def
   (global-set-key (kbd"C-c C-c") 'godef-jump)
-  (global-set-key (kbd"C-c C-d") 'godef-jump-other-window)
-
-  ;; go mode
-  (add-hook 'go-mode-hook
-          (lambda ()
-            (setq go-packages-function 'go-packages-go-list)
-            (setq tab-width 8))))
+  (global-set-key (kbd"C-c C-d") 'godef-jump-other-window))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
