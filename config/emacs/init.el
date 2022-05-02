@@ -124,6 +124,11 @@
 (setq confirm-kill-processes nil)
 
 
+;; on macOS, ls doesn't support the --dired option while on Linux it is supported.
+(when (string= system-type "darwin")
+  (setq dired-use-ls-dired nil))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Initialize Package Directories
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
