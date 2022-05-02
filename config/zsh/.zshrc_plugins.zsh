@@ -233,6 +233,7 @@ if [[ ${DOTFILES_PLUGINS["forgit"]} = "true" ]]; then
     zinit load 'wfxr/forgit'
 
     export FORGIT_NO_ALIASES=true
+    export FORGIT_LOG_GRAPH_ENABLE=false
 
 fi
 
