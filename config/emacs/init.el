@@ -327,7 +327,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-(add-to-list 'auto-mode-alist '("\\.sh\\'" . sh-mode))
+;; shell mode
+(add-to-list 'auto-mode-alist '("\\.sh\\'"  . sh-mode))
+(add-to-list 'auto-mode-alist '("\\.zsh\\'" . sh-mode))
+(add-to-list 'auto-mode-alist '("\\.env\\'" . sh-mode))
+
 
 (use-package yaml-mode
   :ensure t
@@ -392,7 +396,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;  Git and Change Tracking
+;; Git and Change Tracking
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
@@ -444,6 +448,10 @@
 (use-package editorconfig
   :ensure t
   :config (editorconfig-mode 1))
+
+
+(use-package smartparens
+  :ensure t)
 
 
 (use-package flycheck
@@ -540,10 +548,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-(use-package smartparens
-  :ensure t
-  :config
-  (add-hook 'js-mode-hook #'smartparens-mode))
+(add-hook 'js-mode-hook #'smartparens-mode)
 
 
 (use-package js-auto-format-mode
