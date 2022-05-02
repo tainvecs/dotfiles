@@ -64,7 +64,7 @@
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 
-(setq iso-transl-char-map nil)
+(defvar iso-transl-char-map nil)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -126,7 +126,7 @@
 
 ;; on macOS, ls doesn't support the --dired option while on Linux it is supported.
 (when (string= system-type "darwin")
-  (setq dired-use-ls-dired nil))
+  (defvar dired-use-ls-dired nil))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -565,9 +565,9 @@
   :defer t
   :diminish subword-mode
   :config
+  (defvar cider-prompt-save-file-on-load 'always-save)
   (setq cider-repl-display-in-current-window t
         cider-repl-use-clojure-font-lock t
-        cider-prompt-save-file-on-load 'always-save
         cider-font-lock-dynamically '(macro core function var)
         nrepl-hide-special-buffers t
         cider-overlays-use-font-lock t))
