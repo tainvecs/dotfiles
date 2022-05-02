@@ -278,6 +278,12 @@
   (global-set-key (kbd "C-<") 'mc/mark-previous-like-this))
 
 
+;; "C-=" <-> "C-- C-="
+(use-package expand-region
+  :ensure t
+  :bind ("C-=" . er/expand-region))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; General Package
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
