@@ -31,7 +31,7 @@ RUN apt-get install -y tzdata locales
 RUN locale-gen en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 
-RUN apt-get install -y sudo git wget
+RUN apt-get install -y sudo git curl
 
 
 # switch to zsh
