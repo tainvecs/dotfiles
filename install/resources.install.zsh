@@ -1,3 +1,6 @@
+#!/bin/zsh
+
+
 DOTFILES_ROOT="$(dirname $(cd $(dirname $0) >/dev/null 2>&1; pwd -P;))"
 
 DOTFILES_RESOURCES="$DOTFILES_ROOT/resources"
