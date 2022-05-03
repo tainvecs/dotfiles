@@ -75,6 +75,16 @@ if [[ $OS_TYPE = "Darwin" ]]; then
 elif [[ $OS_TYPE = "Linux" ]]; then
 
 
+    # ----- prerequisite
+    if type sudo >/dev/null; then
+        sudo apt-get update
+        sudo apt-get install curl
+    else
+        apt-get update
+        apt-get install curl
+    fi
+
+
     # ----- download resources
     zsh $DOTFILES_INSTALL/download.zsh
 
