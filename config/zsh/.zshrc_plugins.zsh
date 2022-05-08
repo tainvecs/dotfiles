@@ -255,9 +255,27 @@ fi
 
 
 # ------------------------------------------------------------------------------
+# bottom
 # dust
 # duf
 # ------------------------------------------------------------------------------
+
+
+# bottom
+if [[ ${DOTFILES_PLUGINS["bottom"]} = "true" ]]; then
+
+    if [[ $SYS_NAME == mac ]]; then
+
+        zinit ice wait"2" lucid from"gh-r" as"program" pick"btm"
+        zinit light ClementTsang/bottom
+
+    elif [[ $SYS_NAME == linux ]]; then
+
+        zinit ice wait"2" lucid from"gh-r" as"program" bpick='*.deb' pick"usr/bin/btm"
+        zinit light ClementTsang/bottom
+
+    fi
+fi
 
 
 # dust: instant overview of which directories are using disk space
