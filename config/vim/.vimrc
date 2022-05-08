@@ -90,7 +90,7 @@ if !empty(glob('$VIM_HOME/bundle/Vundle.vim'))
     Plugin 'gmarik/Vundle.vim'
 
     " Add all your plugins here
-    Plugin 'itchyny/lightline.vim'  
+    Plugin 'itchyny/lightline.vim'
     Plugin 'tpope/vim-fugitive'
     Plugin 'tpope/vim-surround'
     Plugin 'scrooloose/nerdtree'
@@ -102,5 +102,17 @@ if !empty(glob('$VIM_HOME/bundle/Vundle.vim'))
 
     " Setting related to plugins
     let g:lightline = { 'colorscheme': 'Tomorrow_Night_Blue' }
+
+endif
+
+
+" ------------------------------------------------------------------------------
+" local
+" ------------------------------------------------------------------------------
+
+
+if filereadable(expand("$VIM_HOME/.vimrc.local"))
+
+    source $VIM_HOME/.vimrc.local
 
 endif

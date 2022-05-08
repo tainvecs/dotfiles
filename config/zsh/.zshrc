@@ -33,3 +33,15 @@
 
 
 [[ -f "$ZDOTDIR/.zshrc_finalize.zsh" ]] && source "$ZDOTDIR/.zshrc_finalize.zsh"
+
+
+# ------------------------------------------------------------------------------
+# local
+# ------------------------------------------------------------------------------
+
+
+if [[ -f "$ZDOTDIR/.zshrc.local" ]]; then
+    source "$ZDOTDIR/.zshrc.local"
+elif [[ -f "${DOTFILES[CONFIG_DIR]}/zsh/.zshrc.local" ]]; then
+    source "${DOTFILES[CONFIG_DIR]}/zsh/.zshrc.local"
+fi

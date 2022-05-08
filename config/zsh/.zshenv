@@ -13,7 +13,7 @@ fi
 
 
 # ------------------------------------------------------------------------------
-# dotfiles: config, resource, and cache
+# dotfiles: config, resource, cache, and local
 # ------------------------------------------------------------------------------
 
 
@@ -21,6 +21,11 @@ declare -A DOTFILES
 
 # root
 DOTFILES[ROOT_DIR]="$HOME/dotfiles"
+
+# local
+DOTFILES[LOCAL_DIR]="${DOTFILES[ROOT_DIR]}/local"
+DOTFILES[LOCAL_CONFIG_DIR]="${DOTFILES[LOCAL_DIR]}/config"
+DOTFILES[LOCAL_PLUGIN_DIR]="${DOTFILES[LOCAL_DIR]}/plugins"
 
 # cache
 export XDG_CACHE_HOME="${DOTFILES[ROOT_DIR]}/cache"
@@ -121,7 +126,6 @@ done
 DOTFILES[RESOURCES_DIR]="${DOTFILES[ROOT_DIR]}/resources"
 
 export DOTFILES
-export DOTFILES_PLUGINS
 
 
 # ------------------------------------------------------------------------------
@@ -236,3 +240,15 @@ fi
 # connection
 export SSH_PORT=22
 export VPN_PORT=1194
+
+
+# ------------------------------------------------------------------------------
+# local
+# ------------------------------------------------------------------------------
+
+
+if [[ -f "$ZDOTDIR/.zshenv.local" ]]; then
+    source "$ZDOTDIR/.zshenv.local"
+elif [[ -f "${DOTFILES[CONFIG_DIR]}/zsh/.zshenv.local" ]]; then
+    source "${DOTFILES[CONFIG_DIR]}/zsh/.zshenv.local"
+fi

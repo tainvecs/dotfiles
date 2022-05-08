@@ -580,9 +580,6 @@ home/.ssh/*
 home/.ssh/ssh_keys/*
 !home/.ssh/**/.gitkeep
 
-# .tmux
-home/.tmux/*
-
 # .vim
 home/.vim/*
 !home/.vim/.backup/
@@ -647,8 +644,11 @@ config/docker/docker.gitlab_login.sh
 config/gcp/*
 
 # git
-config/git/config
+config/git/config.local
 config/git/themes.gitconfig
+
+# htop
+config/htop/htoprc
 
 # iterm
 config/iterm2/AppSupport
@@ -665,7 +665,17 @@ config/ssh/ssh_keys/*
 config/vpn/*.ovpn
 
 !config/**/.gitkeep
+config/**/*.local
 
+
+# ----- local
+local/config/**/*.local
+local/config/**/*config
+local/config/docker/docker.gitlab_login.sh
+
+local/plugins/*
+
+!local/**/.gitkeep
 
 # ----- share
 share/*
