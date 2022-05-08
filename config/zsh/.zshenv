@@ -79,6 +79,7 @@ declare -a PLUGIN_ARR=(
 
     "bat"
     "bat-extras"
+    "bottom"
     "copybuffer"
     "delta"
     "duf"
