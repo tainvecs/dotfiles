@@ -313,12 +313,10 @@ fi
 
 if type tmux >/dev/null; then
 
-    # home
-    export TMUX_HOME="${DOTFILES[HOME_DIR]}/.tmux"
-
     # config
-    if [[ -f "$TMUX_HOME/.tmux.conf" ]]; then
-        alias tmux="tmux -f $TMUX_HOME/.tmux.conf"
+    export TMUX_CONFIG_DIR="${DOTFILES[CONFIG_DIR]}/tmux"
+    if [[ -f "$TMUX_CONFIG_DIR/.tmux.conf" ]]; then
+        alias tmux="tmux -f $TMUX_CONFIG_DIR/.tmux.conf"
     fi
 
 fi

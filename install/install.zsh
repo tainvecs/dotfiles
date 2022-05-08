@@ -71,9 +71,6 @@ if [[ $OS_TYPE = "Darwin" ]]; then
     # set up emacs
     zsh $DOTFILES_INSTALL/emacs.install.zsh
 
-    # apply template
-    # zsh $DOTFILES_INSTALL/template.apply.zsh
-
 
 elif [[ $OS_TYPE = "Linux" ]]; then
 
@@ -136,9 +133,6 @@ elif [[ $OS_TYPE = "Linux" ]]; then
 
     # set up emacs
     zsh $DOTFILES_INSTALL/emacs.install.zsh
-
-    # apply template
-    # zsh $DOTFILES_INSTALL/template.apply.zsh
 
 
 fi

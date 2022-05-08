@@ -1190,7 +1190,7 @@
   #   typeset -g POWERLEVEL9K_KUBECONTEXT_TEST_CONTENT_EXPANSION='> ${P9K_CONTENT} <'
   typeset -g POWERLEVEL9K_KUBECONTEXT_CLASSES=(
       '*prod*'  PROD    # These values are examples that are unlikely
-      '*stag*'  STAG    
+      '*stag*'  STAG
       '*test*'  TEST    # to match your needs. Customize them as needed.
       '*'       DEFAULT)
   typeset -g POWERLEVEL9K_KUBECONTEXT_DEFAULT_FOREGROUND=134
@@ -1606,6 +1606,10 @@
   # can slow down prompt by 1-2 milliseconds, so it's better to keep it turned off unless you
   # really need it.
   typeset -g POWERLEVEL9K_DISABLE_HOT_RELOAD=true
+
+  # load p10k local config file
+  P10K_LOCAL_CONFIG_PATH="${DOTFILES[CONFIG_DIR]}/p10k/.p10k.zsh.local"
+  [[ -r $P10K_LOCAL_CONFIG_PATH ]] && source $P10K_LOCAL_CONFIG_PATH
 
   # If p10k is already loaded, reload configuration.
   # This works even with POWERLEVEL9K_DISABLE_HOT_RELOAD=true.

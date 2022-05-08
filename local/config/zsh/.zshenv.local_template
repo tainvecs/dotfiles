@@ -1,0 +1,99 @@
+# ------------------------------------------------------------------------------
+# apps
+# ------------------------------------------------------------------------------
+
+
+# # apps
+
+# unset APPS_ARR
+# unset DOTFILES_APPS
+
+# declare -a APPS_ARR=(
+
+#     "7z"
+#     "alt-tab"
+#     "autoenv"
+#     "aws"
+#     "clojure"
+#     "coreutils"
+#     "docker"
+#     "elasticsearch"
+#     "emacs"
+#     "gcp"
+#     "golang"
+#     "htop"
+#     "iterm"
+#     "jdk"
+#     "kube"
+#     "openvpn"
+#     "peco"
+#     "python"
+#     "pyenv"
+#     "svn"
+#     "tmux"
+#     "tree"
+#     "vim"
+#     "volta"
+#     "watch"
+
+# )
+
+# declare -A DOTFILES_APPS
+# for a_name in "${APPS_ARR[@]}"; do
+#     DOTFILES_APPS["$a_name"]="true"
+# done
+
+
+# ------------------------------------------------------------------------------
+# plugins
+# ------------------------------------------------------------------------------
+
+
+# # plugins
+
+# unset PLUGIN_ARR
+# unset DOTFILES_PLUGINS
+
+# declare -a PLUGIN_ARR=(
+
+#     "bat"
+#     "bat-extras"
+#     "bottom"
+#     "copybuffer"
+#     "delta"
+#     "duf"
+#     "dust"
+#     "exa"
+#     "extract"
+#     "fast-syntax-highlighting"
+#     "fd"
+#     "forgit"
+#     "fzf"
+#     "hyperfine"
+#     "lazydocker"
+#     "p10k"
+#     "ripgrep"
+#     "universalarchive"
+#     "urltools"
+#     "z"
+#     "zsh-autosuggestions"
+#     "zsh-completions"
+
+#     "dotfiles-aws"
+#     "dotfiles-docker"
+#     "dotfiles-es"
+#     "dotfiles-git"
+#     "dotfiles-kube"
+#     "dotfiles-mac"
+#     "dotfiles-misc"
+#     "dotfiles-update"
+#     "dotfiles-vim"
+
+#     "dotfiles-<local_plugin_name>"
+
+# )
+
+# declare -A DOTFILES_PLUGINS
+# for p_name in "${PLUGIN_ARR[@]}"; do
+#     DOTFILES_PLUGINS["$p_name"]="true"
+# done
