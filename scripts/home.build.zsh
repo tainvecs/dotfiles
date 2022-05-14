@@ -11,6 +11,7 @@ DOTFILES_ROOT="$(dirname $(cd $(dirname $0) >/dev/null 2>&1; pwd -P;))"
 DOTFILES_LOCAL="$DOTFILES_ROOT/local"
 DOTFILES_CONFIG="$DOTFILES_ROOT/config"
 DOTFILES_HOME="$DOTFILES_ROOT/home"
+DOTFILES_RESOURCES="$DOTFILES_ROOT/resources"
 
 
 # ------------------------------------------------------------------------------
