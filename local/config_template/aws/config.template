@@ -1,2 +1,2 @@
-[default]
-region = ap-southeast-1
+# [default]
+# region = <region_name>

@@ -14,7 +14,7 @@ function update(){
 
     fi
 
-    # mac
+    # linux
     if [[ ( $1 = "" || $1 = "linux" ) && `uname` = "Linux" ]]; then
         echo "Update: apt..."
         sudo apt update
