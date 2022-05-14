@@ -1,12 +1,16 @@
 #!/bin/zsh
 
 
+# ------------------------------------------------------------------------------
+# init params
+# ------------------------------------------------------------------------------
+
+
 DOTFILES_ROOT="$(dirname $(cd $(dirname $0) >/dev/null 2>&1; pwd -P;))"
 
-DOTFILES_HOME="$DOTFILES_ROOT/home"
 DOTFILES_LOCAL="$DOTFILES_ROOT/local"
 DOTFILES_CONFIG="$DOTFILES_ROOT/config"
-DOTFILES_RESOURCES="$DOTFILES_ROOT/resources"
+DOTFILES_HOME="$DOTFILES_ROOT/home"
 
 
 # ------------------------------------------------------------------------------
@@ -14,9 +18,9 @@ DOTFILES_RESOURCES="$DOTFILES_ROOT/resources"
 # ------------------------------------------------------------------------------
 
 
+# home
 AUTOENV_HOME="$DOTFILES_HOME/.autoenv"
 mkdir -p $AUTOENV_HOME
-touch $AUTOENV_HOME/.gitkeep
 
 
 # ------------------------------------------------------------------------------
@@ -27,14 +31,8 @@ touch $AUTOENV_HOME/.gitkeep
 # home
 AWS_HOME="$DOTFILES_HOME/.aws"
 mkdir -p $AWS_HOME
-touch $AWS_HOME/.gitkeep
 
-# local
-AWS_LOCAL_CONFIG_SRC="$DOTFILES_LOCAL/config/aws/config"
-AWS_LOCAL_CONFIG_DST="$DOTFILES_CONFIG/aws/config"
-[[ -L $AWS_LOCAL_CONFIG_DST || -f $AWS_LOCAL_CONFIG_DST ]] || ln -s $AWS_LOCAL_CONFIG_SRC $AWS_LOCAL_CONFIG_DST
-
-# config
+# home -> config (config and credential)
 AWS_CONFIG_SRC="$DOTFILES_CONFIG/aws/config"
 AWS_CONFIG_DST="$AWS_HOME/config"
 [[ -f $AWS_CONFIG_SRC ]] && [[ ! -f $AWS_CONFIG_DST ]] && ln -s $AWS_CONFIG_SRC $AWS_CONFIG_DST
@@ -49,10 +47,11 @@ AWS_CREDENTIAL_DST="$AWS_HOME/credentials"
 # ------------------------------------------------------------------------------
 
 
+# home
 DOCKER_HOME="$DOTFILES_HOME/.docker"
 mkdir -p $DOCKER_HOME
-touch $DOCKER_HOME/.gitkeep
 
+# home -> config
 DOCKER_CONFIG_SRC="$DOTFILES_CONFIG/docker/config.json"
 DOCKER_CONFIG_DST="$DOCKER_HOME/config.json"
 [[ -f $DOCKER_CONFIG_SRC ]] && [[ ! -f $DOCKER_CONFIG_DST ]] && ln -s $DOCKER_CONFIG_SRC $DOCKER_CONFIG_DST
@@ -70,9 +69,8 @@ DOCKERD_CONFIG_DST="$DOCKER_HOME/daemon.json"
 # home
 EMACS_HOME="$DOTFILES_HOME/.emacs"
 mkdir -p "$EMACS_HOME/auto-save-list"
-touch $EMACS_HOME/auto-save-list/.gitkeep
 
-# config
+# home -> config
 EMACS_INIT_SRC="$DOTFILES_CONFIG/emacs/init.el"
 EMACS_INIT_DST="$EMACS_HOME/init.el"
 [[ -f $EMACS_INIT_SRC ]] && [[ ! -f $EMACS_INIT_DST ]] && ln -s $EMACS_INIT_SRC $EMACS_INIT_DST
@@ -87,36 +85,15 @@ EMACS_INIT_DST="$EMACS_HOME/init.el"
 GCP_HOME="$DOTFILES_HOME/.gcp"
 mkdir -p $GCP_HOME
 
-# config
-GCP_CONFIG_DIR="$DOTFILES_CONFIG/gcp"
-mkdir -p $GCP_CONFIG_DIR
-
-
-# ------------------------------------------------------------------------------
-# git: delta
-# ------------------------------------------------------------------------------
-
-
-# local
-GIT_LOCAL_CONFIG_SRC="$DOTFILES_LOCAL/config/git/config.local"
-GIT_LOCAL_CONFIG_DST="$DOTFILES_CONFIG/git/config.local"
-[[ -L $GIT_LOCAL_CONFIG_DST || -f $GIT_LOCAL_CONFIG_DST ]] || ln -s $GIT_LOCAL_CONFIG_SRC $GIT_LOCAL_CONFIG_DST
-
-# config
-GIT_THEME_SRC="$DOTFILES_RESOURCES/git/themes.gitconfig"
-GIT_THEME_DST="$DOTFILES_CONFIG/git/themes.gitconfig"
-[[ -f $GIT_THEME_SRC ]] && [[ ! -f $GIT_THEME_DST ]] && ln -s $GIT_THEME_SRC $GIT_THEME_DST
-
 
 # ------------------------------------------------------------------------------
 # go
 # ------------------------------------------------------------------------------
 
 
+# home
 GO_HOME="$DOTFILES_HOME/.go"
 mkdir -p "$GO_HOME/gocode" "$GO_HOME/golib"
-touch $GO_HOME/gocode/.gitkeep
-touch $GO_HOME/golib/.gitkeep
 
 
 # ------------------------------------------------------------------------------
@@ -127,9 +104,8 @@ touch $GO_HOME/golib/.gitkeep
 # home
 KUBE_HOME="$DOTFILES_HOME/.kube"
 mkdir -p "$KUBE_HOME/cache"
-touch $KUBE_HOME/cache/.gitkeep
 
-# config
+# home -> config
 KUBE_CONFIG_SRC="$DOTFILES_CONFIG/kube/config"
 KUBE_CONFIG_DST="$KUBE_HOME/config"
 [[ -f $KUBE_CONFIG_SRC ]] && [[ ! -f $KUBE_CONFIG_DST ]] && ln -s $KUBE_CONFIG_SRC $KUBE_CONFIG_DST
@@ -140,9 +116,9 @@ KUBE_CONFIG_DST="$KUBE_HOME/config"
 # ------------------------------------------------------------------------------
 
 
+# home
 LESS_HOME="$DOTFILES_HOME/.less"
 mkdir -p $LESS_HOME
-touch $LESS_HOME/.gitkeep
 
 
 # ------------------------------------------------------------------------------
@@ -150,20 +126,9 @@ touch $LESS_HOME/.gitkeep
 # ------------------------------------------------------------------------------
 
 
+# home
 OPENVPN_HOME="$DOTFILES_HOME/.vpn"
 mkdir -p $OPENVPN_HOME
-touch $OPENVPN_HOME/.gitkeep
-
-
-# ------------------------------------------------------------------------------
-# p10k
-# ------------------------------------------------------------------------------
-
-
-# local
-P10K_LOCAL_CONFIG_SRC="$DOTFILES_LOCAL/config/p10k/.p10k.zsh.local"
-P10K_LOCAL_CONFIG_DST="$DOTFILES_CONFIG/p10k/.p10k.zsh.local"
-[[ -L $P10K_LOCAL_CONFIG_DST || -f $P10K_LOCAL_CONFIG_DST ]] || ln -s $P10K_LOCAL_CONFIG_SRC $P10K_LOCAL_CONFIG_DST
 
 
 # ------------------------------------------------------------------------------
@@ -174,10 +139,6 @@ P10K_LOCAL_CONFIG_DST="$DOTFILES_CONFIG/p10k/.p10k.zsh.local"
 # home
 PYTHON_HOME="$DOTFILES_HOME/.python"
 mkdir -p "$PYTHON_HOME/.ipython" "$PYTHON_HOME/.pyenv/shims" "$PYTHON_HOME/nltk_data"
-
-touch $PYTHON_HOME/.ipython/.gitkeep
-touch $PYTHON_HOME/.pyenv/shims/.gitkeep
-touch $PYTHON_HOME/nltk_data/.gitkeep
 
 # config
 PYTHON_CONFIG_SRC="$DOTFILES_CONFIG/python/.pythonrc"
@@ -192,36 +153,25 @@ PYTHON_CONFIG_DST="$PYTHON_HOME/.pythonrc"
 
 # home
 SSH_HOME="$DOTFILES_HOME/.ssh"
-mkdir -p "$SSH_HOME/ssh_keys"
-touch $SSH_HOME/authorized_keys $SSH_HOME/ssh_keys/.gitkeep
+mkdir -p $SSH_HOME
+touch $SSH_HOME/authorized_keys
 
-# local
-SSH_LOCAL_CONFIG_SRC="$DOTFILES_LOCAL/config/ssh/config"
-SSH_LOCAL_CONFIG_DST="$DOTFILES_CONFIG/ssh/config"
-[[ -L $SSH_LOCAL_CONFIG_DST || -f $SSH_LOCAL_CONFIG_DST ]] || ln -s $SSH_LOCAL_CONFIG_SRC $SSH_LOCAL_CONFIG_DST
+# home -> config ssh_keys
+SSH_KEYS_DIR_SRC="$DOTFILES_CONFIG/ssh/ssh_keys"
+SSH_KEYS_DIR_DST="$SSH_HOME/ssh_keys"
+[[ -d $SSH_KEYS_DIR_SRC ]] && [[ ! -d $SSH_KEYS_DIR_DST ]] && ln -s $SSH_KEYS_DIR_SRC $SSH_KEYS_DIR_DST
 
-# config
+# home -> config
 SSH_CONFIG_SRC="$DOTFILES_CONFIG/ssh/config"
 SSH_CONFIG_DST="$SSH_HOME/config"
 [[ -f $SSH_CONFIG_SRC ]] && [[ ! -f $SSH_CONFIG_DST ]] && ln -s $SSH_CONFIG_SRC $SSH_CONFIG_DST
 
-# sshd_config
+# home -> sshd_config
 SSHD_CONFIG_ROOT_SRC="/etc/ssh/sshd_config"
 SSHD_CONFIG_SRC="$DOTFILES_CONFIG/ssh/sshd_config"
 SSHD_CONFIG_DST="$SSH_HOME/sshd_config"
 [[ -f $SSHD_CONFIG_ROOT_SRC ]] && [[ ! -f $SSHD_CONFIG_SRC ]] && ln -s $SSHD_CONFIG_ROOT_SRC $SSHD_CONFIG_SRC
 [[ -f $SSHD_CONFIG_SRC ]] && [[ ! -f $SSHD_CONFIG_DST ]] && ln -s $SSHD_CONFIG_SRC $SSHD_CONFIG_DST
-
-
-# ------------------------------------------------------------------------------
-# tmux
-# ------------------------------------------------------------------------------
-
-
-# local
-TMUX_LOCAL_CONFIG_SRC="$DOTFILES_LOCAL/config/tmux/.tmux.conf.local"
-TMUX_LOCAL_CONFIG_DST="$DOTFILES_CONFIG/tmux/.tmux.conf.local"
-[[ -L $TMUX_LOCAL_CONFIG_DST || -f $TMUX_LOCAL_CONFIG_DST ]] || ln -s $TMUX_LOCAL_CONFIG_SRC $TMUX_LOCAL_CONFIG_DST
 
 
 # ------------------------------------------------------------------------------
@@ -231,30 +181,23 @@ TMUX_LOCAL_CONFIG_DST="$DOTFILES_CONFIG/tmux/.tmux.conf.local"
 
 # home
 VIM_HOME="$DOTFILES_HOME/.vim"
-mkdir -p $VIM_HOME
 mkdir -p "$VIM_HOME/.backup" "$VIM_HOME/.swp" "$VIM_HOME/.undo"
-mkdir -p "$VIM_HOME/bundle" "$VIM_HOME/colors"
-touch $VIM_HOME/.backup/.gitkeep
-touch $VIM_HOME/.swp/.gitkeep
-touch $VIM_HOME/.undo/.gitkeep
-touch $VIM_HOME/bundle/.gitkeep
+mkdir -p "$VIM_HOME/bundle"
 
-# local
-VIMRC_LOCAL_SRC="$DOTFILES_LOCAL/config/vim/.vimrc.local"
-VIMRC_LOCAL_CONFIG_DST="$DOTFILES_CONFIG/vim/.vimrc.local"
+# home -> config (local)
+VIMRC_LOCAL_CONFIG_SRC="$DOTFILES_CONFIG/vim/.vimrc.local"
 VIMRC_LOCAL_HOME_DST="$VIM_HOME/.vimrc.local"
-[[ -L $VIMRC_LOCAL_CONFIG_DST || -f $VIMRC_LOCAL_CONFIG_DST ]] || ln -s $VIMRC_LOCAL_SRC $VIMRC_LOCAL_CONFIG_DST
-[[ -L $VIMRC_LOCAL_HOME_DST || -f $VIMRC_LOCAL_HOME_DST ]] || ln -s $VIMRC_LOCAL_CONFIG_DST $VIMRC_LOCAL_HOME_DST
+[[ -L $VIMRC_LOCAL_HOME_DST || -f $VIMRC_LOCAL_HOME_DST ]] || ln -s $VIMRC_LOCAL_CONFIG_SRC $VIMRC_LOCAL_HOME_DST
 
-# config
-VIM_CONFIG_SRC="$DOTFILES_CONFIG/vim/.vimrc"
-VIM_CONFIG_DST="$VIM_HOME/.vimrc"
-[[ -f $VIM_CONFIG_SRC ]] && [[ ! -f $VIM_CONFIG_DST ]] && ln -s $VIM_CONFIG_SRC $VIM_CONFIG_DST
+# home -> config
+VIMRC_CONFIG_SRC="$DOTFILES_CONFIG/vim/.vimrc"
+VIMRC_HOME_DST="$VIM_HOME/.vimrc"
+[[ -f $VIMRC_CONFIG_SRC ]] && [[ ! -f $VIMRC_HOME_DST ]] && ln -s $VIMRC_CONFIG_SRC $VIMRC_HOME_DST
 
-# resource
+# home -> resource
 VIM_COLORS_SRC="$DOTFILES_RESOURCES/vim/colors"
-VIM_COLORS_DST="$VIM_HOME/colors"
-[[ -d $VIM_COLORS_SRC ]] && [[ -d $VIM_COLORS_DST ]] && cp $VIM_COLORS_SRC/* $VIM_COLORS_DST
+VIM_COLORS_HOME_DST="$VIM_HOME/colors"
+[[ -d $VIM_COLORS_SRC ]] && [[ ! -d $VIM_COLORS_HOME_DST ]] && ln -s $VIM_COLORS_SRC $VIM_COLORS_HOME_DST
 
 
 # ------------------------------------------------------------------------------
@@ -272,9 +215,9 @@ mkdir -p $VOLTA_HOME
 # ------------------------------------------------------------------------------
 
 
+# home
 Z_HOME="$DOTFILES_HOME/.z"
 mkdir -p $Z_HOME
-touch $Z_HOME/.gitkeep
 
 
 # ------------------------------------------------------------------------------
@@ -286,23 +229,16 @@ touch $Z_HOME/.gitkeep
 ZSH_HOME="$DOTFILES_HOME/.zsh"
 mkdir -p "$ZSH_HOME/.zinit" "$ZSH_HOME/.zsh_complete" "$ZSH_HOME/.zsh_sessions"
 
-touch $ZSH_HOME/.zinit/.gitkeep
-touch $ZSH_HOME/.zsh_sessions/.gitkeep
-
-# local
-ZSHENV_LOCAL_SRC="$DOTFILES_LOCAL/config/zsh/.zshenv.local"
-ZSHENV_LOCAL_CONFIG_DST="$DOTFILES_CONFIG/zsh/.zshenv.local"
+# home -> config (local)
+ZSHENV_LOCAL_CONFIG_SRC="$DOTFILES_LOCAL/config/zsh/.zshenv.local"
 ZSHENV_LOCAL_HOME_DST="$ZSH_HOME/.zshenv.local"
-[[ -L $ZSHENV_LOCAL_CONFIG_DST || -f $ZSHENV_LOCAL_CONFIG_DST ]] || ln -s $ZSHENV_LOCAL_SRC $ZSHENV_LOCAL_CONFIG_DST
-[[ -L $ZSHENV_LOCAL_HOME_DST || -f $ZSHENV_LOCAL_HOME_DST ]] || ln -s $ZSHENV_LOCAL_CONFIG_DST $ZSHENV_LOCAL_HOME_DST
+[[ -L $ZSHENV_LOCAL_HOME_DST || -f $ZSHENV_LOCAL_HOME_DST ]] || ln -s $ZSHENV_LOCAL_CONFIG_SRC $ZSHENV_LOCAL_HOME_DST
 
-ZSHRC_LOCAL_SRC="$DOTFILES_LOCAL/config/zsh/.zshrc.local"
-ZSHRC_LOCAL_CONFIG_DST="$DOTFILES_CONFIG/zsh/.zshrc.local"
+ZSHRC_LOCAL_CONFIG_SRC="$DOTFILES_LOCAL/config/zsh/.zshrc.local"
 ZSHRC_LOCAL_HOME_DST="$ZSH_HOME/.zshrc.local"
-[[ -L $ZSHRC_LOCAL_CONFIG_DST || -f $ZSHRC_LOCAL_CONFIG_DST ]] || ln -s $ZSHRC_LOCAL_SRC $ZSHRC_LOCAL_CONFIG_DST
-[[ -L $ZSHRC_LOCAL_HOME_DST || -f $ZSHRC_LOCAL_HOME_DST ]] || ln -s $ZSHRC_LOCAL_CONFIG_DST $ZSHRC_LOCAL_HOME_DST
+[[ -L $ZSHRC_LOCAL_HOME_DST || -f $ZSHRC_LOCAL_HOME_DST ]] || ln -s $ZSHRC_LOCAL_CONFIG_SRC $ZSHRC_LOCAL_HOME_DST
 
-# config
+# home -> config
 ZSHENV_PATH_SRC="$DOTFILES_CONFIG/zsh/.zshenv"
 ZSHENV_PATH_DST="$ZSH_HOME/.zshenv"
 [[ -f $ZSHENV_PATH_SRC ]] && [[ ! -f $ZSHENV_PATH_DST ]] && ln -s $ZSHENV_PATH_SRC $ZSHENV_PATH_DST
@@ -329,4 +265,4 @@ ZSHRC_FINAL_DST="$ZSH_HOME/.zshrc_finalize.zsh"
 
 ZSHRC_COMPLETE_SRC="$DOTFILES_CONFIG/zsh/.zsh_complete"
 ZSHRC_COMPLETE_DST="$ZSH_HOME/.zsh_complete"
-[[ -d $ZSHRC_COMPLETE_SRC ]] && [[ -d $ZSHRC_COMPLETE_DST ]] && cp $ZSHRC_COMPLETE_SRC/* $ZSHRC_COMPLETE_DST
+[[ -d $ZSHRC_COMPLETE_SRC ]] && [[ ! -d $ZSHRC_COMPLETE_DST ]] && ln -s $ZSHRC_COMPLETE_SRC $ZSHRC_COMPLETE_DST
