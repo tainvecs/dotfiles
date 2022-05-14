@@ -7,11 +7,11 @@ ARG BUILD_VERSION
 ARG BUILD_DATE
 ARG VCS_REF
 
-LABEL org.label-schema.schema-version="1.0"
+LABEL org.label-schema.schema-version="1.1"
 LABEL org.label-schema.build-date=$BUILD_DATE
-LABEL org.label-schema.name="tainvecs/dotfiles"
-#LABEL org.label-schema.description=""
-#LABEL org.label-schema.url=""
+LABEL org.label-schema.name="dotfiles"
+LABEL org.label-schema.description="Config files, plugins, and helper scripts for setting up macOS and Ubuntu."
+
 LABEL org.label-schema.vcs-url="https://github.com/tainvecs/dotfiles"
 LABEL org.label-schema.vcs-ref=$VCS_REF
 LABEL org.label-schema.version=$BUILD_VERSION
@@ -41,8 +41,8 @@ SHELL ["/bin/zsh", "-c"]
 
 
 # clone and install dotfiles
-# RUN git clone https://github.com/tainvecs/dotfiles.git
-ADD . /root/dotfiles
-RUN cd dotfiles && zsh ./install/install.zsh
+%%CLONE_DOTFILES_REPO_CMD%%
+RUN ln -s ./dotfiles/config/zsh/.zshenv ./.zshenv
+RUN cd dotfiles && zsh ./scripts/bootstrap.zsh
 
 ENTRYPOINT ["/bin/zsh"]
