@@ -1,4 +1,5 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Start
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -7,22 +8,38 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; emacs home
+;; Emacs Home Directories
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-(setq user-init-file (or load-file-name (buffer-file-name)))
-(setq user-emacs-directory (file-name-directory user-init-file))
-(setq default-directory (file-name-directory user-init-file))
+;; emacs home
+(setq user-init-file                  (or load-file-name
+                                          (buffer-file-name)))
+(setq user-emacs-directory            (or (concat (getenv "EMACS_HOME") "/")
+                                          (file-name-directory user-init-file)))
+(setq default-directory               user-emacs-directory)
 
-(setq backup-directory-alist
-      `((".*" . (concat (file-name-directory user-init-file) "auto-save-list/"))))
-(setq auto-save-file-name-transforms
-      `((".*" (concat (file-name-directory user-init-file) "auto-save-list/") t)))
-(setq auto-save-list-file-prefix
-      (concat (file-name-directory user-init-file) "auto-save-list/"))
+;; auto-save-list
+(setq auto-save-list-file-prefix      (concat user-emacs-directory "auto-save-list/"))
+(setq backup-directory-alist          `((".*" . ,auto-save-list-file-prefix)))
+(setq auto-save-file-name-transforms  `((".*" ,auto-save-list-file-prefix t)))
+(setq vc-follow-symlinks              nil)
 
-(setq vc-follow-symlinks nil)
+;; initialize package directories
+(defvar user-data-directory           (expand-file-name ""               user-emacs-directory))
+(defvar user-setup-directory          (expand-file-name "setup"          user-emacs-directory))
+(defvar user-setup-builtins-directory (expand-file-name "setup/builtins" user-emacs-directory))
+(defvar user-bin-directory            (expand-file-name "bin"            user-emacs-directory))
+(defvar user-cache-directory          (expand-file-name ".cache"         user-emacs-directory))
+(defvar local-dev-package-directory   (expand-file-name "packages"       user-emacs-directory))
+(setq package-user-dir                (expand-file-name "packages"       user-emacs-directory))
+(setq custom-file                     (expand-file-name "settings.el"    user-emacs-directory))
+
+;; make directories
+(make-directory user-bin-directory            t)
+(make-directory user-cache-directory          t)
+(make-directory package-user-dir              t)
+(make-directory user-setup-builtins-directory t)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -36,12 +53,6 @@
 
 ;; warn when opening files bigger than 100MB
 (setq large-file-warning-threshold 100000000)
-
-;; store all backup and autosave files in the tmp dir
-(setq backup-directory-alist
-      `((".*" . ,temporary-file-directory)))
-(setq auto-save-file-name-transforms
-      `((".*" ,temporary-file-directory t)))
 
 (setq message-log-max 10000)
 
@@ -59,7 +70,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-(prefer-coding-system 'utf-8)
+(prefer-coding-system       'utf-8)
 (set-default-coding-systems 'utf-8)
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
@@ -130,21 +141,6 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Initialize Package Directories
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-(defvar user-setup-directory          (expand-file-name "setup"          user-emacs-directory))
-(defvar user-setup-builtins-directory (expand-file-name "setup/builtins" user-emacs-directory))
-(defvar local-dev-package-directory   (expand-file-name "packages"       user-emacs-directory))
-(defvar user-data-directory           (expand-file-name ""               user-emacs-directory))
-(defvar user-cache-directory          (expand-file-name ".cache"         user-emacs-directory))
-(defvar user-bin-directory            (expand-file-name "bin"            "~"))
-(setq custom-file                     (expand-file-name "settings.el"    user-emacs-directory))
-(make-directory user-cache-directory t)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Initialize Package and Use-package
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -154,7 +150,7 @@
 
 (add-to-list 'package-archives
          '("melpa" . "https://melpa.org/packages/")
-         '("gnu" . "https://elpa.gnu.org/packages/"))
+         '("gnu"   . "https://elpa.gnu.org/packages/"))
 
 (package-initialize)
 
@@ -492,12 +488,12 @@
 
   :init
   (setq lsp-ui-doc-enable t
-	    lsp-ui-doc-use-webkit nil
+        lsp-ui-doc-use-webkit nil
         lsp-ui-doc-show-with-cursor t
         lsp-ui-doc-delay 0.2
         lsp-ui-doc-include-signature t
         lsp-ui-doc-position 'top
-   	    lsp-ui-doc-border (face-foreground 'default)
+        lsp-ui-doc-border (face-foreground 'default)
         lsp-ui-doc-show-with-mouse nil)
 
   (setq lsp-ui-sideline-enable t
