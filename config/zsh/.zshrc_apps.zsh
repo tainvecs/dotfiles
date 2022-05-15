@@ -88,7 +88,8 @@ if type emacs >/dev/null; then
     export EMACS_HOME="${DOTFILES[HOME_DIR]}/.emacs"
 
     if [[ -f "$EMACS_HOME/init.el" ]]; then
-        alias emacs='emacs -q --load "$EMACS_HOME/init.el"'
+        alias emacs='env EMACS_HOME=$EMACS_HOME emacs -q --load "$EMACS_HOME/init.el"'
+        export PATH=$PATH:$EMACS_HOME/bin
     fi
 
 fi
