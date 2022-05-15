@@ -682,10 +682,7 @@ home/.zsh/.zinit/*
 
 
 # ----- local
-local/config/**/*.local
-local/config/**/*config
-local/config/**/*.sh
-
+local/config/*
 local/plugins/*
 
 !local/**/.gitkeep
