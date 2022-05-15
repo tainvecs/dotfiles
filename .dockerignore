@@ -1,0 +1,88 @@
+# ignore everything
+**
+
+# cache
+!cache/.gitkeep
+
+
+# config
+!config/
+config/*
+!config/*/
+config/*/*
+
+!config/**/daemon.json
+!config/**/init.el
+!config/**/keymap.itermkeymap
+!config/**/profile-default.json
+!config/**/.p10k.zsh
+!config/**/.tmux.conf
+!config/**/.vimrc
+!config/**/.zshrc*
+!config/**/.zshenv
+!config/**/.zsh_complete/_*
+
+!config/**/config*
+!config/**/*.local
+!config/**/.gitkeep
+
+
+# deployment
+
+
+# home
+!home/
+home/*
+!home/*/
+home/*/*
+
+!home/**/.gitkeep
+
+
+# local
+!local/
+local/*
+
+!local/config_template/
+local/config_template/*
+!local/config_template/*/
+local/config_template/*/*
+
+!local/plugins/
+local/plugins/*
+!local/plugins/*/
+local/plugins/*/*
+
+!local/**/.gitkeep
+!local/**/*.template
+!local/**/*.zsh
+
+
+# plugins
+!plugins/
+plugins/*
+!plugins/*/
+plugins/*/*
+
+!plugins/**/*.zsh
+
+
+# resources
+!resources/
+resources/*
+!resources/*/
+resources/*/*
+
+!resources/**/.gitkeep
+
+
+# scripts
+!scripts/*.zsh
+
+
+# share
+!share/.gitkeep
+
+
+# macOS
+**/.DS_Store
