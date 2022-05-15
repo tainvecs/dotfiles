@@ -2,7 +2,7 @@
 **
 
 # cache
-!cache/*.gitkeep
+!cache/.gitkeep
 
 
 # config
@@ -24,7 +24,7 @@ config/*/*
 
 !config/**/config*
 !config/**/*.local
-!config/**/*.gitkeep
+!config/**/.gitkeep
 
 
 # deployment
@@ -36,19 +36,26 @@ home/*
 !home/*/
 home/*/*
 
-!home/**/*.gitkeep
+!home/**/.gitkeep
 
 
 # local
 !local/
 local/*
-!local/*/
-local/*/*
-!local/*/*/
-local/*/*/*
 
-!local/**/*.gitkeep
+!local/config_template/
+local/config_template/*
+!local/config_template/*/
+local/config_template/*/*
+
+!local/plugins/
+local/plugins/*
+!local/plugins/*/
+local/plugins/*/*
+
+!local/**/.gitkeep
 !local/**/*.template
+!local/**/*.zsh
 
 
 # plugins
@@ -65,10 +72,8 @@ plugins/*/*
 resources/*
 !resources/*/
 resources/*/*
-!resources/*/*/
-resources/*/*/*
 
-!resources/**/*.gitkeep
+!resources/**/.gitkeep
 
 
 # scripts
@@ -76,4 +81,8 @@ resources/*/*/*
 
 
 # share
-!share/*.gitkeep
+!share/.gitkeep
+
+
+# macOS
+**/.DS_Store
