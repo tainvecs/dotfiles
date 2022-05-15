@@ -29,7 +29,7 @@ CLONE_DOTFILES_REPO_CMD="ADD . /root/dotfiles"
 # RUN_BOOTSTRAP_SCRIPT_CMD="RUN cd dotfiles && zsh ./scripts/bootstrap.zsh"
 RUN_BOOTSTRAP_SCRIPT_CMD="RUN cd dotfiles && env DOTFILES_APPLY_LOCAL_CONFIG_TEMPLATES=true zsh ./scripts/bootstrap.zsh"
 
-sed "s|%%CLONE_DOTFILES_REPO_CMD%%|$CLONE_DOTFILES_REPO_CMD|g; s|%%RUN_BOOTSTRAP_SCRIPT_CMD%%|$CLONE_DOTFILES_REPO_CMD|g;" \
+sed "s|%%CLONE_DOTFILES_REPO_CMD%%|$CLONE_DOTFILES_REPO_CMD|g; s|%%RUN_BOOTSTRAP_SCRIPT_CMD%%|$RUN_BOOTSTRAP_SCRIPT_CMD|g;" \
     "$DOTFILES_ROOT/deployment/Dockerfile.template" > "$DOTFILES_ROOT/deployment/Dockerfile.local_test"
 
 # build docker image
