@@ -26,7 +26,7 @@ CONTAINER_NAME="local_test"
 # CLONE_DOTFILES_REPO_CMD="RUN git clone https://github.com/tainvecs/dotfiles.git"
 CLONE_DOTFILES_REPO_CMD="ADD . /root/dotfiles"
 
-# RUN_BOOTSTRAP_SCRIPT_CMD="RUN cd dotfiles && zsh ./scripts/bootstrap.zsh"
+# RUN_BOOTSTRAP_SCRIPT_CMD="RUN cd dotfiles \&\& zsh ./scripts/bootstrap.zsh"
 RUN_BOOTSTRAP_SCRIPT_CMD="RUN cd dotfiles \&\& env DOTFILES_APPLY_LOCAL_CONFIG_TEMPLATES=true zsh ./scripts/bootstrap.zsh"
 
 sed "s|%%CLONE_DOTFILES_REPO_CMD%%|$CLONE_DOTFILES_REPO_CMD|g; s|%%RUN_BOOTSTRAP_SCRIPT_CMD%%|$RUN_BOOTSTRAP_SCRIPT_CMD|g;" \
