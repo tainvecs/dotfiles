@@ -21,12 +21,16 @@ CONTAINER_NAME="local_test"
 # ------------------------------------------------------------------------------
 
 
-# build Dockerfile from template
+# build tmp Dockerfile from template
+
 # CLONE_DOTFILES_REPO_CMD="RUN git clone https://github.com/tainvecs/dotfiles.git"
 CLONE_DOTFILES_REPO_CMD="ADD . /root/dotfiles"
-sed "s|%%CLONE_DOTFILES_REPO_CMD%%|$CLONE_DOTFILES_REPO_CMD|g" \
-    "$DOTFILES_ROOT/deployment/Dockerfile.template" \
-    > "$DOTFILES_ROOT/deployment/Dockerfile.local_test"
+
+# RUN_BOOTSTRAP_SCRIPT_CMD="RUN cd dotfiles && zsh ./scripts/bootstrap.zsh"
+RUN_BOOTSTRAP_SCRIPT_CMD="RUN cd dotfiles && env DOTFILES_APPLY_LOCAL_CONFIG_TEMPLATES=true zsh ./scripts/bootstrap.zsh"
+
+sed "s|%%CLONE_DOTFILES_REPO_CMD%%|$CLONE_DOTFILES_REPO_CMD|g; s|%%RUN_BOOTSTRAP_SCRIPT_CMD%%|$CLONE_DOTFILES_REPO_CMD|g;" \
+    "$DOTFILES_ROOT/deployment/Dockerfile.template" > "$DOTFILES_ROOT/deployment/Dockerfile.local_test"
 
 # build docker image
 docker build \
@@ -39,6 +43,7 @@ docker build \
        --build-arg VCS_REF="$VCS_REF" \
        .
 
+# remove tmp Dockerfile
 rm "$DOTFILES_ROOT/deployment/Dockerfile.local_test"
 
 

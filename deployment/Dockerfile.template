@@ -43,6 +43,6 @@ SHELL ["/bin/zsh", "-c"]
 # clone and install dotfiles
 %%CLONE_DOTFILES_REPO_CMD%%
 RUN ln -s ./dotfiles/config/zsh/.zshenv ./.zshenv
-RUN cd dotfiles && zsh ./scripts/bootstrap.zsh
+%%RUN_BOOTSTRAP_SCRIPT_CMD%%
 
 ENTRYPOINT ["/bin/zsh"]
