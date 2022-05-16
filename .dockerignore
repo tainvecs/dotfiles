@@ -14,12 +14,10 @@ config/*/*
 !config/**/init.el
 !config/**/.tmux.conf
 !config/**/.vimrc
-!config/**/.zshrc*
 !config/**/.zshenv
+!config/**/.zshrc
+!config/**/.zshrc_*.zsh
 !config/**/.zsh_complete/_*
-
-!config/**/config*
-!config/**/*.local
 !config/**/.gitkeep
 
 
