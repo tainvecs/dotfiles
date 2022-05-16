@@ -71,6 +71,11 @@ DOCKERD_CONFIG_DST="$DOCKER_HOME/daemon.json"
 EMACS_HOME="$DOTFILES_HOME/.emacs"
 mkdir -p "$EMACS_HOME/auto-save-list"
 
+# home -> config (local)
+EMACS_INIT_LOCAL_SRC="$DOTFILES_CONFIG/emacs/init.el.local"
+EMACS_INIT_LOCAL_DST="$EMACS_HOME/init.el.local"
+[[ -f $EMACS_INIT_LOCAL_SRC ]] && [[ ! -f $EMACS_INIT_LOCAL_DST ]] && ln -s $EMACS_INIT_LOCAL_SRC $EMACS_INIT_LOCAL_DST
+
 # home -> config
 EMACS_INIT_SRC="$DOTFILES_CONFIG/emacs/init.el"
 EMACS_INIT_DST="$EMACS_HOME/init.el"
