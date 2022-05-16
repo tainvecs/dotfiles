@@ -77,6 +77,21 @@ AWS_LOCAL_CONFIG_DST="$DOTFILES_CONFIG/aws/config"
 
 
 # ------------------------------------------------------------------------------
+# docker
+# ------------------------------------------------------------------------------
+
+
+# config -> local
+DOCKER_LOCAL_CONFIG_SRC="$DOTFILES_LOCAL/config/docker/config.json"
+DOCKER_LOCAL_CONFIG_DST="$DOTFILES_CONFIG/docker/config.json"
+[[ -L $DOCKER_LOCAL_CONFIG_SRC || -f $DOCKER_LOCAL_CONFIG_DST ]] || ln -s $DOCKER_LOCAL_CONFIG_SRC $DOCKER_LOCAL_CONFIG_DST
+
+DOCKERD_LOCAL_CONFIG_SRC="$DOTFILES_LOCAL/config/docker/daemon.json"
+DOCKERD_LOCAL_CONFIG_DST="$DOTFILES_CONFIG/docker/daemon.json"
+[[ -L $DOCKERD_LOCAL_CONFIG_SRC || -f $DOCKERD_LOCAL_CONFIG_DST ]] || ln -s $DOCKERD_LOCAL_CONFIG_SRC $DOCKERD_LOCAL_CONFIG_DST
+
+
+# ------------------------------------------------------------------------------
 # emacs
 # ------------------------------------------------------------------------------
 
