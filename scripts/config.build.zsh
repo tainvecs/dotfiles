@@ -77,6 +77,21 @@ AWS_LOCAL_CONFIG_DST="$DOTFILES_CONFIG/aws/config"
 
 
 # ------------------------------------------------------------------------------
+# docker
+# ------------------------------------------------------------------------------
+
+
+# config -> local
+DOCKER_LOCAL_CONFIG_SRC="$DOTFILES_LOCAL/config/docker/config.json"
+DOCKER_LOCAL_CONFIG_DST="$DOTFILES_CONFIG/docker/config.json"
+[[ -L $DOCKER_LOCAL_CONFIG_SRC || -f $DOCKER_LOCAL_CONFIG_DST ]] || ln -s $DOCKER_LOCAL_CONFIG_SRC $DOCKER_LOCAL_CONFIG_DST
+
+DOCKERD_LOCAL_CONFIG_SRC="$DOTFILES_LOCAL/config/docker/daemon.json"
+DOCKERD_LOCAL_CONFIG_DST="$DOTFILES_CONFIG/docker/daemon.json"
+[[ -L $DOCKERD_LOCAL_CONFIG_SRC || -f $DOCKERD_LOCAL_CONFIG_DST ]] || ln -s $DOCKERD_LOCAL_CONFIG_SRC $DOCKERD_LOCAL_CONFIG_DST
+
+
+# ------------------------------------------------------------------------------
 # emacs
 # ------------------------------------------------------------------------------
 
@@ -98,9 +113,35 @@ GIT_THEME_DST="$DOTFILES_CONFIG/git/themes.gitconfig"
 [[ -f $GIT_THEME_SRC ]] && [[ ! -f $GIT_THEME_DST ]] && ln -s $GIT_THEME_SRC $GIT_THEME_DST
 
 # config -> local
-GIT_LOCAL_CONFIG_SRC="$DOTFILES_LOCAL/config/git/config.local"
-GIT_LOCAL_CONFIG_DST="$DOTFILES_CONFIG/git/config.local"
+GIT_LOCAL_CONFIG_SRC="$DOTFILES_LOCAL/config/git/config"
+GIT_LOCAL_CONFIG_DST="$DOTFILES_CONFIG/git/config"
 [[ -L $GIT_LOCAL_CONFIG_DST || -f $GIT_LOCAL_CONFIG_DST ]] || ln -s $GIT_LOCAL_CONFIG_SRC $GIT_LOCAL_CONFIG_DST
+
+
+# ------------------------------------------------------------------------------
+# iterm2
+# ------------------------------------------------------------------------------
+
+
+# config -> local
+ITERM_KEYMAP_LOCAL_SRC="$DOTFILES_LOCAL/config/iterm2/keymap.itermkeymap"
+ITERM_KEYMAP_LOCAL_DST="$DOTFILES_CONFIG/iterm2/keymap.itermkeymap"
+[[ -L $ITERM_KEYMAP_LOCAL_DST || -f $ITERM_KEYMAP_LOCAL_DST ]] || ln -s $ITERM_KEYMAP_LOCAL_SRC $ITERM_KEYMAP_LOCAL_DST
+
+ITERM_PROFILE_LOCAL_SRC="$DOTFILES_LOCAL/config/iterm2/profile-default.json"
+ITERM_PROFILE_LOCAL_DST="$DOTFILES_CONFIG/iterm2/profile-default.json"
+[[ -L $ITERM_PROFILE_LOCAL_DST || -f $ITERM_PROFILE_LOCAL_DST ]] || ln -s $ITERM_PROFILE_LOCAL_SRC $ITERM_PROFILE_LOCAL_DST
+
+
+# ------------------------------------------------------------------------------
+# lazydocker
+# ------------------------------------------------------------------------------
+
+
+# config -> local
+LAYZDOCKER_LOCAL_CONFIG_SRC="$DOTFILES_LOCAL/config/lazydocker/config.yaml"
+LAYZDOCKER_LOCAL_CONFIG_DST="$DOTFILES_CONFIG/lazydocker/config.yaml"
+[[ -L $LAYZDOCKER_LOCAL_CONFIG_DST || -f $LAYZDOCKER_LOCAL_CONFIG_DST ]] || ln -s $LAYZDOCKER_LOCAL_CONFIG_SRC $LAYZDOCKER_LOCAL_CONFIG_DST
 
 
 # ------------------------------------------------------------------------------
@@ -109,9 +150,31 @@ GIT_LOCAL_CONFIG_DST="$DOTFILES_CONFIG/git/config.local"
 
 
 # config -> local
-P10K_LOCAL_CONFIG_SRC="$DOTFILES_LOCAL/config/p10k/.p10k.zsh.local"
-P10K_LOCAL_CONFIG_DST="$DOTFILES_CONFIG/p10k/.p10k.zsh.local"
+P10K_LOCAL_CONFIG_SRC="$DOTFILES_LOCAL/config/p10k/.p10k.zsh"
+P10K_LOCAL_CONFIG_DST="$DOTFILES_CONFIG/p10k/.p10k.zsh"
 [[ -L $P10K_LOCAL_CONFIG_DST || -f $P10K_LOCAL_CONFIG_DST ]] || ln -s $P10K_LOCAL_CONFIG_SRC $P10K_LOCAL_CONFIG_DST
+
+
+# ------------------------------------------------------------------------------
+# peco
+# ------------------------------------------------------------------------------
+
+
+# config -> local
+PECO_LOCAL_CONFIG_SRC="$DOTFILES_LOCAL/config/peco/config.json"
+PECO_LOCAL_CONFIG_DST="$DOTFILES_CONFIG/peco/config.json"
+[[ -L $PECO_LOCAL_CONFIG_DST || -f $PECO_LOCAL_CONFIG_DST ]] || ln -s $PECO_LOCAL_CONFIG_SRC $PECO_LOCAL_CONFIG_DST
+
+
+# ------------------------------------------------------------------------------
+# python
+# ------------------------------------------------------------------------------
+
+
+# config -> local
+PYTHON_LOCAL_CONFIG_SRC="$DOTFILES_LOCAL/config/python/.pythonrc"
+PYTHON_LOCAL_CONFIG_DST="$DOTFILES_CONFIG/python/.pythonrc"
+[[ -L $PYTHON_LOCAL_CONFIG_DST || -f $PYTHON_LOCAL_CONFIG_DST ]] || ln -s $PYTHON_LOCAL_CONFIG_SRC $PYTHON_LOCAL_CONFIG_DST
 
 
 # ------------------------------------------------------------------------------

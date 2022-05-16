@@ -146,7 +146,7 @@ mkdir -p $OPENVPN_HOME
 PYTHON_HOME="$DOTFILES_HOME/.python"
 mkdir -p "$PYTHON_HOME/.ipython" "$PYTHON_HOME/.pyenv/shims" "$PYTHON_HOME/nltk_data"
 
-# config
+# home -> config
 PYTHON_CONFIG_SRC="$DOTFILES_CONFIG/python/.pythonrc"
 PYTHON_CONFIG_DST="$PYTHON_HOME/.pythonrc"
 [[ -f $PYTHON_CONFIG_SRC ]] && [[ ! -f $PYTHON_CONFIG_DST ]] && ln -s $PYTHON_CONFIG_SRC $PYTHON_CONFIG_DST

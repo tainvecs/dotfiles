@@ -627,7 +627,7 @@ config/aws/*
 config/clojure/*
 
 # docker
-config/docker/docker.gitlab_login.sh
+config/docker/*
 
 # emacs
 config/emacs/*
@@ -638,21 +638,38 @@ config/gcp/*
 
 # git
 config/git/*
-!config/git/config
 
 # htop
 config/htop/*
 
-# iterm
-config/iterm2/AppSupport
+# iterm2
+config/iterm2/*
 
 # kube
 config/kube/*
+
+# lazydocker
+config/lazydocker/*
+
+# p10k
+config/p10k/*
+
+# peco
+config/peco/*
+
+# python
+config/python/*
 
 # ssh
 config/ssh/*
 !config/ssh/*/
 config/ssh/*/*
+
+# tmux
+
+# vim
+config/vim/*
+!config/.vimrc
 
 # vpn
 config/vpn/*
