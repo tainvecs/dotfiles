@@ -119,14 +119,51 @@ GIT_LOCAL_CONFIG_DST="$DOTFILES_CONFIG/git/config"
 
 
 # ------------------------------------------------------------------------------
+# iterm2
+# ------------------------------------------------------------------------------
+
+
+# config -> local
+ITERM_KEYMAP_LOCAL_SRC="$DOTFILES_LOCAL/config/iterm2/keymap.itermkeymap"
+ITERM_KEYMAP_LOCAL_DST="$DOTFILES_CONFIG/iterm2/keymap.itermkeymap"
+[[ -L $ITERM_KEYMAP_LOCAL_DST || -f $ITERM_KEYMAP_LOCAL_DST ]] || ln -s $ITERM_KEYMAP_LOCAL_SRC $ITERM_KEYMAP_LOCAL_DST
+
+ITERM_PROFILE_LOCAL_SRC="$DOTFILES_LOCAL/config/iterm2/profile-default.json"
+ITERM_PROFILE_LOCAL_DST="$DOTFILES_CONFIG/iterm2/profile-default.json"
+[[ -L $ITERM_PROFILE_LOCAL_DST || -f $ITERM_PROFILE_LOCAL_DST ]] || ln -s $ITERM_PROFILE_LOCAL_SRC $ITERM_PROFILE_LOCAL_DST
+
+
+# ------------------------------------------------------------------------------
+# lazydocker
+# ------------------------------------------------------------------------------
+
+
+# config -> local
+LAYZDOCKER_LOCAL_CONFIG_SRC="$DOTFILES_LOCAL/config/lazydocker/config.yaml"
+LAYZDOCKER_LOCAL_CONFIG_DST="$DOTFILES_CONFIG/lazydocker/config.yaml"
+[[ -L $LAYZDOCKER_LOCAL_CONFIG_DST || -f $LAYZDOCKER_LOCAL_CONFIG_DST ]] || ln -s $LAYZDOCKER_LOCAL_CONFIG_SRC $LAYZDOCKER_LOCAL_CONFIG_DST
+
+
+# ------------------------------------------------------------------------------
 # p10k
 # ------------------------------------------------------------------------------
 
 
 # config -> local
-P10K_LOCAL_CONFIG_SRC="$DOTFILES_LOCAL/config/p10k/.p10k.zsh.local"
-P10K_LOCAL_CONFIG_DST="$DOTFILES_CONFIG/p10k/.p10k.zsh.local"
+P10K_LOCAL_CONFIG_SRC="$DOTFILES_LOCAL/config/p10k/.p10k.zsh"
+P10K_LOCAL_CONFIG_DST="$DOTFILES_CONFIG/p10k/.p10k.zsh"
 [[ -L $P10K_LOCAL_CONFIG_DST || -f $P10K_LOCAL_CONFIG_DST ]] || ln -s $P10K_LOCAL_CONFIG_SRC $P10K_LOCAL_CONFIG_DST
+
+
+# ------------------------------------------------------------------------------
+# peco
+# ------------------------------------------------------------------------------
+
+
+# config -> local
+PECO_LOCAL_CONFIG_SRC="$DOTFILES_LOCAL/config/peco/config.json"
+PECO_LOCAL_CONFIG_DST="$DOTFILES_CONFIG/peco/config.json"
+[[ -L $PECO_LOCAL_CONFIG_DST || -f $PECO_LOCAL_CONFIG_DST ]] || ln -s $PECO_LOCAL_CONFIG_SRC $PECO_LOCAL_CONFIG_DST
 
 
 # ------------------------------------------------------------------------------
