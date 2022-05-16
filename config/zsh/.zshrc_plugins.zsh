@@ -6,6 +6,11 @@
 # check dependency
 type zinit >/dev/null || return
 
+# linux architecture such as amd64 or arm64
+if type dpkg >/dev/null; then
+    ARCHT=$(dpkg --print-architecture)
+fi
+
 
 # ------------------------------------------------------------------------------
 # powerlevel10k
@@ -82,9 +87,12 @@ fi
 if [[ ${DOTFILES_PLUGINS["bat"]} = "true" ]]; then
 
     # ----- bat
-    zinit ice wait"0b" lucid from"gh-r" as"program" mv"bat* -> bat" pick"bat/bat"
+    if [[ $SYS_NAME == linux ]] && [[ $ARCHT = "amd64" || $ARCHT = "arm64" ]]; then
+        zinit ice wait"0b" lucid from"gh-r" as"program" bpick"bat*$ARCHT*" pick"usr/bin/bat"
+    else
+        zinit ice wait"0b" lucid from"gh-r" as"program" mv"bat* -> bat" pick"bat/bat"
+    fi
     zinit light sharkdp/bat
-
     alias cat="bat "
 
     # ----- bat-extras
@@ -125,7 +133,11 @@ fi
 
 if [[ ${DOTFILES_PLUGINS["ripgrep"]} = "true" ]]; then
 
-    zinit ice wait"0c" lucid from"gh-r" as"program" mv"ripgrep* -> ripgrep" pick"ripgrep/rg"
+    if [[ $SYS_NAME == linux ]] && [[ $ARCHT = "amd64" ]]; then
+        zinit ice wait"0c" lucid from"gh-r" as"program" bpick"ripgrep*$ARCHT*" pick"usr/bin/rg"
+    else
+        zinit ice wait"0c" lucid from"gh-r" as"program" mv"ripgrep* -> ripgrep" pick"ripgrep/rg"
+    fi
     zinit light BurntSushi/ripgrep
 
     alias rg="rg -p --hidden --no-follow --max-columns 255 --column --glob '!.git' "
@@ -180,7 +192,12 @@ fi
 # fd
 if [[ ${DOTFILES_PLUGINS["fd"]} = "true" ]]; then
 
-    zinit ice wait"0c" lucid as"command" from"gh-r" mv"fd* -> fd" pick"fd/fd"
+    if [[ $SYS_NAME == linux ]] && [[ $ARCHT = "amd64" || $ARCHT = "arm64" ]]; then
+        zinit ice wait"0c" lucid from"gh-r" as"program" bpick"fd*$ARCHT*" pick"usr/bin/fd"
+    else
+        zinit ice wait"0c" lucid from"gh-r" as"program" mv"fd* -> fd" pick"fd/fd"
+    fi
+
     zinit light sharkdp/fd
 
     alias fd="fd --hidden --color=always --exclude .git "
@@ -217,7 +234,11 @@ fi
 # delta: git styling
 if [[ ${DOTFILES_PLUGINS["delta"]} = "true" ]]; then
 
-    zinit ice wait"1" lucid as"program" from"gh-r" pick"delta*/delta"
+    if [[ $SYS_NAME == linux ]] && [[ $ARCHT = "amd64" || $ARCHT = "arm64" ]]; then
+        zinit ice wait"1" lucid from"gh-r" as"program" bpick"*delta*$ARCHT*" pick"usr/bin/delta"
+    else
+        zinit ice wait"1" lucid as"program" from"gh-r" pick"delta*/delta"
+    fi
     zinit light 'dandavison/delta'
 
     # file diff
@@ -281,7 +302,11 @@ fi
 # dust: instant overview of which directories are using disk space
 if [[ ${DOTFILES_PLUGINS["dust"]} = "true" ]]; then
 
-    zinit ice wait"2" lucid from"gh-r" as"program" mv"dust*/dust -> dust" pick"dust"
+    if [[ $SYS_NAME == linux ]] && [[ $ARCHT = "amd64" ]]; then
+        zinit ice wait"2" lucid from"gh-r" as"program" bpick"dust*$ARCHT*" pick"usr/bin/dust"
+    else
+        zinit ice wait"2" lucid from"gh-r" as"program" mv"dust*/dust -> dust" pick"dust"
+    fi
     zinit light bootandy/dust
 
     alias dir="dust -r "
@@ -293,18 +318,12 @@ fi
 # duf: disk usage
 if [[ ${DOTFILES_PLUGINS["duf"]} = "true" ]]; then
 
-
     if [[ $SYS_NAME == mac ]]; then
-
         zinit ice wait"2" lucid from"gh-r" as"program" mv="duf* -> duf" pick"duf"
-        zinit light muesli/duf
-
     elif [[ $SYS_NAME == linux ]]; then
-
         zinit ice wait"2" lucid from"gh-r" as"program" bpick='*.deb' pick"usr/bin/duf"
-        zinit light muesli/duf
-
     fi
+    zinit light muesli/duf
 
     alias df="duf -width 200 "
 
@@ -319,7 +338,11 @@ fi
 # hyperfine: benchmark
 if [[ ${DOTFILES_PLUGINS["hyperfine"]} = "true" ]]; then
 
-    zinit ice wait"2" lucid from"gh-r" as"program" mv"hyperfine*/hyperfine -> hyperfine" pick"hyperfine"
+    if [[ $SYS_NAME == linux ]] && [[ $ARCHT = "amd64" || $ARCHT = "arm64" ]]; then
+        zinit ice wait"2" lucid from"gh-r" as"program" bpick"hyperfine*$ARCHT*" pick"usr/bin/hyperfine"
+    else
+        zinit ice wait"2" lucid from"gh-r" as"program" mv"hyperfine*/hyperfine -> hyperfine" pick"hyperfine"
+    fi
     zinit light sharkdp/hyperfine
 
     alias bm="hyperfine "
