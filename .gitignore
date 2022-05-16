@@ -627,7 +627,7 @@ config/aws/*
 config/clojure/*
 
 # docker
-config/docker/docker.gitlab_login.sh
+config/docker/*
 
 # emacs
 config/emacs/*
@@ -643,16 +643,19 @@ config/git/*
 config/htop/*
 
 # iterm2
-config/iterm2/AppSupport
+config/iterm2/*
 
 # kube
 config/kube/*
 
 # lazydocker
+config/lazydocker/*
 
 # p10k
+config/p10k/*
 
 # peco
+config/peco/*
 
 # python
 config/python/*

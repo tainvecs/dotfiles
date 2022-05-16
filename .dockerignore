@@ -12,9 +12,6 @@ config/*
 config/*/*
 
 !config/**/init.el
-!config/**/keymap.itermkeymap
-!config/**/profile-default.json
-!config/**/.p10k.zsh
 !config/**/.tmux.conf
 !config/**/.vimrc
 !config/**/.zshrc*
