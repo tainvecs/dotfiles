@@ -77,6 +77,17 @@ AWS_LOCAL_CONFIG_DST="$DOTFILES_CONFIG/aws/config"
 
 
 # ------------------------------------------------------------------------------
+# emacs
+# ------------------------------------------------------------------------------
+
+
+# config -> local
+EMACS_LOCAL_CONFIG_SRC="$DOTFILES_LOCAL/config/emacs/init.el.local"
+EMACS_LOCAL_CONFIG_DST="$DOTFILES_CONFIG/emacs/init.el.local"
+[[ -L $EMACS_LOCAL_CONFIG_SRC || -f $EMACS_LOCAL_CONFIG_DST ]] || ln -s $EMACS_LOCAL_CONFIG_SRC $EMACS_LOCAL_CONFIG_DST
+
+
+# ------------------------------------------------------------------------------
 # git: delta
 # ------------------------------------------------------------------------------
 
