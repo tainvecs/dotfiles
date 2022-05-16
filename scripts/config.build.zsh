@@ -98,8 +98,8 @@ GIT_THEME_DST="$DOTFILES_CONFIG/git/themes.gitconfig"
 [[ -f $GIT_THEME_SRC ]] && [[ ! -f $GIT_THEME_DST ]] && ln -s $GIT_THEME_SRC $GIT_THEME_DST
 
 # config -> local
-GIT_LOCAL_CONFIG_SRC="$DOTFILES_LOCAL/config/git/config.local"
-GIT_LOCAL_CONFIG_DST="$DOTFILES_CONFIG/git/config.local"
+GIT_LOCAL_CONFIG_SRC="$DOTFILES_LOCAL/config/git/config"
+GIT_LOCAL_CONFIG_DST="$DOTFILES_CONFIG/git/config"
 [[ -L $GIT_LOCAL_CONFIG_DST || -f $GIT_LOCAL_CONFIG_DST ]] || ln -s $GIT_LOCAL_CONFIG_SRC $GIT_LOCAL_CONFIG_DST
 
 

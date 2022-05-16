@@ -638,7 +638,6 @@ config/gcp/*
 
 # git
 config/git/*
-!config/git/config
 
 # htop
 config/htop/*
