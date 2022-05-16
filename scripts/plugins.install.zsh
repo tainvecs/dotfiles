@@ -31,5 +31,5 @@ source $ZINIT_HOME/zinit.git/zinit.zsh
 # ------------------------------------------------------------------------------
 
 
-source $DOTFILES_CONFIG/zsh/.zshrc_plugins.zsh
+source <( sed "s/wait\"[^\"]*\"/trigger-load/g" $DOTFILES_CONFIG/zsh/.zshrc_plugins.zsh )
 zsh

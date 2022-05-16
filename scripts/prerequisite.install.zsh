@@ -39,10 +39,10 @@ elif [[ $OS_TYPE = "Linux" ]]; then  # linux: apt-get, unzip and curl
     # curl
     if type sudo >/dev/null; then
         sudo apt-get update
-        sudo apt-get install curl
+        sudo apt-get install -y unzip curl
     else
         apt-get update
-        apt-get install unzip curl
+        apt-get install -y unzip curl
     fi
 
 fi
