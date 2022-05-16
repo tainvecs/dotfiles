@@ -130,6 +130,17 @@ P10K_LOCAL_CONFIG_DST="$DOTFILES_CONFIG/p10k/.p10k.zsh.local"
 
 
 # ------------------------------------------------------------------------------
+# python
+# ------------------------------------------------------------------------------
+
+
+# config -> local
+PYTHON_LOCAL_CONFIG_SRC="$DOTFILES_LOCAL/config/python/.pythonrc"
+PYTHON_LOCAL_CONFIG_DST="$DOTFILES_CONFIG/python/.pythonrc"
+[[ -L $PYTHON_LOCAL_CONFIG_DST || -f $PYTHON_LOCAL_CONFIG_DST ]] || ln -s $PYTHON_LOCAL_CONFIG_SRC $PYTHON_LOCAL_CONFIG_DST
+
+
+# ------------------------------------------------------------------------------
 # ssh
 # ------------------------------------------------------------------------------
 

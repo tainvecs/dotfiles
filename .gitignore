@@ -642,16 +642,31 @@ config/git/*
 # htop
 config/htop/*
 
-# iterm
+# iterm2
 config/iterm2/AppSupport
 
 # kube
 config/kube/*
 
+# lazydocker
+
+# p10k
+
+# peco
+
+# python
+config/python/*
+
 # ssh
 config/ssh/*
 !config/ssh/*/
 config/ssh/*/*
+
+# tmux
+
+# vim
+config/vim/*
+!config/.vimrc
 
 # vpn
 config/vpn/*
