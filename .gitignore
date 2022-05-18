@@ -676,6 +676,7 @@ config/vpn/*
 
 !config/**/.gitkeep
 config/**/*.local
+config/configstore
 
 
 # ----- deployment
@@ -691,6 +692,7 @@ home/*/*/*
 home/*/*/*/*
 
 home/.autoenv/*
+home/.emacs/auto-save-list
 home/.python/.pyenv/*
 home/.vim/bundle/*
 home/.zsh/.zinit/*
