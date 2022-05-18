@@ -102,11 +102,11 @@ fi
 
 
 function ln-prune-dry-run(){
-    find -L . -maxdepth 1 -type l -print
+    find -L . -maxdepth $1 -type l -print
 }
 
 function ln-prune(){
-    for f in `find -L . -maxdepth 1 -type l`; do unlink $f; done
+    for f in `find -L . -maxdepth $1 -type l`; do unlink $f; done
 }
 
 
