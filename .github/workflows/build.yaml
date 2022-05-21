@@ -20,10 +20,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Get Current Timestamp
+        id: timestamp
+        run: echo "::set-output name=timestamp::$(date +'%Y-%m-%dT%H:%M:%S_%z')"
+
       - name: Build Docker image
         run: bash ./deployment/docker_build_ci.sh
         env:
           BUILD_VERSION: ${{ github.ref_name }}
-          BUILD_DATE: $(date +'%Y-%m-%d_T%H-%M-%S_%z')
+          BUILD_DATE: ${{ steps.timestamp.outputs.timestamp }}
           VCS_REF: ${{ github.sha }}
           DOCKER_TAG: ${{ github.ref_name }}
