@@ -22,8 +22,15 @@ sed "s|%%CLONE_DOTFILES_REPO_CMD%%|$CLONE_DOTFILES_REPO_CMD|g; s|%%RUN_BOOTSTRAP
 # build docker image
 docker build \
        -f "$DOTFILES_ROOT/deployment/Dockerfile.ci" \
-       -t "tainvecs/dotfiles:$DOCKER_TAG" \
+       -t "ghcr.io/tainvecs/dotfiles:$DOCKER_TAG" \
        --build-arg BUILD_VERSION="$BUILD_VERSION" \
        --build-arg BUILD_DATE="$BUILD_DATE" \
        --build-arg VCS_REF="$VCS_REF" \
        .
+
+# tag with latest
+docker tag "ghcr.io/tainvecs/dotfiles:$DOCKER_TAG" "ghcr.io/tainvecs/dotfiles:latest"
+
+# push to github container registry
+docker push "ghcr.io/tainvecs/dotfiles:$DOCKER_TAG"
+docker push "ghcr.io/tainvecs/dotfiles:latest"
