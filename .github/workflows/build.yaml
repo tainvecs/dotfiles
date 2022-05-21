@@ -21,9 +21,9 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Docker image
-        run: sh ./deployment/docker_build_ci.sh
+        run: bash ./deployment/docker_build_ci.sh
         env:
-          BUILD_VERSION: "$GITHUB_REF_NAME"
-          BUILD_DATE: "$(date +'%Y-%m-%d_T%H-%M-%S_%z')"
-          VCS_REF: "$GITHUB_SHA"
-          DOCKER_TAG: "$GITHUB_REF_NAME"
+          BUILD_VERSION: ${{ github.ref_name }}
+          BUILD_DATE: $(date +'%Y-%m-%d_T%H-%M-%S_%z')
+          VCS_REF: ${{ github.sha }}
+          DOCKER_TAG: ${{ github.ref_name }}
