@@ -34,3 +34,14 @@ Alternatively, you can also apply all the templates in `local/config_template` b
 ```zsh
 cd ~/dotfiles && env DOTFILES_APPLY_LOCAL_CONFIG_TEMPLATES=true zsh ./scripts/bootstrap.zsh
 ```
+
+## Test with Docker
+To test this package and tune your local config, pull the docker image and run it locally. 
+```zsh
+docker pull ghcr.io/tainvecs/dotfiles:latest
+docker run --rm -it ghcr.io/tainvecs/dotfiles:latest
+```
+Alternatively, you can also build the image locally. 
+```zsh
+cd ~/dotfiles && sh ./deployment/docker_build_local.sh
+```
