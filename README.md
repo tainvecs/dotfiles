@@ -4,64 +4,49 @@ Setting up the terminal on a computer, including all the configuration, app, and
 
 Project `dotfiles` provides a framework to do all the setups with a bootstrap script `scripts/bootstrap.zsh`.
 
-Besides, docker image `ghcr.io/tainvecs/dotfiles:latest` also provides a test environment for typing out this project with the config templates. 
+Besides, docker image `ghcr.io/tainvecs/dotfiles:latest` also provides a test environment for typing out this project with the config templates.
 
 ## Prerequisite
 - macOS or Ubuntu
 - zsh
+- git
 
-## Installation
-### Clone dotfiles to Home Directory
-```zsh
-git clone https://github.com/tainvecs/dotfiles.git ~/dotfiles
-```
-### Source dotfiles Zsh Environment Variables
-Create a symbolic link to dotfiles `.zshenv` at home directory
-```zsh
-ln -s ~/dotfiles/config/zsh/.zshenv ~/.zshenv
-```
-Alternatively, source the dotfiles `.zshenv` from your `.zshenv`
-```zsh
-echo "source ~/dotfiles/config/zsh/.zshenv" >> ~/.zshenv
-```
-### Run Bootstrap Script
-The bootstrap script will go through the **prerequisite installation**, **resources download**, **home and config setup**, **application installation**, **vim and emacs setup**, and **plugin installation**. 
-```zsh
-cd ~/dotfiles && zsh ./scripts/bootstrap.zsh
-```
-You can create your local config files in `local/config` by referencing `local/config_template`. 
-Alternatively, you can also apply all the templates in `local/config_template` by setting the env `DOTFILES_APPLY_LOCAL_CONFIG_TEMPLATES`. 
-```zsh
-cd ~/dotfiles && env DOTFILES_APPLY_LOCAL_CONFIG_TEMPLATES=true zsh ./scripts/bootstrap.zsh
-```
+## Basic Installation
+
+Install dotfiles by running the `curl` or `wget` commands in terminal.
+
+| Method    | Command                                                                                              |
+| :-------- | :--------------------------------------------------------------------------------------------------- |
+| **curl**  | `sh -c "$(curl -fsSL https://raw.githubusercontent.com/tainvecs/dotfiles/main/scripts/install.zsh)"` |
+| **wget**  | `sh -c "$(wget -O- https://raw.githubusercontent.com/tainvecs/dotfiles/main/scripts/install.zsh)"`   |
 
 ## Test with Docker
-To test this package and tune your local config, pull the docker image and run it locally. 
+To test this package and tune your local config, pull the docker image and run it locally.
 ```zsh
 docker pull ghcr.io/tainvecs/dotfiles:latest
 docker run --rm -it ghcr.io/tainvecs/dotfiles:latest
 ```
-Alternatively, you can also build the image locally. 
+Alternatively, you can also build the image locally.
 ```zsh
 cd ~/dotfiles && sh ./deployment/docker_build_local.sh
 ```
 
 ## Config Directory
-- Environment variable `DOTFILES[CONFIG_DIR]` is used as the config directory for installed applications. By default, it is set to `~/dotfiles/config`. 
+- Environment variable `DOTFILES[CONFIG_DIR]` is used as the config directory for installed applications. By default, it is set to `~/dotfiles/config`.
 - `XDG_CONFIG_HOME` is also set to `${DOTFILES[CONFIG_DIR]}` which is `~/dotfiles/config` by default.
-- The script `dotfiles/scripts/config.build.zsh` will build the config directory by linking local config files from `dotfiles/local/config`. You can run the script if there is any symbolic link missing. 
+- The script `dotfiles/scripts/config.build.zsh` will build the config directory by linking local config files from `dotfiles/local/config`. You can run the script if there is any symbolic link missing.
   ```zsh
   cd ~/dotfiles && zsh ./scripts/config.build.zsh
   ```
-- You can create your local config files in `local/config` by referencing `local/config_template`. Alternatively, you can also apply all the templates in `local/config_template` by setting the env `DOTFILES_APPLY_LOCAL_CONFIG_TEMPLATES`. 
+- You can create your local config files in `local/config` by referencing `local/config_template`. Alternatively, you can also apply all the templates in `local/config_template` by setting the env `DOTFILES_APPLY_LOCAL_CONFIG_TEMPLATES`.
   ```zsh
   cd ~/dotfiles && env DOTFILES_APPLY_LOCAL_CONFIG_TEMPLATES=true zsh ./scripts/config.build.zsh
   ```
 
 ## Home Directory
-- Environment variable `DOTFILES[HOME_DIR]` is used as the home directory for installed applications. By default, it is set to `~/dotfiles/home`. 
+- Environment variable `DOTFILES[HOME_DIR]` is used as the home directory for installed applications. By default, it is set to `~/dotfiles/home`.
 - `ZDOTDIR` is also set to `${DOTFILES[HOME_DIR]}/.zsh` which is `~/dotfiles/home/.zsh` by default.
-- The script `dotfiles/scripts/home.build.zsh` will build the home directory by creating the missing subdirectory and linking config files from `dotfiles/config`. You can run the script if there is any subdirectory missing. 
+- The script `dotfiles/scripts/home.build.zsh` will build the home directory by creating the missing subdirectory and linking config files from `dotfiles/config`. You can run the script if there is any subdirectory missing.
   ```zsh
   cd ~/dotfiles && zsh ./scripts/home.build.zsh
   ```
