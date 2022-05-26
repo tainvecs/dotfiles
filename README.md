@@ -12,9 +12,7 @@ Besides, docker image `ghcr.io/tainvecs/dotfiles:latest` also provides a test en
 - git
 
 ## Basic Installation
-
-Install dotfiles by running the `curl` or `wget` commands in terminal.
-
+Install dotfiles by running the `curl` or `wget` command in the terminal.
 | Method    | Command                                                                                              |
 | :-------- | :--------------------------------------------------------------------------------------------------- |
 | **curl**  | `sh -c "$(curl -fsSL https://raw.githubusercontent.com/tainvecs/dotfiles/main/scripts/install.zsh)"` |
@@ -50,3 +48,9 @@ cd ~/dotfiles && sh ./deployment/docker_build_local.sh
   ```zsh
   cd ~/dotfiles && zsh ./scripts/home.build.zsh
   ```
+
+## Reference
+- [thoughtbot / dotfiles](https://github.com/thoughtbot/dotfiles)
+- [mathiasbynens / dotfiles](https://github.com/mathiasbynens/dotfiles)
+- [ohmyzsh / ohmyzsh](https://github.com/ohmyzsh/ohmyzsh)
+- [gpakosz / .tmux](https://github.com/gpakosz/.tmux)
