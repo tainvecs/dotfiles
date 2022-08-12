@@ -4,7 +4,7 @@ Setting up the terminal on a computer, including all the configuration, app, and
 
 Project `dotfiles` provides a framework to do all the setups with a bootstrap script `scripts/bootstrap.zsh`.
 
-Besides, docker image `ghcr.io/tainvecs/dotfiles:latest` also provides a test environment for typing out this project with the config templates.
+Besides, docker image `ghcr.io/tainvecs/dotfiles:latest` also provides a test environment for trying out this project with the config templates.
 
 ## Prerequisite
 - macOS or Ubuntu
