@@ -147,6 +147,34 @@ function ms-doc-delete-all(){
     curl -XDELETE "$MS_HOST/indexes/$1/documents"
 }
 
+# $1: index name
+# https://docs.meilisearch.com/reference/api/settings.html#get-settings
+function ms-settings-ls(){
+
+    if [[ $1 == '-h' || $1 == '--help' ]]; then
+        echo 'Get the settings of an index.'
+        echo '$1: index name'
+        return 0
+    fi
+
+    curl -XGET "$MS_HOST/indexes/$1/settings"
+}
+
+# $1: index name
+# https://docs.meilisearch.com/reference/api/settings.html#update-settings
+function ms-settings-update(){
+
+    if [[ $1 == '-h' || $1 == '--help' ]]; then
+        echo 'Update the settings of an index.'
+        echo '$1: index name'
+        return 0
+    fi
+
+    curl -XPATCH "$MS_HOST/indexes/$1/settings" \
+         -H 'Content-Type: application/json' \
+         -d"@"$2
+}
+
 # $1: limit, $2: task id of the first task returned
 # https://docs.meilisearch.com/reference/api/tasks.html#get-tasks
 function ms-task-ls(){
