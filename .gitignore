@@ -674,6 +674,9 @@ config/vim/*
 # vpn
 config/vpn/*
 
+# misc
+config/dlv/*
+
 !config/**/.gitkeep
 config/**/*.local
 config/configstore
