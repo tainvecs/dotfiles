@@ -160,13 +160,13 @@ function ms-settings-ls(){
     curl -XGET "$MS_HOST/indexes/$1/settings"
 }
 
-# $1: index name
+# $1: index name, $2: path to updated settings file
 # https://docs.meilisearch.com/reference/api/settings.html#update-settings
 function ms-settings-update(){
 
     if [[ $1 == '-h' || $1 == '--help' ]]; then
         echo 'Update the settings of an index.'
-        echo '$1: index name'
+        echo '$1: index name, $2: path to updated settings file'
         return 0
     fi
 

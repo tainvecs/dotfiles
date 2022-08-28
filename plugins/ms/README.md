@@ -1,9 +1,9 @@
 # Meilisearch Zsh Terminal Plugin
 
-This is zsh plugin build for Meilisearch API request in Terminal.
+This is a zsh plugin built for Meilisearch API requests in Terminal.
 
-It is built based on `curl` and is meant to help users quickly test Meilisearch
-from Terminal.
+It is written based on `curl` and is meant to help users quickly test
+Meilisearch from Terminal.
 
 
 ## Environment
@@ -70,10 +70,10 @@ Run functions with positional arguments to send request to Meilisearch.
 
 
 ### Settings
-| functions            | description                      | positional arguments | reference                                                                        |
-|:---------------------|----------------------------------|----------------------|----------------------------------------------------------------------------------|
-| `ms-settings-ls`     | Get the settings of an index.    | $1: index name       | [link](https://docs.meilisearch.com/reference/api/settings.html#get-settings)    |
-| `ms-settings-update` | Update the settings of an index. | $1: index name       | [link](https://docs.meilisearch.com/reference/api/settings.html#update-settings) |
+| functions            | description                      | positional arguments                              | reference                                                                        |
+|:---------------------|----------------------------------|---------------------------------------------------|----------------------------------------------------------------------------------|
+| `ms-settings-ls`     | Get the settings of an index.    | $1: index name                                    | [link](https://docs.meilisearch.com/reference/api/settings.html#get-settings)    |
+| `ms-settings-update` | Update the settings of an index. | $1: index name, $2: path to updated settings file | [link](https://docs.meilisearch.com/reference/api/settings.html#update-settings) |
 
 
 ### Task
