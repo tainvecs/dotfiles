@@ -4,6 +4,7 @@
 <br>它基於 `curl` 為 `Meilisearch` API Request 提供更加簡易的介面，以便於使用者在終端機環境中使用與測試
 `Meilisearch`。
 
+*Read this in other languages: [English](README.md), [正體中文](README.zh.md).*
 
 ## 環境設置
 - `macOS` 12.0.1

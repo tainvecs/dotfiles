@@ -5,6 +5,7 @@ This is a zsh plugin built for Meilisearch API requests in Terminal.
 It is written based on `curl` and is meant to help users quickly test
 Meilisearch from Terminal.
 
+*Read this in other languages: [English](README.md), [正體中文](README.zh.md).*
 
 ## Environment
 - `macOS` 12.0.1
