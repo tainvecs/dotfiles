@@ -55,7 +55,7 @@ Run functions with positional arguments to send request to Meilisearch.
 | functions         | description      | positional arguments                 | reference                                                                        |
 |:------------------|------------------|--------------------------------------|----------------------------------------------------------------------------------|
 | `ms-index-ls`     | List all indexes | $1: offset, $2: limit                | [link](https://docs.meilisearch.com/reference/api/indexes.html#list-all-indexes) |
-| `ms-index-create` | Create an index  | $1: index name, $2: primary key name | [link](https://docs.meilisearch.com/reference/api/indexes.html#create-an-index)  |
+| `ms-index-create` | Create an index  | $1: index name,<br>$2: primary key name | [link](https://docs.meilisearch.com/reference/api/indexes.html#create-an-index)  |
 | `ms-index-delete` | Delete an index  | $1: index name                       | [link](https://docs.meilisearch.com/reference/api/indexes.html#delete-an-index)  |
 
 
