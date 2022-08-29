@@ -7,14 +7,16 @@ Meilisearch from Terminal.
 
 
 ## Environment
-- macOS 12.0.1
-- zsh 5.8
-- curl 7.77.0
+- `macOS` 12.0.1
+- `zsh` 5.8
+- `curl` 7.77.0
+- `Meilisearch` 0.27.2
 
 
 ## Install
-The prerequisite for this plugin is `curl`. Please install it if you haven't
-gotten it.
+The prerequisite for this plugin is `curl`. Please refer to installation guide
+on the [official website](https://curl.se/download.html) if you haven't gotten
+it.
 
 To use the plugin out of the box, you can source it from your terminal.
 ```bash
@@ -36,20 +38,22 @@ Please update the environment variable before running plugin functions.
 
 
 ## Functions
-To see the description or arguments for a certain function, you can run the
-following command.
-```bash
-<function_name> -h
-```
-or
-```bash
-<function_name> --help
-```
+- Run functions with positional arguments to send request to Meilisearch.
+  ```bash
+  <function_name> $1 $2...
+  ```
 
-Run functions with positional arguments to send request to Meilisearch.
-```bash
-<function_name> $1 $2...
-```
+- Besides, you can run a function with `-h` or `--help` arguments and see the
+description or available positional arguments for it.
+  ```bash
+  <function_name> --help
+  ```
+- offset
+  - an argument to skip a certain amount of result from the head
+
+- limit
+  - an argument to limit how many result to return
+
 
 ### Index
 | functions         | description      | positional arguments                           | reference                                                                        |
