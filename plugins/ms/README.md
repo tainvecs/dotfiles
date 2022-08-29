@@ -52,35 +52,35 @@ Run functions with positional arguments to send request to Meilisearch.
 ```
 
 ### Index
-| functions         | description      | positional arguments                 | reference                                                                        |
-|:------------------|------------------|--------------------------------------|----------------------------------------------------------------------------------|
-| `ms-index-ls`     | List all indexes | $1: offset, $2: limit                | [link](https://docs.meilisearch.com/reference/api/indexes.html#list-all-indexes) |
-| `ms-index-create` | Create an index  | $1: index name,<br>$2: primary key name | [link](https://docs.meilisearch.com/reference/api/indexes.html#create-an-index)  |
-| `ms-index-delete` | Delete an index  | $1: index name                       | [link](https://docs.meilisearch.com/reference/api/indexes.html#delete-an-index)  |
+| functions         | description      | positional arguments                           | reference                                                                        |
+|:------------------|------------------|------------------------------------------------|----------------------------------------------------------------------------------|
+| `ms-index-ls`     | List all indexes | (optional) $1: offset,<br>(optional) $2: limit | [link](https://docs.meilisearch.com/reference/api/indexes.html#list-all-indexes) |
+| `ms-index-create` | Create an index  | $1: index name,<br>$2: primary key name        | [link](https://docs.meilisearch.com/reference/api/indexes.html#create-an-index)  |
+| `ms-index-delete` | Delete an index  | $1: index name                                 | [link](https://docs.meilisearch.com/reference/api/indexes.html#delete-an-index)  |
 
 
 ### Documents
-| functions           | description                                                                                                                  | positional arguments                     | reference                                                                                  |
-|:--------------------|------------------------------------------------------------------------------------------------------------------------------|------------------------------------------|--------------------------------------------------------------------------------------------|
-| `ms-doc-get-by-id`  | Get one document using its unique id.                                                                                        | $1: index name,<br>$2: doc id            | [link](https://docs.meilisearch.com/reference/api/documents.html#get-one-document)         |
-| `ms-doc-get-asc`    | Get documents by batch. Documents are ordered by Meilisearch depending on the hash of their id.                              | $1: index name,<br>$2: offset, $3: limit | [link](https://docs.meilisearch.com/reference/api/documents.html#get-documents)            |
-| `ms-doc-index`      | Add a list of documents or replace them if they already exist. <br>If the provided index does not exist, it will be created. | $1: index name,<br>$2: path to data      | [link](https://docs.meilisearch.com/reference/api/documents.html#add-or-replace-documents) |
-| `ms-doc-delete`     | Delete one document based on its unique id.                                                                                  | $1: index name,<br>$2: doc id            | [link](https://docs.meilisearch.com/reference/api/documents.html#delete-one-document)      |
-| `ms-doc-delete-all` | Delete all documents in the specified index.                                                                                 | $1: index name                           | [link](https://docs.meilisearch.com/reference/api/documents.html#delete-all-documents)     |
+| functions           | description                                                                                                                 | positional arguments                                              | reference                                                                                  |
+|:--------------------|-----------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------|--------------------------------------------------------------------------------------------|
+| `ms-doc-get-by-id`  | Get one document using its unique id.                                                                                       | $1: index name,<br>$2: doc id                                     | [link](https://docs.meilisearch.com/reference/api/documents.html#get-one-document)         |
+| `ms-doc-get-asc`    | Get documents by batch.<br>Documents are ordered by Meilisearch depending on the hash of their id.                          | $1: index name,<br>(optional) $2: offset,<br>(optional) $3: limit | [link](https://docs.meilisearch.com/reference/api/documents.html#get-documents)            |
+| `ms-doc-index`      | Add a list of documents or replace them if they already exist.<br>If the provided index does not exist, it will be created. | $1: index name,<br>$2: path to data                               | [link](https://docs.meilisearch.com/reference/api/documents.html#add-or-replace-documents) |
+| `ms-doc-delete`     | Delete one document based on its unique id.                                                                                 | $1: index name,<br>$2: doc id                                     | [link](https://docs.meilisearch.com/reference/api/documents.html#delete-one-document)      |
+| `ms-doc-delete-all` | Delete all documents in the specified index.                                                                                | $1: index name                                                    | [link](https://docs.meilisearch.com/reference/api/documents.html#delete-all-documents)     |
 
 
 ### Settings
-| functions            | description                      | positional arguments                              | reference                                                                        |
-|:---------------------|----------------------------------|---------------------------------------------------|----------------------------------------------------------------------------------|
-| `ms-settings-ls`     | Get the settings of an index.    | $1: index name                                    | [link](https://docs.meilisearch.com/reference/api/settings.html#get-settings)    |
-| `ms-settings-update` | Update the settings of an index. | $1: index name, $2: path to updated settings file | [link](https://docs.meilisearch.com/reference/api/settings.html#update-settings) |
+| functions            | description                      | positional arguments                                 | reference                                                                        |
+|:---------------------|----------------------------------|------------------------------------------------------|----------------------------------------------------------------------------------|
+| `ms-settings-ls`     | Get the settings of an index.    | $1: index name                                       | [link](https://docs.meilisearch.com/reference/api/settings.html#get-settings)    |
+| `ms-settings-update` | Update the settings of an index. | $1: index name,<br>$2: path to updated settings file | [link](https://docs.meilisearch.com/reference/api/settings.html#update-settings) |
 
 
 ### Task
-| functions           | description                                   | positional arguments                              | reference                                                                  |
-|:--------------------|-----------------------------------------------|---------------------------------------------------|----------------------------------------------------------------------------|
-| `ms-task-ls`        | List all tasks globally, regardless of index. | $1: limit, $2: task id of the first task returned | [link](https://docs.meilisearch.com/reference/api/tasks.html#get-tasks)    |
-| `ms-task-get-by-id` | Get a single task.                            | $1: task id                                       | [link](https://docs.meilisearch.com/reference/api/tasks.html#get-one-task) |
+| functions           | description                                   | positional arguments                                                     | reference                                                                  |
+|:--------------------|-----------------------------------------------|--------------------------------------------------------------------------|----------------------------------------------------------------------------|
+| `ms-task-ls`        | List all tasks globally, regardless of index. | (optional) $1: limit,<br>(optional) $2: task id of the first task returned | [link](https://docs.meilisearch.com/reference/api/tasks.html#get-tasks)    |
+| `ms-task-get-by-id` | Get a single task.                            | $1: task id                                                              | [link](https://docs.meilisearch.com/reference/api/tasks.html#get-one-task) |
 
 
 ## Reference

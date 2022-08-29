@@ -53,21 +53,21 @@ echo "source $(realpath .ms.plugin.zsh)" >> ~/.zshrc
 
 
 ### Index (索引)
-| functions         | 簡介             | positional arguments                    | 參考連結                                                                         |
-|:------------------|:-----------------|:----------------------------------------|:---------------------------------------------------------------------------------|
-| `ms-index-ls`     | 列出所有 indexes | $1: offset,<br>$2: limit                | [link](https://docs.meilisearch.com/reference/api/indexes.html#list-all-indexes) |
-| `ms-index-create` | 建立一個 index   | $1: index 名稱,<br>$2: primary key 名稱 | [link](https://docs.meilisearch.com/reference/api/indexes.html#create-an-index)  |
-| `ms-index-delete` | 刪除一個 index   | $1: index 名稱                          | [link](https://docs.meilisearch.com/reference/api/indexes.html#delete-an-index)  |
+| functions         | 簡介             | positional arguments                         | 參考連結                                                                         |
+|:------------------|:-----------------|:---------------------------------------------|:---------------------------------------------------------------------------------|
+| `ms-index-ls`     | 列出所有 indexes | (optional) $1: offset,<br>(optional) $2: limit | [link](https://docs.meilisearch.com/reference/api/indexes.html#list-all-indexes) |
+| `ms-index-create` | 建立一個 index   | $1: index 名稱,<br>$2: primary key 名稱      | [link](https://docs.meilisearch.com/reference/api/indexes.html#create-an-index)  |
+| `ms-index-delete` | 刪除一個 index   | $1: index 名稱                               | [link](https://docs.meilisearch.com/reference/api/indexes.html#delete-an-index)  |
 
 
 ### Documents (文檔)
-| functions           | 簡介                                                                                                                   | positional arguments                        | 參考連結                                                                                   |
-|:--------------------|:-----------------------------------------------------------------------------------------------------------------------|:--------------------------------------------|:-------------------------------------------------------------------------------------------|
-| `ms-doc-get-by-id`  | 使用 primary key 取得 document。                                                                                       | $1: index 名稱,<br>$2: document id          | [link](https://docs.meilisearch.com/reference/api/documents.html#get-one-document)         |
-| `ms-doc-get-asc`    | 取得批量 documents。<br>Documents 的排序是根據其在 `Meilisearch` 中的 hashed doc id。                                  | $1: index 名稱,<br>$2: offset,<br>$3: limit | [link](https://docs.meilisearch.com/reference/api/documents.html#get-documents)            |
-| `ms-doc-index`      | 使用原始資料集建制索引。<br>如果索引中存在相同 primary key 的 documents 則之將被取代。<br>若索引不存在，則會自動建立。 | $1: index 名稱,<br>$2: 原始資料位置         | [link](https://docs.meilisearch.com/reference/api/documents.html#add-or-replace-documents) |
-| `ms-doc-delete`     | 刪除特定 index 中所指定的一個 document                                                                                 | $1: index 名稱,<br>$2: doc id               | [link](https://docs.meilisearch.com/reference/api/documents.html#delete-one-document)      |
-| `ms-doc-delete-all` | 刪除特定 index 中所有的 documents                                                                                      | $1: index 名稱                              | [link](https://docs.meilisearch.com/reference/api/documents.html#delete-all-documents)     |
+| functions           | 簡介                                                                                                                   | positional arguments                                            | 參考連結                                                                                   |
+|:--------------------|:-----------------------------------------------------------------------------------------------------------------------|:----------------------------------------------------------------|:-------------------------------------------------------------------------------------------|
+| `ms-doc-get-by-id`  | 使用 primary key 取得 document。                                                                                       | $1: index 名稱,<br>$2: document id                              | [link](https://docs.meilisearch.com/reference/api/documents.html#get-one-document)         |
+| `ms-doc-get-asc`    | 取得批量 documents。<br>Documents 的排序是根據其在 `Meilisearch` 中的 hashed doc id。                                  | $1: index 名稱,<br>(optional) $2: offset,<br>(optional) $3: limit | [link](https://docs.meilisearch.com/reference/api/documents.html#get-documents)            |
+| `ms-doc-index`      | 使用原始資料集建制索引。<br>如果索引中存在相同 primary key 的 documents 則之將被取代。<br>若索引不存在，則會自動建立。 | $1: index 名稱,<br>$2: 原始資料位置                             | [link](https://docs.meilisearch.com/reference/api/documents.html#add-or-replace-documents) |
+| `ms-doc-delete`     | 刪除特定 index 中所指定的一個 document                                                                                 | $1: index 名稱,<br>$2: doc id                                   | [link](https://docs.meilisearch.com/reference/api/documents.html#delete-one-document)      |
+| `ms-doc-delete-all` | 刪除特定 index 中所有的 documents                                                                                      | $1: index 名稱                                                  | [link](https://docs.meilisearch.com/reference/api/documents.html#delete-all-documents)     |
 
 
 ### Settings (index 設定)
@@ -78,10 +78,10 @@ echo "source $(realpath .ms.plugin.zsh)" >> ~/.zshrc
 
 
 ### Task
-| functions           | 簡介                       | positional arguments                                 | 參考連結                                                                   |
-|:--------------------|:---------------------------|:-----------------------------------------------------|:---------------------------------------------------------------------------|
-| `ms-task-ls`        | 列出所有 tasks。           | $1: limit,<br>$2: 從特定 task id 後開始取 (optional) | [link](https://docs.meilisearch.com/reference/api/tasks.html#get-tasks)    |
-| `ms-task-get-by-id` | 使用 task id 取得特定 task | $1: task id                                          | [link](https://docs.meilisearch.com/reference/api/tasks.html#get-one-task) |
+| functions           | 簡介                       | positional arguments                                            | 參考連結                                                                   |
+|:--------------------|:---------------------------|:----------------------------------------------------------------|:---------------------------------------------------------------------------|
+| `ms-task-ls`        | 列出所有 tasks。           | (optional) $1: limit,<br>(optional) $2: 從特定 task id 後開始取 | [link](https://docs.meilisearch.com/reference/api/tasks.html#get-tasks)    |
+| `ms-task-get-by-id` | 使用 task id 取得特定 task | $1: task id                                                     | [link](https://docs.meilisearch.com/reference/api/tasks.html#get-one-task) |
 
 
 ## Reference

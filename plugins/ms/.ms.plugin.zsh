@@ -7,13 +7,13 @@
 function join_by { local IFS="$1"; shift; echo "$*"; }
 
 
-# $1: offset, $2: limit
+# $1 (optional): offset, $2 (optional): limit
 # https://docs.meilisearch.com/reference/api/indexes.html#list-all-indexes
 function ms-index-ls(){
 
     if [[ $1 == '-h' || $1 == '--help' ]]; then
         echo 'List all indexes.'
-        echo '$1: offset, $2: limit'
+        echo '$1 (optional): offset, $2 (optional): limit'
         return 0
     fi
 
@@ -77,14 +77,14 @@ function ms-doc-get-by-id(){
     curl -XGET "$MS_HOST/indexes/$1/documents/$2"
 }
 
-# $1: index name, $2: offset, $3: limit
+# $1: index name, $2 (optional): offset, $3 (optional): limit
 # https://docs.meilisearch.com/reference/api/documents.html#get-documents
 function ms-doc-get-asc(){
 
     if [[ $1 == '-h' || $1 == '--help' ]]; then
         echo 'Get documents by batch.'
         echo 'Documents are ordered by Meilisearch depending on the hash of their id.'
-        echo '$1: index name, $2: offset, $3: limit'
+        echo '$1: index name, $2 (optional): offset, $3 (optional): limit'
         return 0
     fi
 
@@ -175,13 +175,13 @@ function ms-settings-update(){
          -d"@"$2
 }
 
-# $1: limit, $2: task id of the first task returned
+# $1 (optional): limit, $2 (optional): task id of the first task returned
 # https://docs.meilisearch.com/reference/api/tasks.html#get-tasks
 function ms-task-ls(){
 
     if [[ $1 == '-h' || $1 == '--help' ]]; then
         echo 'List all tasks globally, regardless of index. '
-        echo '$1: limit, $2: task id of the first task returned'
+        echo '$1 (optional): limit, $2 (optional): task id of the first task returned'
         return 0
     fi
 
