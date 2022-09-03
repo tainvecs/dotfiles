@@ -57,9 +57,10 @@ if [[ $OS_TYPE = "Darwin" ]]; then
         # sudo brew services start elasticsearch-full
     fi
 
-    # emacs
+    # emacs: use d12frosted/emacs-plus
     if [[ ${DOTFILES_APPS["emacs"]} = "true" ]]; then
-        brew install --cask emacs
+        brew tap d12frosted/emacs-plus
+        brew install emacs-plus
     fi
 
     # gcp
