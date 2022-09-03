@@ -86,6 +86,7 @@
 #     "dotfiles-kube"
 #     "dotfiles-mac"
 #     "dotfiles-misc"
+#     "dotfiles-ms"
 #     "dotfiles-update"
 #     "dotfiles-vim"
 
