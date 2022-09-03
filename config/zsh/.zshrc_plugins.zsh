@@ -473,6 +473,12 @@ if [[ ${DOTFILES_PLUGINS["dotfiles-misc"]} = "true" ]]; then
     zinit snippet "${DOTFILES[PLUGINS_DIR]}/misc/.misc.plugin.zsh"
 fi
 
+# dotfiles-ms
+if [[ ${DOTFILES_PLUGINS["dotfiles-ms"]} = "true" ]]; then
+    zinit ice wait"2" lucid
+    zinit snippet "${DOTFILES[PLUGINS_DIR]}/ms/.ms.plugin.zsh"
+fi
+
 # dotfiles-update
 if [[ ${DOTFILES_PLUGINS["dotfiles-update"]} = "true" ]]; then
     zinit ice wait"2" lucid

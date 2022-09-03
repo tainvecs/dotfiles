@@ -99,6 +99,11 @@ if [[ $OS_TYPE = "Darwin" ]]; then
         brew install kubectl
     fi
 
+    # meilisearch
+    if [[ ${DOTFILES_APPS["meilisearch"]} = "true" ]]; then
+        brew install meilisearch
+    fi
+
     # openvpn
     if [[ ${DOTFILES_APPS["openvpn"]} = "true" ]]; then
         brew install openvpn
@@ -301,6 +306,12 @@ elif [[ $OS_TYPE = "Linux" ]]; then
         sudo apt-get update && sudo apt-get install -y elasticsearch
         sudo systemctl enable elasticsearch.service
         # sudo service elasticsearch start
+    fi
+
+    # meilisearch
+    if [[ ${DOTFILES_APPS["meilisearch"]} = "true" ]]; then
+        sudo echo "deb [trusted=yes] https://apt.fury.io/meilisearch/ /" > /etc/apt/sources.list.d/fury.list
+        sudo apt-get update && sudo apt-get install -y meilisearch-http
     fi
 
     # kubectl

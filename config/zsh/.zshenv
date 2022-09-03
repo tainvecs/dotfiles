@@ -58,6 +58,7 @@ declare -a APPS_ARR=(
     "iterm"
     "jdk"
     # "kube"
+    # "meilisearch"
     # "openvpn"
     # "peco"
     "python"
