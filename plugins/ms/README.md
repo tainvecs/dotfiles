@@ -7,6 +7,7 @@ Meilisearch from Terminal.
 
 *Read this in other languages: [English](README.md), [正體中文](README.zh.md).*
 
+
 ## Environment
 - `macOS` 12.0.1
 - `zsh` 5.8
