@@ -1,6 +1,6 @@
 # Zsh Plugins
 
-The subdirectories are dotfiles plugins that can for dotfiles or independently.
+The subdirectories are dotfiles plugins for dotfiles or using independently.
 
 
 ## Database
@@ -8,12 +8,12 @@ The subdirectories are dotfiles plugins that can for dotfiles or independently.
 |:---------|:------------------------------------------------|
 | [aws]    | -                                               |
 | [docker] | -                                               |
-| [es]     | for elasticsearch                               |
+| [es]     | elasticsearch                                   |
 | [git]    | -                                               |
 | [kube]   | kubernates                                      |
 | [mac]    | -                                               |
 | [misc]   | miscellaneous utilities functions and aliases   |
-| [ms]     | for [meilisearch]                               |
+| [ms]     | [meilisearch]                                   |
 | [update] | for mac, linux, zinit, emacs, and python update |
 | [vim]    | -                                               |
 
