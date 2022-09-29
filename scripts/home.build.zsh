@@ -183,7 +183,20 @@ mkdir -p "$ZSH_HOME/.zinit" "$ZSH_HOME/.zsh_complete" "$ZSH_HOME/.zsh_sessions"
 # home -> config
 ZSHRC_COMPLETE_SRC="$DOTFILES_CONFIG/zsh/.zsh_complete"
 ZSHRC_COMPLETE_DST="$ZSH_HOME/.zsh_complete"
-[[ -d $ZSHRC_COMPLETE_SRC ]] && [[ ! -d $ZSHRC_COMPLETE_DST ]] && ln -s $ZSHRC_COMPLETE_SRC $ZSHRC_COMPLETE_DST
+
+if [[ -d $ZSHRC_COMPLETE_SRC ]]; then
+
+    # src_file
+    for src_file in $ZSHRC_COMPLETE_SRC/_* ; do
+
+        src_file_name=$( echo $src_file | sed "s#${ZSHRC_COMPLETE_SRC}/##" )
+
+        [[ -f $ZSHRC_COMPLETE_SRC/$src_file_name ]] && \
+            [[ ! -f $ZSHRC_COMPLETE_DST/$src_file_name ]] &&
+            ln -s $ZSHRC_COMPLETE_SRC/$src_file_name $ZSHRC_COMPLETE_DST/$src_file_name
+
+    done
+fi
 
 
 # ------------------------------------------------------------------------------
