@@ -178,7 +178,7 @@ mkdir -p $Z_HOME
 
 # home
 ZSH_HOME="$DOTFILES_HOME/.zsh"
-mkdir -p "$ZSH_HOME/.zinit" "$ZSH_HOME/.zsh_complete" "$ZSH_HOME/.zsh_sessions"
+mkdir -p "$ZSH_HOME/.zinit" "$ZSH_HOME/.zsh_sessions"
 
 # home -> config
 ZSHRC_COMPLETE_SRC="$DOTFILES_CONFIG/zsh/.zsh_complete"
