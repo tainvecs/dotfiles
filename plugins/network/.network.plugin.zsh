@@ -165,6 +165,8 @@ if type ssh >/dev/null; then
 
     # has ssh access through passwords
     # https://askubuntu.com/questions/984912/how-to-get-the-list-of-all-users-who-can-access-a-server-via-ssh
-    alias ssh-users-haspassword='sudo cat /etc/shadow | grep "^[^:]*:[^\*!]" | cut -d ":" -f 1 | sort'
+    if [[ -f /etc/shadow ]]; then
+        alias ssh-users-haspassword='sudo cat /etc/shadow | grep "^[^:]*:[^\*!]" | cut -d ":" -f 1 | sort'
+    fi
 
 fi
