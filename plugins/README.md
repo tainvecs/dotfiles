@@ -36,6 +36,7 @@ The subdirectories are dotfiles plugins for dotfiles or using independently.
 [aws]: ./aws
 [docker]: ./docker
 [es]: ./es
+[fail2ban]: ./fail2ban
 [git]: ./git
 [kube]: ./kube
 [mac]: ./mac
