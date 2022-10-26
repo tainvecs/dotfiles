@@ -4,18 +4,19 @@ The subdirectories are dotfiles plugins for dotfiles or using independently.
 
 
 ## Database
-| name     | description                                     |
-|:---------|:------------------------------------------------|
-| [aws]    | -                                               |
-| [docker] | -                                               |
-| [es]     | elasticsearch                                   |
-| [git]    | -                                               |
-| [kube]   | kubernates                                      |
-| [mac]    | -                                               |
-| [misc]   | miscellaneous utilities functions and aliases   |
-| [ms]     | [meilisearch]                                   |
-| [update] | for mac, linux, zinit, emacs, and python update |
-| [vim]    | -                                               |
+| name      | description                                     |
+|:----------|:------------------------------------------------|
+| [aws]     | -                                               |
+| [docker]  | -                                               |
+| [es]      | elasticsearch                                   |
+| [git]     | -                                               |
+| [kube]    | kubernates                                      |
+| [mac]     | -                                               |
+| [misc]    | miscellaneous utilities functions and aliases   |
+| [ms]      | [meilisearch]                                   |
+| [network] | ip, port, fail2ban, pppoeconf, and ssh          |
+| [update]  | for mac, linux, zinit, emacs, and python update |
+| [vim]     | -                                               |
 
 
 ## TODO
