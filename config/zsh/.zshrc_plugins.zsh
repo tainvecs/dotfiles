@@ -479,6 +479,12 @@ if [[ ${DOTFILES_PLUGINS["dotfiles-ms"]} = "true" ]]; then
     zinit snippet "${DOTFILES[PLUGINS_DIR]}/ms/.ms.plugin.zsh"
 fi
 
+# dotfiles-network
+if [[ ${DOTFILES_PLUGINS["dotfiles-network"]} = "true" ]]; then
+    zinit ice wait"2" lucid
+    zinit snippet "${DOTFILES[PLUGINS_DIR]}/network/.network.plugin.zsh"
+fi
+
 # dotfiles-update
 if [[ ${DOTFILES_PLUGINS["dotfiles-update"]} = "true" ]]; then
     zinit ice wait"2" lucid

@@ -114,6 +114,7 @@ declare -a PLUGIN_ARR=(
     "dotfiles-mac"
     "dotfiles-misc"
     # "dotfiles-ms"
+    # "dotfiles-network"
     "dotfiles-update"
     # "dotfiles-vim"
 
