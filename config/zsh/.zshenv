@@ -109,6 +109,7 @@ declare -a PLUGIN_ARR=(
     # "dotfiles-aws"
     # "dotfiles-docker"
     # "dotfiles-es"
+    # "dotfiles-fail2ban"
     "dotfiles-git"
     # "dotfiles-kube"
     "dotfiles-mac"
