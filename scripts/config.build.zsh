@@ -93,7 +93,7 @@ declare -a LOCAL_CONFIG_PATH_ARR=(
     "$DOTFILES_LOCAL/config/iterm2/profile-default.json"
 
     # lazydocker
-    "$DOTFILES_LOCAL/config/lazydocker/config.yaml"
+    "$DOTFILES_LOCAL/config/lazydocker/config.yml"
 
     # p10k
     "$DOTFILES_LOCAL/config/p10k/.p10k.zsh"
