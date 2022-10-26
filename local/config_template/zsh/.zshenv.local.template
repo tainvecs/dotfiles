@@ -83,11 +83,13 @@
 #     "dotfiles-aws"
 #     "dotfiles-docker"
 #     "dotfiles-es"
+#     "dotfiles-fail2ban"
 #     "dotfiles-git"
 #     "dotfiles-kube"
 #     "dotfiles-mac"
 #     "dotfiles-misc"
 #     "dotfiles-ms"
+#     "dotfiles-network"
 #     "dotfiles-update"
 #     "dotfiles-vim"
 
