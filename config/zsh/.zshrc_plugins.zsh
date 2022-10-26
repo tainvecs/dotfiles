@@ -449,6 +449,12 @@ if [[ ${DOTFILES_PLUGINS["dotfiles-es"]} = "true" ]]; then
     zinit snippet "${DOTFILES[PLUGINS_DIR]}/es/.es.plugin.zsh"
 fi
 
+# dotfiles-fail2ban
+if [[ ${DOTFILES_PLUGINS["dotfiles-fail2ban"]} = "true" ]]; then
+    zinit ice wait"2" lucid
+    zinit snippet "${DOTFILES[PLUGINS_DIR]}/fail2ban/.fail2ban.plugin.zsh"
+fi
+
 # dotfiles-git
 if [[ ${DOTFILES_PLUGINS["dotfiles-git"]} = "true" ]]; then
     zinit ice wait"1" lucid
