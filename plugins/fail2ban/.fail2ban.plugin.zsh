@@ -23,7 +23,7 @@ if type fail2ban-client >/dev/null; then
                 return 0
             fi
 
-            raw_res_str=$(sudo sqlite3 /var/lib/fail2ban/fail2ban.sqlite3 "SELECT jail, ip FROM bans;")
+            raw_res_str=$(sudo sqlite3 /var/lib/fail2ban/fail2ban.sqlite3 "SELECT jail, ip FROM bips;")
             res_str=$(echo $raw_res_str | sed 's/|/\t/g')
 
             echo "JAIL\tIP"
@@ -41,7 +41,7 @@ if type fail2ban-client >/dev/null; then
                 return 0
             fi
 
-            raw_res_str=$(sudo sqlite3 /var/lib/fail2ban/fail2ban.sqlite3 "SELECT jail, ip FROM bans WHERE jail='sshd';")
+            raw_res_str=$(sudo sqlite3 /var/lib/fail2ban/fail2ban.sqlite3 "SELECT jail, ip FROM bips WHERE jail='sshd';")
             res_str=$(echo $raw_res_str | sed 's/|/\t/g')
 
             echo "JAIL\tIP"
@@ -56,7 +56,7 @@ if type fail2ban-client >/dev/null; then
                 return 0
             fi
 
-            raw_res_str=$(sudo sqlite3 /var/lib/fail2ban/fail2ban.sqlite3 "SELECT jail, ip FROM bans WHERE jail='sshd' and ip='$1';")
+            raw_res_str=$(sudo sqlite3 /var/lib/fail2ban/fail2ban.sqlite3 "SELECT jail, ip FROM bips WHERE jail='sshd' and ip='$1';")
             res_str=$(echo $raw_res_str | sed 's/|/\t/g')
 
             echo "JAIL\tIP"
@@ -70,7 +70,7 @@ if type fail2ban-client >/dev/null; then
                 return 0
             fi
 
-            sudo sqlite3 /var/lib/fail2ban/fail2ban.sqlite3 "SELECT COUNT(*) FROM bans WHERE jail='sshd';"
+            sudo sqlite3 /var/lib/fail2ban/fail2ban.sqlite3 "SELECT COUNT(*) FROM bips WHERE jail='sshd';"
         }
     fi
 
