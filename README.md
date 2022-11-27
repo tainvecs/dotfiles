@@ -16,7 +16,9 @@ script `scripts/bootstrap.zsh`.
 
 
 ## Basic Installation
+
 Install dotfiles by running the `curl` or `wget` command in the terminal.
+
 | Method   | Command                                                                                              |
 |:---------|:-----------------------------------------------------------------------------------------------------|
 | **curl** | `sh -c "$(curl -fsSL https://raw.githubusercontent.com/tainvecs/dotfiles/main/scripts/install.zsh)"` |
@@ -36,11 +38,13 @@ To run the installation script with these variables, try the following command.
 
 
 ## Test with Docker
+
 To test this package and tune your local config, pull the docker image and run it locally.
 ```zsh
 docker pull ghcr.io/tainvecs/dotfiles:latest
 docker run --rm -it ghcr.io/tainvecs/dotfiles:latest
 ```
+
 Alternatively, you can also build the image locally.
 ```zsh
 cd /customized_path/dotfiles && sh ./deployment/docker_build_local.sh
