@@ -20,6 +20,9 @@ OS_TYPE=`uname`
 # load init
 emacs --load "$DOTFILES_HOME/.emacs/init.el" --batch
 
+# install fonts for all the icons if missing
+# emacs --kill --eval '(all-the-icons-install-fonts)'
+
 
 # ------------------------------------------------------------------------------
 # programming languages
