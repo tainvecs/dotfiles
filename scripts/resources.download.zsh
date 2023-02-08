@@ -103,8 +103,21 @@ DELTA_THEME_DST="$DOTFILES_RESOURCES/git"
 mkdir -p $DELTA_THEME_DST
 
 if [[ ! -f "$DELTA_THEME_DST/themes.gitconfig" ]]; then
+
     curl "https://raw.githubusercontent.com/dandavison/delta/master/themes.gitconfig" \
          -o "$DELTA_THEME_DST/themes.gitconfig"
+
+    # comment the missing syntax themem
+    if [[ $OS_TYPE = "Darwin" ]]; then
+
+        sed -i '' -e 's/syntax-theme = Vibrant Sunburst/# syntax-theme = Vibrant Sunburst/g' "$DELTA_THEME_DST/themes.gitconfig"
+
+    elif [[ $OS_TYPE = "Linux" ]]; then
+
+        sed -i 's/syntax-theme = Vibrant Sunburst/# syntax-theme = Vibrant Sunburst/g' "$DELTA_THEME_DST/themes.gitconfig"
+
+    fi
+
 fi
 
 
