@@ -160,6 +160,11 @@ if [[ $OS_TYPE = "Darwin" ]]; then
         curl https://get.volta.sh | bash -s -- --skip-setup
     fi
 
+    # vscode
+    if [[ ${DOTFILES_APPS["vscode"]} = "true" ]]; then
+        brew install --cask visual-studio-code
+    fi
+
     # watch
     if [[ ${DOTFILES_APPS["watch"]} = "true" ]]; then
         brew install watch
@@ -359,6 +364,15 @@ elif [[ $OS_TYPE = "Linux" ]]; then
     if [[ ${DOTFILES_APPS["volta"]} = "true" ]]; then
         export VOLTA_HOME="$DOTFILES_HOME/.volta"
         curl https://get.volta.sh | bash -s -- --skip-setup
+    fi
+
+    # vscode
+    # reference: https://code.visualstudio.com/docs/setup/linux (not tested)
+    if [[ ${DOTFILES_APPS["vscode"]} = "true" ]]; then
+        wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
+        sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
+        sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list'
+        rm -f packages.microsoft.gpg   
     fi
 
 fi

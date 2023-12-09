@@ -674,6 +674,10 @@ config/vim/*
 # vpn
 config/vpn/*
 
+# vscode
+config/vscode/*
+!config/vscode/Makefile
+
 # misc
 config/dlv/*
 
