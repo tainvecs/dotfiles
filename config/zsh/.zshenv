@@ -67,6 +67,7 @@ declare -a APPS_ARR=(
     "tmux"
     "tree"
     "vim"
+    # "vscode"
     # "volta"
     "watch"
 
