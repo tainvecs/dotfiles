@@ -113,6 +113,11 @@ declare -a LOCAL_CONFIG_PATH_ARR=(
     # vim
     "$DOTFILES_LOCAL/config/vim/.vimrc.local"
 
+    # vscode
+    "$DOTFILES_LOCAL/config/vscode/settings.json"
+    "$DOTFILES_LOCAL/config/vscode/keybindings.json"
+    "$DOTFILES_LOCAL/config/vscode/extensions.txt"
+
     # zsh
     "$DOTFILES_LOCAL/config/zsh/.zshenv.local"
     "$DOTFILES_LOCAL/config/zsh/.zshrc_initialize.zsh.local"
