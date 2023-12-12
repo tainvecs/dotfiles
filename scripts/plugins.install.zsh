@@ -22,7 +22,12 @@ source $DOTFILES_HOME/.zsh/.zshenv
 
 
 ZINIT_HOME="$DOTFILES_ROOT/home/.zsh/.zinit"
-git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME/zinit.git"
+ZINIT_GIT_DIR="$ZINIT_HOME/zinit.git"
+
+if [[ ! -d $ZINIT_GIT_DIR ]]; then
+    git clone https://github.com/zdharma-continuum/zinit.git $ZINIT_GIT_DIR
+fi
+
 source $ZINIT_HOME/zinit.git/zinit.zsh
 
 
