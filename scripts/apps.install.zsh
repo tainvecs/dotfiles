@@ -83,7 +83,10 @@ if [[ $OS_TYPE = "Darwin" ]]; then
     fi
 
     # gcp
-    if [[ ${DOTFILES_APPS["gcp"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS["gcp"]} = "true" ]] && \
+           ! { type gcp >/dev/null }
+    then
+
         # brew install --cask google-cloud-sdk
         GCP_HOME="$DOTFILES_HOME/.gcp"
         GCP_CONFIG_DIR="${DOTFILES[CONFIG_DIR]}/gcp"
@@ -174,7 +177,9 @@ if [[ $OS_TYPE = "Darwin" ]]; then
     fi
 
     # volta
-    if [[ ${DOTFILES_APPS["volta"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS["volta"]} = "true" ]] && \
+           ! { type volta >/dev/null }
+    then
         export VOLTA_HOME="$DOTFILES_HOME/.volta"
         curl https://get.volta.sh | bash -s -- --skip-setup
     fi
