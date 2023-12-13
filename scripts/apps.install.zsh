@@ -441,7 +441,7 @@ elif [[ $OS_TYPE = "Linux" ]]; then
     fi
 
     # vscode
-    # reference: https://code.visualstudio.com/docs/setup/linux (not tested)
+    # reference: https://code.visualstudio.com/docs/setup/linux
     if [[ ${DOTFILES_APPS["vscode"]} = "true" ]] && \
            ! { type code >/dev/null }
     then
@@ -449,6 +449,10 @@ elif [[ $OS_TYPE = "Linux" ]]; then
         sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
         sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list'
         rm -f packages.microsoft.gpg
+
+        sudo_apt_install apt-transport-https
+        sudo apt update
+        sudo_apt_install code
     else
         echo "skip \"vscode\" as it is already installed"
     fi
