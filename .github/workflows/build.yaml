@@ -1,10 +1,16 @@
-name: ci
+name: Build CI
 
 on:
   push:               # Triggers the workflow on new tags
     tags:
       - '**'
+
   workflow_dispatch:  # Allows you to run this workflow manually from the Actions tab
+    inputs:
+      build_ver:
+        description: 'Build version'
+        required: true
+        default: 'manual'
 
 jobs:
   build-dotfiles-image:
@@ -20,14 +26,25 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Get Current Timestamp
-        id: timestamp
-        run: echo "::set-output name=timestamp::$(date +'%Y-%m-%dT%H:%M:%S_%z')"
+      - name: Set Environment Variables
+        id: set_env
+        run: |
+          # timestamp
+          echo "timestamp=$(date +'%Y-%m-%dT%H:%M:%S_%z')" >> $GITHUB_OUTPUT
+
+          # build_ver
+          if [[ -n ${{inputs.build_ver}} ]]; then build_ver=${{inputs.build_ver}}; else build_ver=${{github.ref_name}}; fi
+          echo "build_ver=$build_ver" >> $GITHUB_OUTPUT
+
+      - name: Print Debug Info
+        run: |
+          echo ${{ steps.set_env.outputs.timestamp }}
+          echo ${{ steps.set_env.outputs.build_ver }}
 
       - name: Build Docker image
         run: bash ./deployment/docker_build_ci.sh
         env:
-          BUILD_VERSION: ${{ github.ref_name }}
+          BUILD_VERSION: ${{ steps.set_env.outputs.build_ver }}
           BUILD_DATE: ${{ steps.timestamp.outputs.timestamp }}
           VCS_REF: ${{ github.sha }}
-          DOCKER_TAG: ${{ github.ref_name }}
+          DOCKER_TAG: ${{ steps.set_env.outputs.build_ver }}
