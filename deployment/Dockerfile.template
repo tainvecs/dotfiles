@@ -7,7 +7,7 @@ ARG BUILD_VERSION
 ARG BUILD_DATE
 ARG VCS_REF
 
-LABEL org.label-schema.schema-version="1.2"
+LABEL org.label-schema.schema-version="1.3"
 LABEL org.label-schema.build-date=$BUILD_DATE
 LABEL org.label-schema.name="dotfiles"
 LABEL org.label-schema.description="Config files, plugins, and helper scripts for setting up macOS and Ubuntu."
