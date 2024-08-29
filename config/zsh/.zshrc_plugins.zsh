@@ -220,7 +220,7 @@ if [[ ${DOTFILES_PLUGINS["z"]} = "true" ]]; then
     export ZSHZ_DATA="${DOTFILES[HOME_DIR]}/.z/.z"
 
     # to be able to work with autoenv
-    j() { cd $(z $1 -e || PWD) }
+    j() { cd $(z $1 -e || echo $PWD) }
 
 fi
 
