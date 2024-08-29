@@ -28,9 +28,11 @@ docker build \
        --build-arg VCS_REF="$VCS_REF" \
        .
 
-# tag with latest
-docker tag "ghcr.io/tainvecs/dotfiles:$DOCKER_TAG" "ghcr.io/tainvecs/dotfiles:latest"
-
 # push to github container registry
 docker push "ghcr.io/tainvecs/dotfiles:$DOCKER_TAG"
-docker push "ghcr.io/tainvecs/dotfiles:latest"
+
+# tag and push with latest
+if [[ $BUILD_VERSION != 'manual' ]]; then
+    docker tag "ghcr.io/tainvecs/dotfiles:$DOCKER_TAG" "ghcr.io/tainvecs/dotfiles:latest"
+    docker push "ghcr.io/tainvecs/dotfiles:latest"
+fi
