@@ -33,7 +33,11 @@ jobs:
           echo "timestamp=$(date +'%Y-%m-%dT%H:%M:%S_%z')" >> $GITHUB_OUTPUT
 
           # build_ver
-          if [[ -n ${{inputs.build_ver}} ]]; then build_ver=${{inputs.build_ver}}; else build_ver=${{github.ref_name}}; fi
+          if [[ "${{inputs.build_ver}}" == '' ]]; then
+              build_ver=${{github.ref_name}};
+          else
+              build_ver=${{inputs.build_ver}};
+          fi
           echo "build_ver=$build_ver" >> $GITHUB_OUTPUT
 
       - name: Print Debug Info
