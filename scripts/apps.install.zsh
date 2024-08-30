@@ -116,8 +116,10 @@ if [[ $OS_TYPE = "Darwin" ]]; then
 
     # gcp
     if [[ ${DOTFILES_APPS["gcp"]} = "true" ]] && \
-           ! { type gcp >/dev/null }
+           ! { type gcloud >/dev/null }
     then
+
+        echo_start_installation_message 'gcp'
 
         # brew install --cask google-cloud-sdk
         GCP_HOME="$DOTFILES_HOME/.gcp"
@@ -126,6 +128,8 @@ if [[ $OS_TYPE = "Darwin" ]]; then
 
         curl https://sdk.cloud.google.com > "$GCP_HOME/install.sh"
         bash "$GCP_HOME/install.sh" --disable-prompts --install-dir=$GCP_HOME
+    else
+        echo_skip_installation_message 'gcp'
     fi
 
     # golang
@@ -382,8 +386,10 @@ elif [[ $OS_TYPE = "Linux" ]]; then
 
     # gcp
     if [[ ${DOTFILES_APPS["gcp"]} = "true" ]] && \
-           ! { type gcp >/dev/null }
+           ! { type gcloud >/dev/null }
     then
+
+        echo_start_installation_message 'gcp'
 
         GCP_HOME="$DOTFILES_HOME/.gcp"
         GCP_CONFIG_DIR="${DOTFILES[CONFIG_DIR]}/gcp"
@@ -392,7 +398,7 @@ elif [[ $OS_TYPE = "Linux" ]]; then
         curl https://sdk.cloud.google.com > "$GCP_HOME/install.sh"
         bash "$GCP_HOME/install.sh" --disable-prompts --install-dir=$GCP_HOME
     else
-        echo "skip \"gcp\" as it is already installed"
+        echo_skip_installation_message 'gcp'
     fi
 
     # docker
