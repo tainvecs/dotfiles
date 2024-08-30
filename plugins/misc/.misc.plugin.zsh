@@ -67,33 +67,33 @@ alias cron-edit-sudo="sudo crontab -e "
 
 
 # ------------------------------------------------------------------------------
-# jq
+# jq: comment untested functions
 # ------------------------------------------------------------------------------
 
 
-function jq-filter(){
+# function jq-filter(){
 
-	IFS=$'\n'                                                # make newlines the only separator
-	set -f                                                   # disable globbing
+# 	IFS=$'\n'                                                # make newlines the only separator
+# 	set -f                                                   # disable globbing
 
-	while IFS= read -r string; do
+# 	while IFS= read -r string; do
 
-		string=$(echo $string | sed -r 's/\r+|^\s*|\s*$//g') # trim leading, trailing space and '\r'
+# 		string=$(echo $string | sed -r 's/\r+|^\s*|\s*$//g') # trim leading, trailing space and '\r'
 
-    	if [[ -z $string ]]; then                            # skip line if length is 0
-    		false
-		elif jq -e . >/dev/null 2>&1 <<<"$string"; then      # check if line is json
-  			echo $string | jq
-  			echo ""
-		fi
+#     	if [[ -z $string ]]; then                            # skip line if length is 0
+#     		false
+# 		elif jq -e . >/dev/null 2>&1 <<<"$string"; then      # check if line is json
+#   			echo $string | jq
+#   			echo ""
+# 		fi
 
-	done
-}
+# 	done
+# }
 
 
-if type bat >/dev/null; then
-    alias jq-bat="jq-filter | bat -l json "
-fi
+# if type bat >/dev/null; then
+#     alias jq-bat="jq-filter | bat -l json "
+# fi
 
 
 # ------------------------------------------------------------------------------
