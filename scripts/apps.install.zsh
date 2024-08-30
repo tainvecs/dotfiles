@@ -6,6 +6,16 @@
 # ------------------------------------------------------------------------------
 
 
+function echo_start_installation_message() {
+    echo "start \"$1\" installation"
+}
+
+
+function echo_skip_installation_message() {
+    echo "skip \"$1\" as it is already installed"
+}
+
+
 function sudo_apt_install() {
 
     for in_pkg in "$@"; do
@@ -14,9 +24,30 @@ function sudo_apt_install() {
         if ! { type $in_pkg >/dev/null } && ! { dpkg -l $in_pkg &>/dev/null } ; then
             sudo apt-get install -y $in_pkg
         else
-            echo "skip \"$in_pkg\" as it is already installed"
+            echo_skip_installation_message $in_pkg
         fi
     done
+}
+
+
+function get_system_architecture() {
+
+    archt=$(uname -m)
+
+    case $archt in
+
+        x86_64)
+            echo "amd64";;
+
+        arm64 | aarch64)
+            echo "arm64";;
+
+        arm*)
+            echo "arm";;
+
+        *)
+            echo "unknown($archt)";;
+    esac
 }
 
 
@@ -32,6 +63,7 @@ DOTFILES_CONFIG="$DOTFILES_ROOT/config"
 DOTFILES_RESOURCES="$DOTFILES_ROOT/resources"
 
 OS_TYPE=`uname`
+SYS_ARCHT="$(get_system_architecture)"
 
 
 # ------------------------------------------------------------------------------
@@ -314,7 +346,33 @@ elif [[ $OS_TYPE = "Linux" ]]; then
 
     # aws
     if [[ ${DOTFILES_APPS["aws"]} = "true" ]]; then
-        sudo_apt_install awscli
+
+        AWS_HOME="$DOTFILES_HOME/.aws"
+
+        # check if exist
+        if [[ -d $AWS_HOME/aws ]]; then
+
+            echo_skip_installation_message 'aws'
+
+        else
+
+            echo_start_installation_message 'aws'
+
+            # download installer
+            if [[ $SYS_ARCHT = 'arm64' ]]; then
+                curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "$AWS_HOME/awscliv2.zip"
+            elif [[ $SYS_ARCHT = 'amd64' ]]; then
+                curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "$AWS_HOME/awscliv2.zip"
+            else
+                echo "error: 'aws' not installed. Unknown system architecture $SYS_ARCHT"
+            fi
+
+            # unzip
+            unzip "$AWS_HOME/awscliv2.zip" -d $AWS_HOME && rm "$AWS_HOME/awscliv2.zip"
+
+            # install
+            sudo "$AWS_HOME/aws/install"
+        fi
     fi
 
     # htop
