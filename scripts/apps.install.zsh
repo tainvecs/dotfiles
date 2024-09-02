@@ -126,7 +126,7 @@ if [[ $OS_TYPE = "Darwin" ]]; then
         GCP_CONFIG_DIR="${DOTFILES[CONFIG_DIR]}/gcp"
         export CLOUDSDK_CONFIG=$GCP_CONFIG_DIR
 
-        curl https://sdk.cloud.google.com > "$GCP_HOME/install.sh"
+        curl -fL https://sdk.cloud.google.com > "$GCP_HOME/install.sh"
         bash "$GCP_HOME/install.sh" --disable-prompts --install-dir=$GCP_HOME
     else
         echo_skip_installation_message 'gcp'
@@ -217,7 +217,7 @@ if [[ $OS_TYPE = "Darwin" ]]; then
            ! { type volta >/dev/null }
     then
         export VOLTA_HOME="$DOTFILES_HOME/.volta"
-        curl https://get.volta.sh | bash -s -- --skip-setup
+        curl -fL https://get.volta.sh | bash -s -- --skip-setup
     fi
 
     # vscode
@@ -364,9 +364,9 @@ elif [[ $OS_TYPE = "Linux" ]]; then
 
             # download installer
             if [[ $SYS_ARCHT = 'arm64' ]]; then
-                curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "$AWS_HOME/awscliv2.zip"
+                curl -fL "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "$AWS_HOME/awscliv2.zip"
             elif [[ $SYS_ARCHT = 'amd64' ]]; then
-                curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "$AWS_HOME/awscliv2.zip"
+                curl -fL "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "$AWS_HOME/awscliv2.zip"
             else
                 echo "error: 'aws' not installed. Unknown system architecture $SYS_ARCHT"
             fi
@@ -395,7 +395,7 @@ elif [[ $OS_TYPE = "Linux" ]]; then
         GCP_CONFIG_DIR="${DOTFILES[CONFIG_DIR]}/gcp"
         export CLOUDSDK_CONFIG=$GCP_CONFIG_DIR
 
-        curl https://sdk.cloud.google.com > "$GCP_HOME/install.sh"
+        curl -fL https://sdk.cloud.google.com > "$GCP_HOME/install.sh"
         bash "$GCP_HOME/install.sh" --disable-prompts --install-dir=$GCP_HOME
     else
         echo_skip_installation_message 'gcp'
@@ -444,7 +444,7 @@ elif [[ $OS_TYPE = "Linux" ]]; then
            ! { type kubectl >/dev/null } && \
            ! { dpkg -l kubectl &>/dev/null }
     then
-        curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+        curl -fLO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
         sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
         rm kubectl
     else
