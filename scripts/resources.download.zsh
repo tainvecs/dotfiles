@@ -29,7 +29,7 @@ fi
 
 
 # ------------------------------------------------------------------------------
-# fonts
+# fonts and icons
 # ------------------------------------------------------------------------------
 
 
@@ -37,6 +37,7 @@ fi
 FONTS_DST="$DOTFILES_RESOURCES/fonts"
 mkdir -p $FONTS_DST
 
+# for emacs
 if [[ ! -f "$FONTS_DST/all-the-icons.ttf" ]]; then
     curl "https://github.com/domtronn/all-the-icons.el/blob/master/fonts/all-the-icons.ttf?raw=true" \
          -o "$FONTS_DST/all-the-icons.ttf"
@@ -67,14 +68,10 @@ if [[ ! -f "$FONTS_DST/weathericons.ttf" ]]; then
          -o "$FONTS_DST/weathericons.ttf"
 fi
 
+# for iterms
 if [[ ! -f "$FONTS_DST/MesloLGS NF Regular.ttf" ]]; then
     curl "https://github.com/romkatv/powerlevel10k-media/blob/master/MesloLGS%20NF%20Regular.ttf?raw=true" \
          -o "$FONTS_DST/MesloLGS NF Regular.ttf"
-fi
-
-if [[ ! -f "$FONTS_DST/SourceCodePro-Medium.ttf" ]]; then
-    curl "https://github.com/adobe-fonts/source-code-pro/blob/release/TTF/SourceCodePro-Medium.ttf?raw=true" \
-         -o "$FONTS_DST/SourceCodePro-Medium.ttf"
 fi
 
 # copy to system shard folder
