@@ -5,33 +5,21 @@
 
 typeset -U path
 
+path=(
+    /usr/local/bin
+    /usr/local/sbin
+    /usr/bin
+    /usr/sbin
+    /bin
+    /sbin
+    $path
+)
+
 if [[ ! -z ${BREW_HOME+x} ]]; then
-    
-    path=(
-        $BREW_HOME/bin
-        $BREW_HOME/sbin
-        /usr/local/bin
-        /usr/local/sbin
-        /usr/bin
-        /usr/sbin
-        /bin
-        /sbin
-        $path
-    )
 
-else
+    eval $(/opt/homebrew/bin/brew shellenv)
 
-    path=(
-        /usr/local/bin
-        /usr/local/sbin
-        /usr/bin
-        /usr/sbin
-        /bin
-        /sbin
-        $path
-    )
-
-fi 
+fi
 
 export PATH
 
