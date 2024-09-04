@@ -28,6 +28,7 @@ if [[ $OS_TYPE = "Darwin" ]]; then   # macos: xcode-select, homebrew, unzip and 
     # homebrew
     if ! type brew >/dev/null; then
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        eval $(/opt/homebrew/bin/brew shellenv)
     fi
     brew update
 
