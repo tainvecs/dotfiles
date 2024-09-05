@@ -47,6 +47,18 @@ cd /customized_path/dotfiles && sh ./deployment/docker_build_local.sh
 ```
 
 
+## Uninstallation
+Simply remove the following command from your `~/.zshenv` file
+```zsh
+source /customized_path/dotfiles/config/zsh/.zshenv
+```
+
+In addition, you can purge dotfiles from your system by removing the dotfiles repo.
+```zsh
+rm -r /customized_path/dotfiles
+```
+
+
 ## Reference
 - [thoughtbot / dotfiles](https://github.com/thoughtbot/dotfiles)
 - [mathiasbynens / dotfiles](https://github.com/mathiasbynens/dotfiles)
