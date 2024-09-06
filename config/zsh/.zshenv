@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# dotfiles: root, home, config, local, resource
+# dotfiles: root, home, config, local, library and resource
 # ------------------------------------------------------------------------------
 
 
@@ -19,6 +19,9 @@ export XDG_CONFIG_HOME=${DOTFILES[CONFIG_DIR]}
 DOTFILES[LOCAL_DIR]="${DOTFILES[ROOT_DIR]}/local"
 DOTFILES[LOCAL_CONFIG_DIR]="${DOTFILES[LOCAL_DIR]}/config"
 DOTFILES[LOCAL_PLUGIN_DIR]="${DOTFILES[LOCAL_DIR]}/plugins"
+
+# library
+DOTFILES[LIB_DIR]="${DOTFILES[ROOT_DIR]}/library"
 
 # resource
 DOTFILES[RESOURCES_DIR]="${DOTFILES[ROOT_DIR]}/resources"
@@ -159,13 +162,10 @@ done
 # ------------------------------------------------------------------------------
 
 
-# sys
-OS_TYPE=`uname`
-if [[ $OS_TYPE = "Linux" ]]; then
-    export SYS_NAME="linux"
-elif [[ $OS_TYPE = "Darwin" ]]; then
-    export SYS_NAME="mac"
-fi
+source "${DOTFILES[LIB_DIR]}/sys.zsh"
+
+export SYS_NAME=`get_system_architecture`
+export SYS_ARCHT=`get_system_name`
 
 
 # ------------------------------------------------------------------------------
