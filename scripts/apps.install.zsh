@@ -63,7 +63,7 @@ DOTFILES_CONFIG="$DOTFILES_ROOT/config"
 DOTFILES_RESOURCES="$DOTFILES_ROOT/resources"
 
 OS_TYPE=`uname`
-SYS_ARCHT="$(get_system_architecture)"
+SYS_ARCHT=`get_system_architecture`
 
 
 # ------------------------------------------------------------------------------
@@ -74,22 +74,22 @@ SYS_ARCHT="$(get_system_architecture)"
 if [[ $OS_TYPE = "Darwin" ]]; then
 
     # alt-tab
-    if [[ ${DOTFILES_APPS["alt-tab"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[alt-tab]} = "true" ]]; then
         brew install alt-tab
     fi
 
     # autoenv
-    if [[ ${DOTFILES_APPS["autoenv"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[autoenv]} = "true" ]]; then
         brew install autoenv
     fi
 
     # aws
-    if [[ ${DOTFILES_APPS["aws"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[aws]} = "true" ]]; then
         brew install awscli
     fi
 
     # clojure
-    if [[ ${DOTFILES_APPS["clojure"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[clojure]} = "true" ]]; then
         brew install clojure/tools/clojure
     fi
 
@@ -97,25 +97,25 @@ if [[ $OS_TYPE = "Darwin" ]]; then
     brew install coreutils wget curl
 
     # docker
-    if [[ ${DOTFILES_APPS["docker"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[docker]} = "true" ]]; then
         brew install --cask docker
     fi
 
     # elasticsearch
-    if [[ ${DOTFILES_APPS["elasticsearch"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[elasticsearch]} = "true" ]]; then
         brew tap elastic/tap
         brew install elastic/tap/elasticsearch-full
         # sudo brew services start elasticsearch-full
     fi
 
     # emacs: use d12frosted/emacs-plus
-    if [[ ${DOTFILES_APPS["emacs"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[emacs]} = "true" ]]; then
         brew tap d12frosted/emacs-plus
         brew install emacs-plus
     fi
 
     # gcp
-    if [[ ${DOTFILES_APPS["gcp"]} = "true" ]] && \
+    if [[ ${DOTFILES_APPS[gcp]} = "true" ]] && \
            ! { type gcloud >/dev/null }
     then
 
@@ -133,87 +133,87 @@ if [[ $OS_TYPE = "Darwin" ]]; then
     fi
 
     # golang
-    if [[ ${DOTFILES_APPS["golang"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[golang]} = "true" ]]; then
         brew install go
     fi
 
     # htop
-    if [[ ${DOTFILES_APPS["htop"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[htop]} = "true" ]]; then
         brew install htop
     fi
 
     # iterm
-    if [[ ${DOTFILES_APPS["iterm"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[iterm]} = "true" ]]; then
         brew install --cask iterm2
     fi
 
     # jdk
-    if [[ ${DOTFILES_APPS["jdk"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[jdk]} = "true" ]]; then
         # brew install --cask oracle-jdk
         brew install openjdk
     fi
 
     # kube
-    if [[ ${DOTFILES_APPS["kube"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[kube]} = "true" ]]; then
         brew install kubectl
     fi
 
     # meilisearch
-    if [[ ${DOTFILES_APPS["meilisearch"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[meilisearch]} = "true" ]]; then
         brew install meilisearch
     fi
 
     # openvpn
-    if [[ ${DOTFILES_APPS["openvpn"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[openvpn]} = "true" ]]; then
         brew install openvpn
         # sudo brew services start openvpn
     fi
 
     # p7zip
     brew install unzip
-    if [[ ${DOTFILES_APPS["7z"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[7z]} = "true" ]]; then
         brew install p7zip
     fi
 
     # peco
-    if [[ ${DOTFILES_APPS["peco"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[peco]} = "true" ]]; then
         brew install peco
     fi
 
     # python
-    if [[ ${DOTFILES_APPS["python"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[python]} = "true" ]]; then
         # brew install python
     fi
 
     # pyenv
-    if [[ ${DOTFILES_APPS["pyenv"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[pyenv]} = "true" ]]; then
         brew install openssl readline sqlite3 xz zlib
         brew install pyenv
         brew install pyenv-virtualenv
     fi
 
     # svn
-    if [[ ${DOTFILES_APPS["svn"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[svn]} = "true" ]]; then
         brew install subversion
     fi
 
     # tmux
-    if [[ ${DOTFILES_APPS["tmux"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[tmux]} = "true" ]]; then
         brew install tmux
     fi
 
     # tree
-    if [[ ${DOTFILES_APPS["tree"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[tree]} = "true" ]]; then
         brew install tree
     fi
 
     # vim
-    if [[ ${DOTFILES_APPS["vim"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[vim]} = "true" ]]; then
         brew install vim
     fi
 
     # volta
-    if [[ ${DOTFILES_APPS["volta"]} = "true" ]] && \
+    if [[ ${DOTFILES_APPS[volta]} = "true" ]] && \
            ! { type volta >/dev/null }
     then
         export VOLTA_HOME="$DOTFILES_HOME/.volta"
@@ -221,12 +221,12 @@ if [[ $OS_TYPE = "Darwin" ]]; then
     fi
 
     # vscode
-    if [[ ${DOTFILES_APPS["vscode"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[vscode]} = "true" ]]; then
         brew install --cask visual-studio-code
     fi
 
     # watch
-    if [[ ${DOTFILES_APPS["watch"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[watch]} = "true" ]]; then
         brew install watch
     fi
 
@@ -276,7 +276,7 @@ elif [[ $OS_TYPE = "Linux" ]]; then
     sudo_apt_install git
 
     # svn
-    if [[ ${DOTFILES_APPS["svn"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[svn]} = "true" ]]; then
         sudo_apt_install subversion
     fi
 
@@ -284,17 +284,17 @@ elif [[ $OS_TYPE = "Linux" ]]; then
     sudo_apt_install gcc
 
     # java
-    if [[ ${DOTFILES_APPS["jdk"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[jdk]} = "true" ]]; then
         sudo_apt_install default-jdk
     fi
 
     # clojure
-    if [[ ${DOTFILES_APPS["clojure"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[clojure]} = "true" ]]; then
         sudo_apt_install clojure
     fi
 
     # python3
-    if [[ ${DOTFILES_APPS["python"]} = "true" ]] && \
+    if [[ ${DOTFILES_APPS[python]} = "true" ]] && \
            ! { type python >/dev/null } && \
            ! { dpkg -l python3 &>/dev/null }
     then
@@ -304,7 +304,7 @@ elif [[ $OS_TYPE = "Linux" ]]; then
     fi
 
     # golang
-    if [[ ${DOTFILES_APPS["golang"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[golang]} = "true" ]]; then
         # install newer golang version manually
         sudo_apt_install golang
     fi
@@ -313,12 +313,12 @@ elif [[ $OS_TYPE = "Linux" ]]; then
     sudo_apt_install less
 
     # emacs
-    if [[ ${DOTFILES_APPS["emacs"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[emacs]} = "true" ]]; then
         sudo_apt_install emacs
     fi
 
     # vim
-    if [[ ${DOTFILES_APPS["vim"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[vim]} = "true" ]]; then
         sudo_apt_install vim
     fi
 
@@ -333,12 +333,12 @@ elif [[ $OS_TYPE = "Linux" ]]; then
     fi
 
     # openvpn
-    if [[ ${DOTFILES_APPS["openvpn"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[openvpn]} = "true" ]]; then
         sudo_apt_install openvpn easy-rsa
     fi
 
     # autoenv
-    if [[ ${DOTFILES_APPS["autoenv"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[autoenv]} = "true" ]]; then
 
         AUTOENV_HOME="$DOTFILES_HOME/.autoenv"
         AUTOENV_GIT_DIR="$AUTOENV_HOME/autoenv.git"
@@ -349,7 +349,7 @@ elif [[ $OS_TYPE = "Linux" ]]; then
     fi
 
     # aws
-    if [[ ${DOTFILES_APPS["aws"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[aws]} = "true" ]]; then
 
         AWS_HOME="$DOTFILES_HOME/.aws"
 
@@ -380,12 +380,12 @@ elif [[ $OS_TYPE = "Linux" ]]; then
     fi
 
     # htop
-    if [[ ${DOTFILES_APPS["htop"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[htop]} = "true" ]]; then
         sudo_apt_install htop
     fi
 
     # gcp
-    if [[ ${DOTFILES_APPS["gcp"]} = "true" ]] && \
+    if [[ ${DOTFILES_APPS[gcp]} = "true" ]] && \
            ! { type gcloud >/dev/null }
     then
 
@@ -402,7 +402,7 @@ elif [[ $OS_TYPE = "Linux" ]]; then
     fi
 
     # docker
-    if [[ ${DOTFILES_APPS["docker"]} = "true" ]] && \
+    if [[ ${DOTFILES_APPS[docker]} = "true" ]] && \
            ! { type docker >/dev/null } && \
            ! { dpkg -l docker &>/dev/null }
     then
@@ -415,7 +415,7 @@ elif [[ $OS_TYPE = "Linux" ]]; then
     fi
 
     # elasticsearch
-    if [[ ${DOTFILES_APPS["elasticsearch"]} = "true" ]] && \
+    if [[ ${DOTFILES_APPS[elasticsearch]} = "true" ]] && \
            ! { type elasticsearch >/dev/null } && \
            ! { dpkg -l elasticsearch &>/dev/null }
     then
@@ -429,7 +429,7 @@ elif [[ $OS_TYPE = "Linux" ]]; then
     fi
 
     # meilisearch
-    if [[ ${DOTFILES_APPS["meilisearch"]} = "true" ]] && \
+    if [[ ${DOTFILES_APPS[meilisearch]} = "true" ]] && \
            ! { type meilisearch >/dev/null } && \
            ! { dpkg -l meilisearch-http &>/dev/null }
     then
@@ -440,7 +440,7 @@ elif [[ $OS_TYPE = "Linux" ]]; then
     fi
 
     # kubectl
-    if [[ ${DOTFILES_APPS["kube"]} = "true" ]] && \
+    if [[ ${DOTFILES_APPS[kube]} = "true" ]] && \
            ! { type kubectl >/dev/null } && \
            ! { dpkg -l kubectl &>/dev/null }
     then
@@ -452,12 +452,12 @@ elif [[ $OS_TYPE = "Linux" ]]; then
     fi
 
     # peco
-    if [[ ${DOTFILES_APPS["peco"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[peco]} = "true" ]]; then
         sudo_apt_install peco
     fi
 
     # pyenv and pyenv-virtualenv
-    if [[ ${DOTFILES_APPS["pyenv"]} = "true" ]] && \
+    if [[ ${DOTFILES_APPS[pyenv]} = "true" ]] && \
            ! { type pyenv >/dev/null }
     then
 
@@ -478,24 +478,24 @@ elif [[ $OS_TYPE = "Linux" ]]; then
     fi
 
     # tmux
-    if [[ ${DOTFILES_APPS["tmux"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[tmux]} = "true" ]]; then
         sudo_apt_install tmux
     fi
 
     # tree
-    if [[ ${DOTFILES_APPS["tree"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[tree]} = "true" ]]; then
         sudo_apt_install tree
     fi
 
     # unzip, 7z
     sudo_apt_install unzip
 
-    if [[ ${DOTFILES_APPS["7z"]} = "true" ]]; then
+    if [[ ${DOTFILES_APPS[7z]} = "true" ]]; then
         sudo_apt_install p7zip-full
     fi
 
     # volta
-    if [[ ${DOTFILES_APPS["volta"]} = "true" ]] && \
+    if [[ ${DOTFILES_APPS[volta]} = "true" ]] && \
            ! { type volta >/dev/null }
     then
         export VOLTA_HOME="$DOTFILES_HOME/.volta"
@@ -506,7 +506,7 @@ elif [[ $OS_TYPE = "Linux" ]]; then
 
     # vscode
     # reference: https://code.visualstudio.com/docs/setup/linux
-    if [[ ${DOTFILES_APPS["vscode"]} = "true" ]] && \
+    if [[ ${DOTFILES_APPS[vscode]} = "true" ]] && \
            ! { type code >/dev/null }
     then
         wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
