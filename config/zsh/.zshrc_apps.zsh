@@ -275,7 +275,6 @@ if type python >/dev/null || type python3 >/dev/null; then
         # shims
         PYENV_SHIMS_PATH="$PYENV_HOME/shims"
         [[ -d $PYENV_SHIMS_PATH ]] || mkdir -p $PYENV_SHIMS_PATH
-        PATH="$PYENV_SHIMS_PATH:$PATH"
 
         # lazy load pyenv
         pyenv() {
