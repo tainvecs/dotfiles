@@ -102,6 +102,8 @@ for a_name in "${APPS_ARR[@]}"; do
     DOTFILES_APPS["$a_name"]="true"
 done
 
+export DOTFILES_APPS
+
 
 # ------------------------------------------------------------------------------
 # dotfiles: plugins
@@ -152,9 +154,12 @@ declare -a PLUGIN_ARR=(
 )
 
 declare -A DOTFILES_PLUGINS
+
 for p_name in "${PLUGIN_ARR[@]}"; do
     DOTFILES_PLUGINS["$p_name"]="true"
 done
+
+export DOTFILES_PLUGINS
 
 
 # ------------------------------------------------------------------------------
