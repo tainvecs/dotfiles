@@ -6,14 +6,14 @@
 declare -A DOTFILES
 
 # root
-DOTFILES[ROOT_DIR]=${DOTFILES_ROOT_DIR:-"$HOME/dotfiles"}
+DOTFILES[ROOT_DIR]="${DOTFILES_ROOT_DIR:-$HOME/dotfiles}"
 
 # home
 DOTFILES[HOME_DIR]="${DOTFILES[ROOT_DIR]}/home"
 
 # config
 DOTFILES[CONFIG_DIR]="${DOTFILES[ROOT_DIR]}/config"
-export XDG_CONFIG_HOME=${DOTFILES[CONFIG_DIR]}
+export XDG_CONFIG_HOME="${DOTFILES[CONFIG_DIR]}"
 
 # local
 DOTFILES[LOCAL_DIR]="${DOTFILES[ROOT_DIR]}/local"
@@ -99,7 +99,7 @@ declare -a APPS_ARR=(
 declare -A DOTFILES_APPS
 
 for a_name in "${APPS_ARR[@]}"; do
-    DOTFILES_APPS["$a_name"]="true"
+    DOTFILES_APPS[$a_name]="true"
 done
 
 export DOTFILES_APPS
@@ -156,7 +156,7 @@ declare -a PLUGIN_ARR=(
 declare -A DOTFILES_PLUGINS
 
 for p_name in "${PLUGIN_ARR[@]}"; do
-    DOTFILES_PLUGINS["$p_name"]="true"
+    DOTFILES_PLUGINS[$p_name]="true"
 done
 
 export DOTFILES_PLUGINS
@@ -180,10 +180,10 @@ export SYS_ARCHT=`get_system_name`
 
 if [[ $SYS_NAME = "mac" ]]; then
 
-    if [[ -d /opt/homebrew ]]; then
-        export BREW_HOME=/opt/homebrew
-    elif [[ -d /usr/local/Homebrew ]]; then
-        export BREW_HOME=/usr/local
+    if [[ -d "/opt/homebrew" ]]; then
+        export BREW_HOME="/opt/homebrew"
+    elif [[ -d "/usr/local/Homebrew" ]]; then
+        export BREW_HOME="/usr/local"
     fi
 
 fi
@@ -198,7 +198,7 @@ declare -A ZINIT
 
 ZINIT[HOME_DIR]="$ZDOTDIR/.zinit"
 ZINIT[BIN_DIR]="${ZINIT[HOME_DIR]}/zinit.git"
-ZINIT[ZCOMPDUMP_PATH]=$ZSH_COMPDUMP_PATH
+ZINIT[ZCOMPDUMP_PATH]="$ZSH_COMPDUMP_PATH"
 
 export ZINIT
 
@@ -209,7 +209,7 @@ export ZINIT
 
 
 # iterm with tmux
-export ITERM_ENABLE_SHELL_INTEGRATION_WITH_TMUX=YES
+export ITERM_ENABLE_SHELL_INTEGRATION_WITH_TMUX="YES"
 
 
 # ------------------------------------------------------------------------------
@@ -218,15 +218,15 @@ export ITERM_ENABLE_SHELL_INTEGRATION_WITH_TMUX=YES
 
 
 # editor
-if type vim >/dev/null; then
+if type vim >"/dev/null"; then
     export VISUAL="vim"
-elif type emacs >/dev/null; then
+elif type emacs >"/dev/null"; then
     export VISUAL="emacs"
 fi
-export EDITOR=$VISUAL
-export SUDO_EDITOR=$VISUAL
-export SELECTED_EDITOR=$VISUAL
-export GIT_EDITOR=$VISUAL
+export EDITOR="$VISUAL"
+export SUDO_EDITOR="$VISUAL"
+export SELECTED_EDITOR="$VISUAL"
+export GIT_EDITOR="$VISUAL"
 
 
 # less
@@ -239,13 +239,13 @@ export LESSHISTFILE="${DOTFILES[HOME_DIR]}/less/.lesshst"
 
 
 # locale
-export LANG=en_US.UTF-8
-export LANGUAGE=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
+export LANG="en_US.UTF-8"
+export LANGUAGE="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
 
 
 # color
-export TERM=xterm-256color
+export TERM="xterm-256color"
 
 
 # fonts
@@ -261,8 +261,8 @@ fi
 
 
 # connection
-export SSH_PORT=22
-export VPN_PORT=1194
+export SSH_PORT="22"
+export VPN_PORT="1194"
 
 
 # ------------------------------------------------------------------------------
