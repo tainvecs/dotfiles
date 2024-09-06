@@ -6,7 +6,7 @@
 declare -A DOTFILES
 
 # root
-DOTFILES[ROOT_DIR]="$HOME/dotfiles"
+DOTFILES[ROOT_DIR]=${DOTFILES_ROOT_DIR:-"$HOME/dotfiles"}
 
 # home
 DOTFILES[HOME_DIR]="${DOTFILES[ROOT_DIR]}/home"
