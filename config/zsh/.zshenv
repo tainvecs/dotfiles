@@ -1,19 +1,5 @@
 # ------------------------------------------------------------------------------
-# sys
-# ------------------------------------------------------------------------------
-
-
-# sys
-OS_TYPE=`uname`
-if [[ $OS_TYPE = "Linux" ]]; then
-    export SYS_NAME="linux"
-elif [[ $OS_TYPE = "Darwin" ]]; then
-    export SYS_NAME="mac"
-fi
-
-
-# ------------------------------------------------------------------------------
-# dotfiles: config, resource, cache, and local
+# dotfiles: root, home, config, local, resource
 # ------------------------------------------------------------------------------
 
 
@@ -22,23 +8,57 @@ declare -A DOTFILES
 # root
 DOTFILES[ROOT_DIR]="$HOME/dotfiles"
 
-# local
-DOTFILES[LOCAL_DIR]="${DOTFILES[ROOT_DIR]}/local"
-DOTFILES[LOCAL_CONFIG_DIR]="${DOTFILES[LOCAL_DIR]}/config"
-DOTFILES[LOCAL_PLUGIN_DIR]="${DOTFILES[LOCAL_DIR]}/plugins"
-
-# cache
-export XDG_CACHE_HOME="${DOTFILES[ROOT_DIR]}/cache"
+# home
+DOTFILES[HOME_DIR]="${DOTFILES[ROOT_DIR]}/home"
 
 # config
 DOTFILES[CONFIG_DIR]="${DOTFILES[ROOT_DIR]}/config"
 export XDG_CONFIG_HOME=${DOTFILES[CONFIG_DIR]}
 
-# home
-DOTFILES[HOME_DIR]="${DOTFILES[ROOT_DIR]}/home"
+# local
+DOTFILES[LOCAL_DIR]="${DOTFILES[ROOT_DIR]}/local"
+DOTFILES[LOCAL_CONFIG_DIR]="${DOTFILES[LOCAL_DIR]}/config"
+DOTFILES[LOCAL_PLUGIN_DIR]="${DOTFILES[LOCAL_DIR]}/plugins"
+
+# resource
+DOTFILES[RESOURCES_DIR]="${DOTFILES[ROOT_DIR]}/resources"
+
+# cache
+export XDG_CACHE_HOME="${DOTFILES[ROOT_DIR]}/cache"
 
 # share
 export XDG_DATA_HOME="${DOTFILES[ROOT_DIR]}/share"
+
+export DOTFILES
+
+
+# ------------------------------------------------------------------------------
+# zsh: home, sessions, history, and compinit
+# ------------------------------------------------------------------------------
+
+
+# home
+export ZDOTDIR="${DOTFILES[HOME_DIR]}/.zsh"
+
+# sessions
+export SHELL_SESSION_DIR="$ZDOTDIR/.zsh_sessions"
+export SHELL_SESSION_FILE="$SHELL_SESSION_DIR/$TERM_SESSION_ID.session"
+export SHELL_SESSION_HISTFILE="$SHELL_SESSION_DIR/$TERM_SESSION_ID.history"
+export SHELL_SESSION_HISTFILE_NEW="$SHELL_SESSION_DIR/$TERM_SESSION_ID.historynew"
+export SHELL_SESSION_TIMESTAMP_FILE="$SHELL_SESSION_DIR/_expiration_check_timestamp"
+
+# history
+export ZSH_HISTFILE_PATH="$ZDOTDIR/.zsh_history"
+
+# compinit
+export ZSH_COMPLETE_DIR="$ZDOTDIR/.zsh_complete"
+export ZSH_COMPDUMP_PATH="$ZSH_COMPLETE_DIR/.zcompdump"
+
+
+# ------------------------------------------------------------------------------
+# dotfiles: apps
+# ------------------------------------------------------------------------------
+
 
 # apps
 declare -a APPS_ARR=(
@@ -74,9 +94,15 @@ declare -a APPS_ARR=(
 )
 
 declare -A DOTFILES_APPS
+
 for a_name in "${APPS_ARR[@]}"; do
     DOTFILES_APPS["$a_name"]="true"
 done
+
+
+# ------------------------------------------------------------------------------
+# dotfiles: plugins
+# ------------------------------------------------------------------------------
 
 
 # plugins
@@ -127,41 +153,19 @@ for p_name in "${PLUGIN_ARR[@]}"; do
     DOTFILES_PLUGINS["$p_name"]="true"
 done
 
-# resource
-DOTFILES[RESOURCES_DIR]="${DOTFILES[ROOT_DIR]}/resources"
-
-export DOTFILES
-
 
 # ------------------------------------------------------------------------------
-# zsh: sessions, history, and compinit
+# sys
 # ------------------------------------------------------------------------------
 
 
-export ZDOTDIR="${DOTFILES[HOME_DIR]}/.zsh"
-
-# sessions
-export SHELL_SESSION_DIR="$ZDOTDIR/.zsh_sessions"
-export SHELL_SESSION_FILE="$SHELL_SESSION_DIR/$TERM_SESSION_ID.session"
-export SHELL_SESSION_HISTFILE="$SHELL_SESSION_DIR/$TERM_SESSION_ID.history"
-export SHELL_SESSION_HISTFILE_NEW="$SHELL_SESSION_DIR/$TERM_SESSION_ID.historynew"
-export SHELL_SESSION_TIMESTAMP_FILE="$SHELL_SESSION_DIR/_expiration_check_timestamp"
-
-# history
-export ZSH_HISTFILE_PATH="$ZDOTDIR/.zsh_history"
-
-# compinit
-export ZSH_COMPLETE_DIR="$ZDOTDIR/.zsh_complete"
-export ZSH_COMPDUMP_PATH="$ZSH_COMPLETE_DIR/.zcompdump"
-
-
-# ------------------------------------------------------------------------------
-# iterm
-# ------------------------------------------------------------------------------
-
-
-# iterm with tmux
-export ITERM_ENABLE_SHELL_INTEGRATION_WITH_TMUX=YES
+# sys
+OS_TYPE=`uname`
+if [[ $OS_TYPE = "Linux" ]]; then
+    export SYS_NAME="linux"
+elif [[ $OS_TYPE = "Darwin" ]]; then
+    export SYS_NAME="mac"
+fi
 
 
 # ------------------------------------------------------------------------------
@@ -195,6 +199,15 @@ export ZINIT
 
 
 # ------------------------------------------------------------------------------
+# iterm
+# ------------------------------------------------------------------------------
+
+
+# iterm with tmux
+export ITERM_ENABLE_SHELL_INTEGRATION_WITH_TMUX=YES
+
+
+# ------------------------------------------------------------------------------
 # editor: less, vim, and emacs
 # ------------------------------------------------------------------------------
 
@@ -208,7 +221,7 @@ fi
 export EDITOR=$VISUAL
 export SUDO_EDITOR=$VISUAL
 export SELECTED_EDITOR=$VISUAL
-export GIT_EDITOR="$VISUAL"
+export GIT_EDITOR=$VISUAL
 
 
 # less
