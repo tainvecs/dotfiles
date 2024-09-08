@@ -518,6 +518,10 @@ _dotfiles_init_ssh
 #
 # - references
 #   - https://man7.org/linux/man-pages/man1/tmux.1.html
+#
+# - envs
+#   - TMUX_CONFIG_PATH
+#   - TMUX_CONFIG_LOCAL_PATH
 # ------------------------------------------------------------------------------
 
 
@@ -527,8 +531,14 @@ _dotfiles_init_tmux(){
 
         # config
         local _tmux_config_path="${DOTFILES[CONFIG_DIR]}/tmux/.tmux.conf"
+        local _tmux_config_local_path="${DOTFILES[CONFIG_DIR]}/tmux/.tmux.conf.local"
+
         if [[ -f "$_tmux_config_path" ]]; then
             alias tmux="tmux -f $_tmux_config_path"
+            export TMUX_CONFIG_PATH="$_tmux_config_path"
+        fi
+        if [[ -f "$_tmux_config_local_path" ]]; then
+            export TMUX_CONFIG_LOCAL_PATH="$_tmux_config_local_path"
         fi
     fi
 }
