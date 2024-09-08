@@ -39,7 +39,5 @@ fi
 
 
 if [[ -f "${ZINIT[BIN_DIR]}/zinit.zsh" ]]; then
-
     source "${ZINIT[BIN_DIR]}/zinit.zsh"
-
 fi
