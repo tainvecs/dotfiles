@@ -1,5 +1,8 @@
 # ------------------------------------------------------------------------------
 # PATH
+#
+# - references
+#   - https://github.zshell.dev/post/zsh/cheatsheet/typeset/
 # ------------------------------------------------------------------------------
 
 
@@ -15,21 +18,22 @@ path=(
     $path
 )
 
-# brew
-if [[ ! -z "${BREW_HOME+x}" ]]; then
-    eval $("/opt/homebrew/bin/brew" shellenv)
-fi
-
 export PATH
 
 
 # ------------------------------------------------------------------------------
 # brew
+#
+# - envs
+#   - HOMEBREW_PREFIX
+#   - HOMEBREW_CELLAR
+#   - HOMEBREW_REPOSITORY
 # ------------------------------------------------------------------------------
 
 
-if [[ ! -z "${BREW_HOME+x}" ]]; then
-    export HOMEBREW_NO_AUTO_UPDATE="1"
+# set envs, fpath, PATH, MANPATH and INFOPATH
+if [[ ! -z "${BREW_HOME}" ]]; then
+    eval $("${BREW_HOME}/bin/brew" shellenv)
 fi
 
 

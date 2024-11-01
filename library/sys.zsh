@@ -1,13 +1,16 @@
+#!/bin/zsh
+
+
 function get_system_name() {
 
     os_name=$(uname)
 
     case $os_name in
 
-        Linux)
+        "Linux")
             echo "linux";;
 
-        Darwin | aarch64)
+        "Darwin" | "aarch64")
             echo "mac";;
 
         *)
@@ -21,10 +24,10 @@ function get_system_architecture() {
 
     case $archt in
 
-        x86_64)
+        "x86_64")
             echo "amd64";;
 
-        arm64 | aarch64)
+        "arm64" | "aarch64")
             echo "arm64";;
 
         arm*)
