@@ -13,7 +13,7 @@ DOTFILES[HOME_DIR]="${DOTFILES[ROOT_DIR]}/home"
 
 # config
 DOTFILES[CONFIG_DIR]="${DOTFILES[ROOT_DIR]}/config"
-export XDG_CONFIG_HOME="${DOTFILES[CONFIG_DIR]}"
+export XDG_CONFIG_HOME=${DOTFILES[CONFIG_DIR]}
 
 # local
 DOTFILES[LOCAL_DIR]="${DOTFILES[ROOT_DIR]}/local"
@@ -24,7 +24,7 @@ DOTFILES[LOCAL_PLUGIN_DIR]="${DOTFILES[LOCAL_DIR]}/plugins"
 DOTFILES[LIB_DIR]="${DOTFILES[ROOT_DIR]}/library"
 
 # resource
-DOTFILES[RESOURCES_DIR]="${DOTFILES[ROOT_DIR]}/resources"
+DOTFILES[RESOURCE_DIR]="${DOTFILES[ROOT_DIR]}/resources"
 
 # cache
 export XDG_CACHE_HOME="${DOTFILES[ROOT_DIR]}/cache"
@@ -64,7 +64,7 @@ export ZSH_COMPDUMP_PATH="$ZSH_COMPLETE_DIR/.zcompdump"
 
 
 # apps
-declare -a APPS_ARR=(
+declare -a APP_ARR=(
 
     "7z"
     "alt-tab"
@@ -98,7 +98,7 @@ declare -a APPS_ARR=(
 
 declare -A DOTFILES_APPS
 
-for a_name in "${APPS_ARR[@]}"; do
+for a_name in ${APP_ARR[@]}; do
     DOTFILES_APPS[$a_name]="true"
 done
 
@@ -155,7 +155,7 @@ declare -a PLUGIN_ARR=(
 
 declare -A DOTFILES_PLUGINS
 
-for p_name in "${PLUGIN_ARR[@]}"; do
+for p_name in ${PLUGIN_ARR[@]}; do
     DOTFILES_PLUGINS[$p_name]="true"
 done
 
@@ -163,14 +163,20 @@ export DOTFILES_PLUGINS
 
 
 # ------------------------------------------------------------------------------
-# sys
+# dotfiles: library
 # ------------------------------------------------------------------------------
 
 
 source "${DOTFILES[LIB_DIR]}/sys.zsh"
 
-export SYS_NAME=`get_system_architecture`
-export SYS_ARCHT=`get_system_name`
+
+# ------------------------------------------------------------------------------
+# sys
+# ------------------------------------------------------------------------------
+
+
+export SYS_NAME=`get_system_name`
+export SYS_ARCHT=`get_system_architecture`
 
 
 # ------------------------------------------------------------------------------
@@ -198,7 +204,7 @@ declare -A ZINIT
 
 ZINIT[HOME_DIR]="$ZDOTDIR/.zinit"
 ZINIT[BIN_DIR]="${ZINIT[HOME_DIR]}/zinit.git"
-ZINIT[ZCOMPDUMP_PATH]="$ZSH_COMPDUMP_PATH"
+ZINIT[ZCOMPDUMP_PATH]=$ZSH_COMPDUMP_PATH
 
 export ZINIT
 
@@ -223,10 +229,10 @@ if type vim >"/dev/null"; then
 elif type emacs >"/dev/null"; then
     export VISUAL="emacs"
 fi
-export EDITOR="$VISUAL"
-export SUDO_EDITOR="$VISUAL"
-export SELECTED_EDITOR="$VISUAL"
-export GIT_EDITOR="$VISUAL"
+export EDITOR=$VISUAL
+export SUDO_EDITOR=$VISUAL
+export SELECTED_EDITOR=$VISUAL
+export GIT_EDITOR=$VISUAL
 
 
 # less
@@ -234,7 +240,7 @@ export LESSHISTFILE="${DOTFILES[HOME_DIR]}/less/.lesshst"
 
 
 # ------------------------------------------------------------------------------
-# misc: locale, color, fonts, and connection
+# misc: locale, color and fonts
 # ------------------------------------------------------------------------------
 
 
@@ -260,11 +266,6 @@ elif [[ $SYS_NAME = "linux" ]]; then
 fi
 
 
-# connection
-export SSH_PORT="22"
-export VPN_PORT="1194"
-
-
 # ------------------------------------------------------------------------------
 # local
 # ------------------------------------------------------------------------------
@@ -274,4 +275,6 @@ if [[ -f "$ZDOTDIR/.zshenv.local" ]]; then
     source "$ZDOTDIR/.zshenv.local"
 elif [[ -f "${DOTFILES[CONFIG_DIR]}/zsh/.zshenv.local" ]]; then
     source "${DOTFILES[CONFIG_DIR]}/zsh/.zshenv.local"
+elif [[ -f "${DOTFILES[LOCAL_CONFIG_DIR]}/zsh/.zshenv.local" ]]; then
+    source "${DOTFILES[LOCAL_CONFIG_DIR]}/zsh/.zshenv.local"
 fi
