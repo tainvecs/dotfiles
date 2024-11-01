@@ -5,14 +5,14 @@
 #   - https://github.com/hyperupcall/autoenv
 #
 # - envs
-#   - AUTOENV_AUTH_FILE,
-#   - AUTOENV_ENV_FILENAME,
-#   - AUTOENV_ENV_LEAVE_FILENAME,
+#   - AUTOENV_AUTH_FILE
+#   - AUTOENV_ENV_FILENAME
+#   - AUTOENV_ENV_LEAVE_FILENAME
 #   - AUTOENV_ENABLE_LEAVE
 # ------------------------------------------------------------------------------
 
 
-_dotfiles_init_autoenv(){
+function _dotfiles_init_autoenv(){
 
     # activation script
     if [[ $SYS_NAME = "mac" ]]; then
@@ -22,11 +22,11 @@ _dotfiles_init_autoenv(){
     fi
 
     # apply config and activate autoenv
-    if [[ -f "$_autoenv_script_path" ]]; then
+    if [[ -f $_autoenv_script_path ]]; then
 
         # home
         local _autoenv_home_dir="${DOTFILES[HOME_DIR]}/.autoenv"
-        [[ -d "$_autoenv_home_dir" ]] || mkdir -p "$_autoenv_home_dir"
+        [[ -d $_autoenv_home_dir ]] || mkdir -p $_autoenv_home_dir
 
         # envs
         export AUTOENV_AUTH_FILE="$_autoenv_home_dir/.autoenv_authorized"
@@ -35,7 +35,7 @@ _dotfiles_init_autoenv(){
         export AUTOENV_ENABLE_LEAVE="1"
 
         # activate
-        source "$_autoenv_script_path"
+        source $_autoenv_script_path
     fi
 }
 
@@ -54,24 +54,24 @@ _dotfiles_init_autoenv
 # ------------------------------------------------------------------------------
 
 
-_dotfiles_init_aws(){
+function _dotfiles_init_aws(){
 
     if type aws >"/dev/null"; then
 
         # home
         local _aws_home_dir="${DOTFILES[HOME_DIR]}/.aws"
-        [[ -d "$_aws_home_dir" ]] || mkdir -p "$_aws_home_dir"
+        [[ -d $_aws_home_dir ]] || mkdir -p $_aws_home_dir
 
         # config
         local _aws_config_file_path="$_aws_home_dir/config"
-        if [[ -f "$_aws_config_file_path" ]]; then
-            export AWS_CONFIG_FILE="$_aws_config_file_path"
+        if [[ -f $_aws_config_file_path ]]; then
+            export AWS_CONFIG_FILE=$_aws_config_file_path
         fi
 
         # credentials
         local _aws_credentials_file_path="$_aws_home_dir/credentials"
-        if [[ -f "$_aws_credentials_file_path" ]]; then
-            export AWS_SHARED_CREDENTIALS_FILE="$_aws_credentials_file_path"
+        if [[ -f $_aws_credentials_file_path ]]; then
+            export AWS_SHARED_CREDENTIALS_FILE=$_aws_credentials_file_path
         fi
     fi
 }
@@ -84,7 +84,7 @@ _dotfiles_init_aws
 # ------------------------------------------------------------------------------
 
 
-_dotfiles_init_clojure(){
+function _dotfiles_init_clojure(){
 
     if type clojure >"/dev/null"; then
 
@@ -118,22 +118,22 @@ _dotfiles_init_clojure
 # ------------------------------------------------------------------------------
 
 
-_dotfiles_init_docker(){
+function _dotfiles_init_docker(){
 
     if type docker >"/dev/null"; then
 
         # home
         local _docker_home_dir="${DOTFILES[HOME_DIR]}/.docker"
-        [[ -d "$_docker_home_dir" ]] || mkdir -p "$_docker_home_dir"
+        [[ -d $_docker_home_dir ]] || mkdir -p $_docker_home_dir
 
         # config
         # Location of the client config file config.json (default ~/.docker)
-        export DOCKER_CONFIG="$_docker_home_dir"
+        export DOCKER_CONFIG=$_docker_home_dir
 
         # # credentials
         # local _docker_credential_file_path="$_docker_home_dir/<credential-file>"
-        # if [[ -f "$_docker_credential_file_path" ]]; then
-        #     export DOCKER_CERT_PATH="$_docker_credential_file_path"
+        # if [[ -f $_docker_credential_file_path ]]; then
+        #     export DOCKER_CERT_PATH=$_docker_credential_file_path
         # fi
 
         # dockerd
@@ -141,7 +141,7 @@ _dotfiles_init_docker(){
 
             # config
             local _dockerd_config_file_path="$_docker_home_dir/daemon.json"
-            if [[ -f "$_dockerd_config_file_path" ]]; then
+            if [[ -f $_dockerd_config_file_path ]]; then
                 alias dockerd="dockerd --config-file $_dockerd_config_file_path "
             fi
         fi
@@ -163,24 +163,24 @@ _dotfiles_init_docker
 # ------------------------------------------------------------------------------
 
 
-_dotfiles_init_emacs(){
+function _dotfiles_init_emacs(){
 
     if type emacs >"/dev/null"; then
 
         # home
         local _emacs_home_dir="${DOTFILES[HOME_DIR]}/.emacs"
-        [[ -d "$_emacs_home_dir" ]] || mkdir -p "$_emacs_home_dir"
-        export EMACS_HOME="$_emacs_home_dir"
+        [[ -d $_emacs_home_dir ]] || mkdir -p $_emacs_home_dir
+        export EMACS_HOME=$_emacs_home_dir
 
         # config
         local _emacs_config_path="$_emacs_home/init.el"
-        if [[ -f "$_emacs_config_path" ]]; then
-            alias emacs='emacs -q --load "$_emacs_config_path"'
+        if [[ -f $_emacs_config_path ]]; then
+            alias emacs='emacs -q --load "$_emacs_config_path" '
         fi
 
         # PATH
         local _emacs_bin_dir="$_emacs_home/bin"
-        [[ -d "$_emacs_bin_dir" ]] && export PATH="$PATH:$_emacs_bin_dir"
+        [[ -d $_emacs_bin_dir ]] && export PATH="$PATH:$_emacs_bin_dir"
     fi
 }
 
@@ -199,7 +199,7 @@ _dotfiles_init_emacs
 # ------------------------------------------------------------------------------
 
 
-_dotfiles_init_es(){
+function _dotfiles_init_es(){
 
     if type elasticsearch >"/dev/null"; then
 
@@ -224,15 +224,15 @@ _dotfiles_init_es
 # ------------------------------------------------------------------------------
 
 
-_dotfiles_init_gcp(){
+function _dotfiles_init_gcp(){
 
     # home
     local _gcp_home_dir="${DOTFILES[HOME_DIR]}/.gcp"
 
     # path
     local _gcp_path_script_path="$_gcp_home_dir/google-cloud-sdk/path.zsh.inc"
-    if [[ -f "$_gcp_path_script_path" ]]; then
-        source "$_gcp_path_script_path"
+    if [[ -f $_gcp_path_script_path ]]; then
+        source $_gcp_path_script_path
     fi
 
     if type gcloud >"/dev/null"; then
@@ -241,8 +241,8 @@ _dotfiles_init_gcp(){
 
         # config
         local _gcp_config_dir="${DOTFILES[CONFIG_DIR]}/gcp"
-        [[ -d "$_gcp_config_dir" ]] || mkdir -p "$_gcp_config_dir"
-        export CLOUDSDK_CONFIG="$_gcp_config_dir"
+        [[ -d $_gcp_config_dir ]] || mkdir -p $_gcp_config_dir
+        export CLOUDSDK_CONFIG=$_gcp_config_dir
 
         # completion
         local _gcp_comp_path="$_gcp_home_dir/google-cloud-sdk/completion.zsh.inc"
