@@ -57,6 +57,7 @@ declare -a APPS_ARR=(
     "htop"
     "iterm"
     "jdk"
+    # "keyd"
     # "kube"
     # "meilisearch"
     # "openvpn"
