@@ -92,6 +92,10 @@ declare -a LOCAL_CONFIG_PATH_ARR=(
     "$DOTFILES_LOCAL/config/iterm2/keymap.itermkeymap"
     "$DOTFILES_LOCAL/config/iterm2/profile-default.json"
 
+    # keyd
+    "$DOTFILES_LOCAL/config/keyd/.Xmodmap"
+    "$DOTFILES_LOCAL/config/keyd/default.conf"
+
     # lazydocker
     "$DOTFILES_LOCAL/config/lazydocker/config.yml"
 

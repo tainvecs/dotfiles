@@ -439,6 +439,24 @@ elif [[ $OS_TYPE = "Linux" ]]; then
         echo "skip \"meilisearch\" as it is already installed"
     fi
 
+    # keyd
+    if [[ ${DOTFILES_APPS["keyd"]} = "true" ]] && \
+           ! { type keyd >/dev/null } && \
+           ! { dpkg -l keyd &>/dev/null }
+    then
+
+        # install
+        git clone https://github.com/rvaiya/keyd
+        cd keyd
+        make && sudo make install
+        cd .. && rm -rf ./keyd
+
+        # start
+        sudo systemctl enable keyd && sudo systemctl start keyd
+    else
+        echo "skip \"keyd\" as it is already installed"
+    fi
+
     # kubectl
     if [[ ${DOTFILES_APPS["kube"]} = "true" ]] && \
            ! { type kubectl >/dev/null } && \
@@ -520,5 +538,4 @@ elif [[ $OS_TYPE = "Linux" ]]; then
     else
         echo "skip \"vscode\" as it is already installed"
     fi
-
 fi

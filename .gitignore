@@ -645,6 +645,9 @@ config/htop/*
 # iterm2
 config/iterm2/*
 
+# keyd
+config/keyd/*
+
 # kube
 config/kube/*
 
@@ -656,6 +659,9 @@ config/p10k/*
 
 # peco
 config/peco/*
+
+# pulse
+config/pulse
 
 # python
 config/python/*
