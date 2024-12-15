@@ -203,6 +203,15 @@ function _dotfiles_init_es(){
 
     if type elasticsearch >"/dev/null"; then
 
+        # home
+        local _es_home_dir="${DOTFILES[HOME_DIR]}/.es"
+        [[ -d $_es_home_dir ]] || mkdir -p $_es_home_dir
+        export ES_HOME="$_es_home_dir/es"
+
+        # path
+        local _es_bin_dir="$ES_HOME/bin"
+        [[ -d $_es_bin_dir ]] && export PATH="$PATH:$_es_bin_dir"
+
         # java
         if [[ $SYS_NAME = "mac" ]]; then
             export ES_JAVA_HOME="$(/usr/libexec/java_home)"
