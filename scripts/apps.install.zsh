@@ -22,8 +22,8 @@ if [[ -z $SYS_NAME || -z $SYS_ARCHT ]]; then
 
     source "$DOTFILES_LIB/sys.zsh"
 
-    SYS_NAME=`get_system_architecture`
-    SYS_ARCHT=`get_system_name`
+    SYS_NAME=`get_system_name`
+    SYS_ARCHT=`get_system_architecture`
 fi
 
 
@@ -33,6 +33,16 @@ fi
 
 
 if [[ $SYS_NAME = "mac" ]]; then
+
+    # misc
+    # coreutils, wget, and curl
+    brew install coreutils wget curl
+
+    # jdk
+    if [[ ${DOTFILES_APPS[jdk]} = "true" ]]; then
+        # brew install --cask oracle-jdk
+        brew install openjdk
+    fi
 
     # alt-tab
     if [[ ${DOTFILES_APPS[alt-tab]} = "true" ]]; then
@@ -54,19 +64,40 @@ if [[ $SYS_NAME = "mac" ]]; then
         brew install clojure/tools/clojure
     fi
 
-    # coreutils, wget, and curl
-    brew install coreutils wget curl
-
     # docker
     if [[ ${DOTFILES_APPS[docker]} = "true" ]]; then
         brew install --cask docker
     fi
 
     # elasticsearch
+    # https://www.elastic.co/guide/en/elasticsearch/reference/current/targz.html
     if [[ ${DOTFILES_APPS[elasticsearch]} = "true" ]]; then
-        brew tap elastic/tap
-        brew install elastic/tap/elasticsearch-full
-        # sudo brew services start elasticsearch-full
+
+        # home
+        ES_HOME="$DOTFILES_HOME/.es"
+        [[ -d $ES_HOME ]] || mkdir -p $ES_HOME
+
+        # check if exist
+        if [[ -d "$ES_HOME/es" ]]; then
+
+            echo_app_installation_message 'es' 'skip'
+
+        else
+
+            echo_app_installation_message 'es' 'start'
+
+            # version
+            local _es_version=8.17.0
+            local _es_zip_file_name="elasticsearch-$_es_version-darwin-x86_64.tar.gz"
+
+            # download and unzip binary
+            curl -O "https://artifacts.elastic.co/downloads/elasticsearch/$_es_zip_file_name"
+            curl "https://artifacts.elastic.co/downloads/elasticsearch/$_es_zip_file_name.sha512" | shasum -a 512 -c -
+            mkdir "$ES_HOME/es" && tar -xzf "$ES_HOME/$_es_zip_file_name" -C "$ES_HOME/es" --strip-components 1
+
+            # clean up
+            rm "$ES_HOME/$_es_zip_file_name"
+        fi
     fi
 
     # emacs: use d12frosted/emacs-plus
@@ -115,12 +146,6 @@ if [[ $SYS_NAME = "mac" ]]; then
         brew install --cask iterm2
     fi
 
-    # jdk
-    if [[ ${DOTFILES_APPS[jdk]} = "true" ]]; then
-        # brew install --cask oracle-jdk
-        brew install openjdk
-    fi
-
     # kube
     if [[ ${DOTFILES_APPS[kube]} = "true" ]]; then
         brew install kubectl
@@ -130,6 +155,38 @@ if [[ $SYS_NAME = "mac" ]]; then
     if [[ ${DOTFILES_APPS[meilisearch]} = "true" ]]; then
         brew install meilisearch
     fi
+
+    # nvtop
+    # https://github.com/Syllo/nvtop?tab=readme-ov-file#nvtop-build
+    if [[ ${DOTFILES_APPS[nvtop]} = "true" ]]; then
+
+        # home
+        _HOME="$DOTFILES_HOME/.es"
+        [[ -d $ES_HOME ]] || mkdir -p $ES_HOME
+
+        # check if exist
+        if [[ -d "$ES_HOME/es" ]]; then
+
+            echo_app_installation_message 'es' 'skip'
+
+        else
+
+            echo_app_installation_message 'es' 'start'
+
+            # version
+            local _es_version=8.17.0
+            local _es_zip_file_name="elasticsearch-$_es_version-darwin-x86_64.tar.gz"
+
+            # download and unzip binary
+            curl -O "https://artifacts.elastic.co/downloads/elasticsearch/$_es_zip_file_name"
+            curl "https://artifacts.elastic.co/downloads/elasticsearch/$_es_zip_file_name.sha512" | shasum -a 512 -c -
+            mkdir "$ES_HOME/es" && tar -xzf "$ES_HOME/$_es_zip_file_name" -C "$ES_HOME/es" --strip-components 1
+
+            # clean up
+            rm "$ES_HOME/$_es_zip_file_name"
+        fi
+    fi
+
 
     # openvpn
     if [[ ${DOTFILES_APPS[openvpn]} = "true" ]]; then
