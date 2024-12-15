@@ -41,7 +41,7 @@
 
 # declare -A DOTFILES_APPS
 # for a_name in "${APPS_ARR[@]}"; do
-#     DOTFILES_APPS["$a_name"]="true"
+#     DOTFILES_APPS[$a_name]="true"
 # done
 
 
@@ -99,5 +99,5 @@
 
 # declare -A DOTFILES_PLUGINS
 # for p_name in "${PLUGIN_ARR[@]}"; do
-#     DOTFILES_PLUGINS["$p_name"]="true"
+#     DOTFILES_PLUGINS[$p_name]="true"
 # done

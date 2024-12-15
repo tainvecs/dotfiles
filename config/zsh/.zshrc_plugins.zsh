@@ -17,7 +17,7 @@ fi
 # ------------------------------------------------------------------------------
 
 
-if [[ ${DOTFILES_PLUGINS["p10k"]} = "true" ]]; then
+if [[ ${DOTFILES_PLUGINS[p10k]} = "true" ]]; then
 
     # ----- cache
     # p10k: should stay close to the top of ~/.zshrc.
@@ -45,7 +45,7 @@ fi
 
 
 # zsh autosuggestions: trigger precmd hook upon load
-if [[ ${DOTFILES_PLUGINS["zsh-autosuggestions"]} = "true" ]]; then
+if [[ ${DOTFILES_PLUGINS[zsh-autosuggestions]} = "true" ]]; then
 
     zinit ice wait"0a" lucid atload"_zsh_autosuggest_start"
     zinit light zsh-users/zsh-autosuggestions
@@ -56,7 +56,7 @@ fi
 
 
 # zsh completions
-if [[ ${DOTFILES_PLUGINS["zsh-completions"]} = "true" ]]; then
+if [[ ${DOTFILES_PLUGINS[zsh-completions]} = "true" ]]; then
 
     zinit ice wait"0b" lucid blockf
     zinit light zsh-users/zsh-completions
@@ -70,7 +70,7 @@ fi
 
 
 # syntax highlighting: loading is quite slow
-if [[ ${DOTFILES_PLUGINS["fast-syntax-highlighting"]} = "true" ]]; then
+if [[ ${DOTFILES_PLUGINS[fast-syntax-highlighting]} = "true" ]]; then
 
     zinit ice wait"0b" lucid atinit"ZINIT[COMPINIT_OPTS]=-C; zpcompinit; zpcdreplay"
     zinit light zdharma-continuum/fast-syntax-highlighting
@@ -84,10 +84,10 @@ fi
 # ------------------------------------------------------------------------------
 
 
-if [[ ${DOTFILES_PLUGINS["bat"]} = "true" ]]; then
+if [[ ${DOTFILES_PLUGINS[bat]} = "true" ]]; then
 
     # ----- bat
-    if [[ $SYS_NAME == linux ]] && [[ $ARCHT = "amd64" || $ARCHT = "arm64" ]]; then
+    if [[ $SYS_NAME == "linux" ]] && [[ $ARCHT = "amd64" || $ARCHT = "arm64" ]]; then
         zinit ice wait"0b" lucid from"gh-r" as"program" bpick"bat*$ARCHT*" pick"usr/bin/bat"
     else
         zinit ice wait"0b" lucid from"gh-r" as"program" mv"bat* -> bat" pick"bat/bat"
@@ -96,7 +96,7 @@ if [[ ${DOTFILES_PLUGINS["bat"]} = "true" ]]; then
     alias cat="bat "
 
     # ----- bat-extras
-    if [[ ${DOTFILES_PLUGINS["bat-extras"]} = "true" ]]; then
+    if [[ ${DOTFILES_PLUGINS[bat-extras]} = "true" ]]; then
 
         zinit ice wait"1" lucid as"program" pick"src/batgrep.sh"
         zinit light eth-p/bat-extras
@@ -114,7 +114,7 @@ fi
 
 
 # exa: replacement for ls
-if [[ ${DOTFILES_PLUGINS["exa"]} = "true" ]]; then
+if [[ ${DOTFILES_PLUGINS[exa]} = "true" ]]; then
 
     zinit ice wait"0c" lucid from"gh-r" as"program" pick"/bin/exa"
     zinit light ogham/exa
@@ -131,7 +131,7 @@ fi
 # ------------------------------------------------------------------------------
 
 
-if [[ ${DOTFILES_PLUGINS["ripgrep"]} = "true" ]]; then
+if [[ ${DOTFILES_PLUGINS[ripgrep]} = "true" ]]; then
 
     if [[ $SYS_NAME == linux ]] && [[ $ARCHT = "amd64" ]]; then
         zinit ice wait"0c" lucid from"gh-r" as"program" bpick"ripgrep*$ARCHT*" pick"usr/bin/rg"
@@ -143,7 +143,7 @@ if [[ ${DOTFILES_PLUGINS["ripgrep"]} = "true" ]]; then
     alias rg="rg -p --hidden --no-follow --max-columns 255 --column --glob '!.git' "
 
     # dependency: bat-extras
-    if [[ ${DOTFILES_PLUGINS["bat-extras"]} = "true" ]]; then
+    if [[ ${DOTFILES_PLUGINS[bat-extras]} = "true" ]]; then
         alias rg-bat="batgrep.sh -p --hidden --no-follow --glob '!.git' "
     fi
 
@@ -157,7 +157,7 @@ fi
 
 
 # fzf
-if [[ ${DOTFILES_PLUGINS["fzf"]} = "true" ]]; then
+if [[ ${DOTFILES_PLUGINS[fzf]} = "true" ]]; then
 
     # fzf
     zinit ice wait"0b" lucid from"gh-r" as"command"
@@ -176,13 +176,13 @@ if [[ ${DOTFILES_PLUGINS["fzf"]} = "true" ]]; then
     zinit light Aloxaf/fzf-tab
 
     # dependency: fd
-    if [[ ${DOTFILES_PLUGINS["fd"]} = "true" ]]; then
+    if [[ ${DOTFILES_PLUGINS[fd]} = "true" ]]; then
         export FZF_DEFAULT_COMMAND="fd --type file --hidden --color=always --exclude .git "
         export FZF_DEFAULT_OPTS="--ansi"
     fi
 
     # dependency: bat
-    if [[ ${DOTFILES_PLUGINS["bat"]} = "true" ]]; then
+    if [[ ${DOTFILES_PLUGINS[bat]} = "true" ]]; then
         alias pv="fzf --preview 'bat --color=always --style=numbers --line-range=:500 {}' "
     fi
 
@@ -190,9 +190,9 @@ fi
 
 
 # fd
-if [[ ${DOTFILES_PLUGINS["fd"]} = "true" ]]; then
+if [[ ${DOTFILES_PLUGINS[fd]} = "true" ]]; then
 
-    if [[ $SYS_NAME == linux ]] && [[ $ARCHT = "amd64" || $ARCHT = "arm64" ]]; then
+    if [[ $SYS_NAME == "linux" ]] && [[ $ARCHT = "amd64" || $ARCHT = "arm64" ]]; then
         zinit ice wait"0c" lucid from"gh-r" as"program" bpick"fd*$ARCHT*" pick"usr/bin/fd"
     else
         zinit ice wait"0c" lucid from"gh-r" as"program" mv"fd* -> fd" pick"fd/fd"
@@ -211,7 +211,7 @@ fi
 
 
 # z
-if [[ ${DOTFILES_PLUGINS["z"]} = "true" ]]; then
+if [[ ${DOTFILES_PLUGINS[z]} = "true" ]]; then
 
     # jump around dir
     zinit ice wait"0c" lucid
@@ -232,9 +232,9 @@ fi
 
 
 # delta: git styling
-if [[ ${DOTFILES_PLUGINS["delta"]} = "true" ]]; then
+if [[ ${DOTFILES_PLUGINS[delta]} = "true" ]]; then
 
-    if [[ $SYS_NAME == linux ]] && [[ $ARCHT = "amd64" || $ARCHT = "arm64" ]]; then
+    if [[ $SYS_NAME == "linux" ]] && [[ $ARCHT = "amd64" || $ARCHT = "arm64" ]]; then
         zinit ice wait"1" lucid from"gh-r" as"program" bpick"*delta*$ARCHT*" pick"usr/bin/delta"
     else
         zinit ice wait"1" lucid as"program" from"gh-r" pick"delta*/delta"
@@ -248,7 +248,7 @@ fi
 
 
 # forgit: git viewer
-if [[ ${DOTFILES_PLUGINS["forgit"]} = "true" ]]; then
+if [[ ${DOTFILES_PLUGINS[forgit]} = "true" ]]; then
 
     zinit ice wait"1" lucid
     zinit load 'wfxr/forgit'
@@ -265,7 +265,7 @@ fi
 
 
 # lazydocker
-if [[ ${DOTFILES_PLUGINS["lazydocker"]} = "true" ]]; then
+if [[ ${DOTFILES_PLUGINS[lazydocker]} = "true" ]]; then
 
     zinit ice wait"2" lucid as"program" from"gh-r" pick"lazydocker"
     zinit light 'jesseduffield/lazydocker'
@@ -283,7 +283,7 @@ fi
 
 
 # bottom
-if [[ ${DOTFILES_PLUGINS["bottom"]} = "true" ]]; then
+if [[ ${DOTFILES_PLUGINS[bottom]} = "true" ]]; then
 
     if [[ $SYS_NAME == mac ]]; then
 
@@ -300,7 +300,7 @@ fi
 
 
 # dust: instant overview of which directories are using disk space
-if [[ ${DOTFILES_PLUGINS["dust"]} = "true" ]]; then
+if [[ ${DOTFILES_PLUGINS[dust]} = "true" ]]; then
 
     if [[ $SYS_NAME == linux ]] && [[ $ARCHT = "amd64" ]]; then
         zinit ice wait"2" lucid from"gh-r" as"program" bpick"dust*$ARCHT*" pick"usr/bin/dust"
@@ -316,7 +316,7 @@ fi
 
 
 # duf: disk usage
-if [[ ${DOTFILES_PLUGINS["duf"]} = "true" ]]; then
+if [[ ${DOTFILES_PLUGINS[duf]} = "true" ]]; then
 
     if [[ $SYS_NAME == mac ]]; then
         zinit ice wait"2" lucid from"gh-r" as"program" mv="duf* -> duf" pick"duf"
@@ -336,7 +336,7 @@ fi
 
 
 # hyperfine: benchmark
-if [[ ${DOTFILES_PLUGINS["hyperfine"]} = "true" ]]; then
+if [[ ${DOTFILES_PLUGINS[hyperfine]} = "true" ]]; then
 
     if [[ $SYS_NAME == linux ]] && [[ $ARCHT = "amd64" || $ARCHT = "arm64" ]]; then
         zinit ice wait"2" lucid from"gh-r" as"program" bpick"hyperfine*$ARCHT*" pick"usr/bin/hyperfine"
@@ -358,7 +358,7 @@ fi
 
 
 # macOS
-if [[ $SYS_NAME = "mac" ]] && [[ ${DOTFILES_PLUGINS["copybuffer"]} = "true" ]]; then
+if [[ $SYS_NAME = "mac" ]] && [[ ${DOTFILES_PLUGINS[copybuffer]} = "true" ]]; then
 
     # copy stdin to clipboard
     zinit ice wait"2" lucid
@@ -380,7 +380,7 @@ fi
 
 
 # extract
-if [[ ${DOTFILES_PLUGINS["extract"]} = "true" ]]; then
+if [[ ${DOTFILES_PLUGINS[extract]} = "true" ]]; then
 
     zinit ice wait"2" lucid
     zinit snippet OMZ::plugins/extract
@@ -391,7 +391,7 @@ fi
 
 
 # universalarchive
-if [[ ${DOTFILES_PLUGINS["universalarchive"]} = "true" ]]; then
+if [[ ${DOTFILES_PLUGINS[universalarchive]} = "true" ]]; then
 
     zinit ice wait"2" lucid
     zinit snippet OMZ::plugins/universalarchive
@@ -407,7 +407,7 @@ fi
 
 
 # urltools: url encode and decode
-if [[ ${DOTFILES_PLUGINS["urltools"]} = "true" ]]; then
+if [[ ${DOTFILES_PLUGINS[urltools]} = "true" ]]; then
 
     zinit ice wait"2" lucid
     zinit snippet OMZ::plugins/urltools
@@ -432,73 +432,73 @@ fi
 
 
 # dotfiles-aws
-if [[ ${DOTFILES_PLUGINS["dotfiles-aws"]} = "true" ]]; then
+if [[ ${DOTFILES_PLUGINS[dotfiles-aws]} = "true" ]]; then
     zinit ice wait"2" lucid
     zinit snippet "${DOTFILES[PLUGINS_DIR]}/aws/.aws.plugin.zsh"
 fi
 
 # dotfiles-docker
-if [[ ${DOTFILES_PLUGINS["dotfiles-docker"]} = "true" ]]; then
+if [[ ${DOTFILES_PLUGINS[dotfiles-docker]} = "true" ]]; then
     zinit ice wait"2" lucid
     zinit snippet "${DOTFILES[PLUGINS_DIR]}/docker/.docker.plugin.zsh"
 fi
 
 # dotfiles-es
-if [[ ${DOTFILES_PLUGINS["dotfiles-es"]} = "true" ]]; then
+if [[ ${DOTFILES_PLUGINS[dotfiles-es]} = "true" ]]; then
     zinit ice wait"2" lucid
     zinit snippet "${DOTFILES[PLUGINS_DIR]}/es/.es.plugin.zsh"
 fi
 
 # dotfiles-fail2ban
-if [[ ${DOTFILES_PLUGINS["dotfiles-fail2ban"]} = "true" ]]; then
+if [[ ${DOTFILES_PLUGINS[dotfiles-fail2ban]} = "true" ]]; then
     zinit ice wait"2" lucid
     zinit snippet "${DOTFILES[PLUGINS_DIR]}/fail2ban/.fail2ban.plugin.zsh"
 fi
 
 # dotfiles-git
-if [[ ${DOTFILES_PLUGINS["dotfiles-git"]} = "true" ]]; then
+if [[ ${DOTFILES_PLUGINS[dotfiles-git]} = "true" ]]; then
     zinit ice wait"1" lucid
     zinit snippet "${DOTFILES[PLUGINS_DIR]}/git/.git.plugin.zsh"
 fi
 
 # dotfiles-kube
-if [[ ${DOTFILES_PLUGINS["dotfiles-kube"]} = "true" ]]; then
+if [[ ${DOTFILES_PLUGINS[dotfiles-kube]} = "true" ]]; then
     zinit ice wait"2" lucid
     zinit snippet "${DOTFILES[PLUGINS_DIR]}/kube/.kube.plugin.zsh"
 fi
 
 # dotfiles-mac
-if [[ ${DOTFILES_PLUGINS["dotfiles-mac"]} = "true" ]]; then
+if [[ ${DOTFILES_PLUGINS[dotfiles-mac]} = "true" ]]; then
     zinit ice wait"2" lucid
     zinit snippet "${DOTFILES[PLUGINS_DIR]}/mac/.mac.plugin.zsh"
 fi
 
 # dotfiles-misc
-if [[ ${DOTFILES_PLUGINS["dotfiles-misc"]} = "true" ]]; then
+if [[ ${DOTFILES_PLUGINS[dotfiles-misc]} = "true" ]]; then
     zinit ice wait"2" lucid
     zinit snippet "${DOTFILES[PLUGINS_DIR]}/misc/.misc.plugin.zsh"
 fi
 
 # dotfiles-ms
-if [[ ${DOTFILES_PLUGINS["dotfiles-ms"]} = "true" ]]; then
+if [[ ${DOTFILES_PLUGINS[dotfiles-ms]} = "true" ]]; then
     zinit ice wait"2" lucid
     zinit snippet "${DOTFILES[PLUGINS_DIR]}/ms/.ms.plugin.zsh"
 fi
 
 # dotfiles-network
-if [[ ${DOTFILES_PLUGINS["dotfiles-network"]} = "true" ]]; then
+if [[ ${DOTFILES_PLUGINS[dotfiles-network]} = "true" ]]; then
     zinit ice wait"2" lucid
     zinit snippet "${DOTFILES[PLUGINS_DIR]}/network/.network.plugin.zsh"
 fi
 
 # dotfiles-update
-if [[ ${DOTFILES_PLUGINS["dotfiles-update"]} = "true" ]]; then
+if [[ ${DOTFILES_PLUGINS[dotfiles-update]} = "true" ]]; then
     zinit ice wait"2" lucid
     zinit snippet "${DOTFILES[PLUGINS_DIR]}/update/.update.plugin.zsh"
 fi
 
 # dotfiles-vim
-if [[ ${DOTFILES_PLUGINS["dotfiles-vim"]} = "true" ]]; then
+if [[ ${DOTFILES_PLUGINS[dotfiles-vim]} = "true" ]]; then
     zinit ice wait"2" lucid
     zinit snippet "${DOTFILES[PLUGINS_DIR]}/vim/.vim.plugin.zsh"
 fi
