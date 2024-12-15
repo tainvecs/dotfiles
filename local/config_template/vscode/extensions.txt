@@ -1,3 +1,0 @@
-vscode-icons-team.vscode-icons
-dbaeumer.vscode-eslint
-esbenp.prettier-vscode
