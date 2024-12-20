@@ -135,3 +135,34 @@ function ls-link-broken() {
     # main
     find . -maxdepth $1 -xtype l
 }
+
+
+# ----- pip
+
+if type pip >/dev/null; then
+
+    function ls-pip-package() {
+
+        # print header
+        printf '%-30.30s %s\n' "PACKAGE" "VERSION"
+        printf '=%.0s' {1..30}
+        printf ' '
+        printf '=%.0s' {1..30}
+        printf '\n'
+
+        # process strings from pip freeze
+        local _pip_lines=$(pip freeze | sed -E 's/\s*(==|@)\s*/==/g' | sort)
+
+        # print line with indent
+        while IFS= read -r _line; do
+
+            # split with ==
+            local _name=${_line%==*}
+            local _ver=${_line#*==}
+
+            # print
+            printf '%-30.30s %s\n' $_name $_ver
+
+        done <<< $_pip_lines
+    }
+fi
