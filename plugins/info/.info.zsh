@@ -15,6 +15,18 @@
 #   - completion
 #     - https://stackoverflow.com/questions/40010848/how-to-list-all-zsh-autocompletions
 #
+#   - links
+#     - https://unix.stackexchange.com/questions/34248/how-can-i-find-broken-symlinks
+#
+#   - string processing
+#     - https://stackoverflow.com/questions/10520623/how-to-split-one-string-into-multiple-variables-in-bash-shell
+#     - https://unix.stackexchange.com/questions/396223/bash-shell-script-output-alignment
+#     - https://superuser.com/questions/284187/how-to-iterate-over-lines-in-a-variable-in-bash
+#     - https://unix.stackexchange.com/questions/35469/why-does-ls-sorting-ignore-non-alphanumeric-characters
+#     - https://askubuntu.com/questions/595269/use-sed-on-a-string-variable-rather-than-a-file
+#     - https://askubuntu.com/questions/678915/whats-the-difference-between-and-in-bash
+#     - https://stackoverflow.com/questions/3618078/pipe-only-stderr-through-a-filter
+#
 # ------------------------------------------------------------------------------
 
 
@@ -89,4 +101,37 @@ function ls-completion() {
     for _command _completion in ${(kv)_comps:#-*(-|-,*)}; do
         printf "%-60.60s %s\n" $_command $_completion
     done | LC_ALL=C sort
+}
+
+
+# ----- link
+
+# symbolic link
+# - $1: max depth to search
+function ls-link() {
+
+    # check argument
+    if [[ -z $1 ]]; then
+        echo 'error: missing argument'
+        echo '- $1: max depth to search'
+        return 1
+    fi
+
+    # main
+    find . -maxdepth $1 -type l
+}
+
+# broken symbolic links
+# - $1: max depth to search
+function ls-link-broken() {
+
+    # check argument
+    if [[ -z $1 ]]; then
+        echo 'error: missing argument'
+        echo '- $1: max depth to search'
+        return 1
+    fi
+
+    # main
+    find . -maxdepth $1 -xtype l
 }
