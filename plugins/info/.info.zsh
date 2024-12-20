@@ -12,6 +12,9 @@
 #     - https://manpages.ubuntu.com/manpages/jammy/man5/sources.list.5.html#examples
 #     - https://man7.org/linux/man-pages/man1/dpkg-query.1.html
 #
+#   - completion
+#     - https://stackoverflow.com/questions/40010848/how-to-list-all-zsh-autocompletions
+#
 # ------------------------------------------------------------------------------
 
 
@@ -69,4 +72,21 @@ function ls-apt-package() {
     while IFS=', ' read -r _name _ver _archt _summary; do
         printf '%-43.43s %-40.40s %-12.12s %-80.80s\n' $_name $_ver $_archt $_summary
     done <<< $_pkg_lines
+}
+
+
+# ----- completion
+
+function ls-completion() {
+    # print header
+    printf '%-60.60s %s\n' "COMMAND" "COMPLETION"
+    printf '=%.0s' {1..60}
+    printf ' '
+    printf '=%.0s' {1..60}
+    printf '\n'
+
+    # list and pretty completion
+    for _command _completion in ${(kv)_comps:#-*(-|-,*)}; do
+        printf "%-60.60s %s\n" $_command $_completion
+    done | LC_ALL=C sort
 }
