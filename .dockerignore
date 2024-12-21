@@ -33,6 +33,12 @@ home/*/*
 !home/**/.gitkeep
 
 
+# library
+!library/
+library/*
+!library/**/*.zsh
+
+
 # local
 !local/
 local/*
