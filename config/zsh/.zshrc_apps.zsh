@@ -1,52 +1,82 @@
 # ------------------------------------------------------------------------------
 # autoenv
+#
+# - references
+#   - https://github.com/hyperupcall/autoenv
+#
+# - envs
+#   - AUTOENV_AUTH_FILE
+#   - AUTOENV_ENV_FILENAME
+#   - AUTOENV_ENV_LEAVE_FILENAME
+#   - AUTOENV_ENABLE_LEAVE
 # ------------------------------------------------------------------------------
 
 
-# activation script
-if [[ $SYS_NAME == mac ]]; then
-    AUTOENV_SCRIPT_PATH="$BREW_HOME/opt/autoenv/activate.sh"
-elif [[ $SYS_NAME == linux ]]; then
-    AUTOENV_SCRIPT_PATH="${DOTFILES[HOME_DIR]}/.autoenv/autoenv.git/activate.sh"
-fi
+function _dotfiles_init_autoenv(){
 
-# apply config and activate autoenv
-if [[ -f $AUTOENV_SCRIPT_PATH ]]; then
+    # activation script
+    if [[ $SYS_NAME = "mac" ]]; then
+        local _autoenv_script_path="$BREW_HOME/opt/autoenv/activate.sh"
+    elif [[ $SYS_NAME = "linux" ]]; then
+        local _autoenv_script_path="${DOTFILES[HOME_DIR]}/.autoenv/autoenv.git/activate.sh"
+    fi
 
-    # home
-    export AUTOENV_HOME="${DOTFILES[HOME_DIR]}/.autoenv"
+    # apply config and activate autoenv
+    if [[ -f $_autoenv_script_path ]]; then
 
-    # config
-    export AUTOENV_AUTH_FILE="$AUTOENV_HOME/.autoenv_authorized"
-    export AUTOENV_ENV_FILENAME=".env"
-    export AUTOENV_ENV_LEAVE_FILENAME=".env.leave"
-    export AUTOENV_ENABLE_LEAVE="1"
+        # home
+        local _autoenv_home_dir="${DOTFILES[HOME_DIR]}/.autoenv"
+        [[ -d $_autoenv_home_dir ]] || mkdir -p $_autoenv_home_dir
 
-    # activate
-    source $AUTOENV_SCRIPT_PATH
+        # envs
+        export AUTOENV_AUTH_FILE="$_autoenv_home_dir/.autoenv_authorized"
+        export AUTOENV_ENV_FILENAME=".env"
+        export AUTOENV_ENV_LEAVE_FILENAME=".env.leave"
+        export AUTOENV_ENABLE_LEAVE="1"
 
-fi
+        # activate
+        source $_autoenv_script_path
+    fi
+}
+
+_dotfiles_init_autoenv
 
 
 # ------------------------------------------------------------------------------
 # aws
+#
+# - references
+#   - https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html
+#
+# - envs
+#   - AWS_CONFIG_FILE
+#   - AWS_SHARED_CREDENTIALS_FILE
 # ------------------------------------------------------------------------------
 
 
-if type aws >/dev/null; then
+function _dotfiles_init_aws(){
 
-    export AWS_HOME="${DOTFILES[HOME_DIR]}/.aws"
+    if type aws >"/dev/null"; then
 
-    if [[ -f "$AWS_HOME/config" ]]; then
-        export AWS_CONFIG_FILE=$AWS_HOME/config
+        # home
+        local _aws_home_dir="${DOTFILES[HOME_DIR]}/.aws"
+        [[ -d $_aws_home_dir ]] || mkdir -p $_aws_home_dir
+
+        # config
+        local _aws_config_file_path="$_aws_home_dir/config"
+        if [[ -f $_aws_config_file_path ]]; then
+            export AWS_CONFIG_FILE=$_aws_config_file_path
+        fi
+
+        # credentials
+        local _aws_credentials_file_path="$_aws_home_dir/credentials"
+        if [[ -f $_aws_credentials_file_path ]]; then
+            export AWS_SHARED_CREDENTIALS_FILE=$_aws_credentials_file_path
+        fi
     fi
+}
 
-    if [[ -f "$AWS_HOME/credentials" ]]; then
-        export AWS_SHARED_CREDENTIALS_FILE="$AWS_HOME/credentials"
-        export AWS_CREDENTIAL_PROFILES_FILE="$AWS_HOME/credentials"
-    fi
-
-fi
+_dotfiles_init_aws
 
 
 # ------------------------------------------------------------------------------
@@ -54,104 +84,184 @@ fi
 # ------------------------------------------------------------------------------
 
 
-if type clojure >/dev/null; then
+function _dotfiles_init_clojure(){
 
-    if [[ $SYS_NAME = "mac" ]]; then
-        export PATH=$PATH:/Applications/clojure
+    if type clojure >"/dev/null"; then
+
+        # PATH
+        if [[ $SYS_NAME = "mac" ]]; then
+            export PATH="$PATH:/Applications/clojure"
+        fi
     fi
+}
 
-fi
+_dotfiles_init_clojure
 
 
 # ------------------------------------------------------------------------------
 # docker
+#
+# - references
+#   - https://docs.docker.com/reference/cli/docker/#environment-variables
+#
+# - envs
+#   - DOCKER_CONFIG
+#   - DOCKER_CERT_PATH
+#
+# dockerd
+#
+# - references
+#   - https://docs.docker.com/reference/cli/dockerd/#environment-variables
+#
+# - envs
+#   - DOCKER_CERT_PATH
 # ------------------------------------------------------------------------------
 
 
-if type docker >/dev/null; then
+function _dotfiles_init_docker(){
 
-    export DOCKER_HOME="${DOTFILES[HOME_DIR]}/.docker"
+    if type docker >"/dev/null"; then
 
-    if [[ -d "$DOCKER_HOME" ]]; then
-        export DOCKER_CONFIG="$DOCKER_HOME"
-    fi
+        # home
+        local _docker_home_dir="${DOTFILES[HOME_DIR]}/.docker"
+        [[ -d $_docker_home_dir ]] || mkdir -p $_docker_home_dir
 
-    # if [[ -f "$DOCKER_HOME/<credentials-file>" ]]; then
-    #     export DOCKER_CERT_PATH="$DOCKER_HOME/<credentials-file>"
-    # fi
+        # config
+        # Location of the client config file config.json (default ~/.docker)
+        export DOCKER_CONFIG=$_docker_home_dir
 
-    if type dockerd >/dev/null; then
+        # # credentials
+        # local _docker_credential_file_path="$_docker_home_dir/<credential-file>"
+        # if [[ -f $_docker_credential_file_path ]]; then
+        #     export DOCKER_CERT_PATH=$_docker_credential_file_path
+        # fi
 
-        if [[ -f "$DOCKER_HOME/daemon.json" ]]; then
+        # dockerd
+        if type dockerd >"/dev/null"; then
 
-            alias dockerd="dockerd --data-root $DOCKER_HOME --config-file $DOCKER_HOME/daemon.json "
-
+            # config
+            local _dockerd_config_file_path="$_docker_home_dir/daemon.json"
+            if [[ -f $_dockerd_config_file_path ]]; then
+                alias dockerd="dockerd --config-file $_dockerd_config_file_path "
+            fi
         fi
-
     fi
-fi
+}
+
+_dotfiles_init_docker
 
 
 # ------------------------------------------------------------------------------
 # emacs
+#
+# - references
+#   - https://www.gnu.org/software/emacs/manual/html_node/emacs/Environment.html
+#   - https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html
+#
+# - envs
+#   - EMACS_HOME
 # ------------------------------------------------------------------------------
 
 
-if type emacs >/dev/null; then
+function _dotfiles_init_emacs(){
 
-    export EMACS_HOME="${DOTFILES[HOME_DIR]}/.emacs"
+    if type emacs >"/dev/null"; then
 
-    if [[ -f "$EMACS_HOME/init.el" ]]; then
-        alias emacs='env EMACS_HOME=$EMACS_HOME emacs -q --load "$EMACS_HOME/init.el"'
-        export PATH=$PATH:$EMACS_HOME/bin
+        # home
+        local _emacs_home_dir="${DOTFILES[HOME_DIR]}/.emacs"
+        [[ -d $_emacs_home_dir ]] || mkdir -p $_emacs_home_dir
+        export EMACS_HOME=$_emacs_home_dir
+
+        # config
+        local _emacs_config_path="$_emacs_home_dir/init.el"
+        if [[ -f $_emacs_config_path ]]; then
+            alias emacs='emacs -q --load "$_emacs_config_path" '
+        fi
+
+        # PATH
+        local _emacs_bin_dir="$_emacs_home_dir/bin"
+        [[ -d $_emacs_bin_dir ]] && export PATH="$PATH:$_emacs_bin_dir"
     fi
+}
 
-fi
+_dotfiles_init_emacs
 
 
 # ------------------------------------------------------------------------------
 # elasticsearch
+#
+# - references
+#   - https://www.elastic.co/guide/en/fleet/current/agent-environment-variables.html#env-enroll-agent
+#   - https://www.elastic.co/guide/en/elasticsearch/reference/current/zip-windows.html#windows-service-settings
+#
+# - envs
+#   - ES_JAVA_HOME
 # ------------------------------------------------------------------------------
 
 
-if type elasticsearch >/dev/null; then
+function _dotfiles_init_es(){
 
-    if [[ $SYS_NAME = "mac" ]]; then
-        export ES_JAVA_HOME=$(/usr/libexec/java_home)
+    if type elasticsearch >"/dev/null"; then
+
+        # home
+        local _es_home_dir="${DOTFILES[HOME_DIR]}/.es"
+        [[ -d $_es_home_dir ]] || mkdir -p $_es_home_dir
+        export ES_HOME="$_es_home_dir/es"
+
+        # path
+        local _es_bin_dir="$ES_HOME/bin"
+        [[ -d $_es_bin_dir ]] && export PATH="$PATH:$_es_bin_dir"
+
+        # java
+        if [[ $SYS_NAME = "mac" ]]; then
+            export ES_JAVA_HOME="$(/usr/libexec/java_home)"
+        fi
     fi
+}
 
-fi
+_dotfiles_init_es
 
 
 # ------------------------------------------------------------------------------
 # gcp
+#
+# - references
+#   - https://cloud.google.com/sdk/docs/configurations
+#
+# - envs
+#   - CLOUDSDK_CONFIG
 # ------------------------------------------------------------------------------
 
-# home
-GCP_HOME="${DOTFILES[HOME_DIR]}/.gcp"
 
-# path
-GCP_PATH_FILE="$GCP_HOME/google-cloud-sdk/path.zsh.inc"
-if [ -f $GCP_PATH_FILE ]; then
-    source $GCP_PATH_FILE
-fi
+function _dotfiles_init_gcp(){
 
-if type gcloud >/dev/null; then
+    # home
+    local _gcp_home_dir="${DOTFILES[HOME_DIR]}/.gcp"
 
-    # config
-    GCP_CONFIG_DIR="${DOTFILES[CONFIG_DIR]}/gcp"
-    export CLOUDSDK_CONFIG=$GCP_CONFIG_DIR
-
-    # completion
-    GCP_COMP_FILE="$GCP_HOME/google-cloud-sdk/completion.zsh.inc"
-
-    if [ -f $GCP_COMP_FILE ]; then
-        source $GCP_COMP_FILE
+    # path
+    local _gcp_path_script_path="$_gcp_home_dir/google-cloud-sdk/path.zsh.inc"
+    if [[ -f $_gcp_path_script_path ]]; then
+        source $_gcp_path_script_path
     fi
 
-    alias gcp="gcloud compute "
+    if type gcloud >"/dev/null"; then
 
-fi
+        alias gcp="gcloud compute "
+
+        # config
+        local _gcp_config_dir="${DOTFILES[CONFIG_DIR]}/gcp"
+        [[ -d $_gcp_config_dir ]] || mkdir -p $_gcp_config_dir
+        export CLOUDSDK_CONFIG=$_gcp_config_dir
+
+        # completion
+        local _gcp_comp_path="$_gcp_home_dir/google-cloud-sdk/completion.zsh.inc"
+        if [[ -f "$_gcp_comp_path" ]]; then
+            source "$_gcp_comp_path"
+        fi
+    fi
+}
+
+_dotfiles_init_gcp
 
 
 # ------------------------------------------------------------------------------
@@ -159,220 +269,330 @@ fi
 # ------------------------------------------------------------------------------
 
 
-if type go >/dev/null; then
+_dotfiles_init_go(){
 
-    export GO_HOME="${DOTFILES[HOME_DIR]}/.go"
+    if type go >"/dev/null"; then
 
-    export GOLIB=$GO_HOME/golib
-    export GOCODE=$GO_HOME/gocode
+        # home
+        local _go_home_dir="${DOTFILES[HOME_DIR]}/.go"
+        [[ -d "$_go_home_dir" ]] || mkdir -p "$_go_home_dir"
 
-    export GOPATH=$GOLIB:$GOCODE
-    export PATH=$GOLIB/bin:$PATH
+        # PATH
+        export GOLIB="$_go_home_dir/golib"
+        export GOCODE="$_go_home_dir/gocode"
 
-fi
+        export GOPATH="$GOLIB:$GOCODE"
+        export PATH="$GOLIB/bin:$PATH"
+    fi
+}
+
+_dotfiles_init_go
 
 
 # ------------------------------------------------------------------------------
 # kubectl
+#
+# - references
+#   - https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/
+#   - https://kubernetes.io/docs/reference/kubectl/kubectl/
+#
+# - envs
+#   - KUBECONFIG
 # ------------------------------------------------------------------------------
 
 
-if type kubectl >/dev/null; then
+_dotfiles_init_kube(){
 
-    export KUBE_HOME="${DOTFILES[HOME_DIR]}/.kube"
+    if type kubectl >"/dev/null"; then
 
-    # config
-    if [[ -f "$KUBE_HOME/config" ]]; then
-        export KUBECONFIG=$KUBE_HOME/config:$KUBECONFIG
+        # home
+        local _kube_home_dir="${DOTFILES[HOME_DIR]}/.kube"
+        [[ -d "$_kube_home_dir" ]] || mkdir -p "$_kube_home_dir"
+
+        # config
+        local _kube_config_path="$_kube_home_dir/config"
+        if [[ -f "$_kube_config_path" ]]; then
+            export KUBECONFIG="$_kube_config_path:$KUBECONFIG"
+        fi
+
+        # cache
+        local _kube_cache_dir="$_kube_home_dir/cache"
+        [[ -d "$_kube_cache_dir" ]] || mkdir -p "$_kube_cache_dir"
+        alias kubectl="kubectl --cache-dir $_kube_cache_dir "
+
+        # complete
+        local _kube_cmp_path="${DOTFILES[HOME_DIR]}/.zsh/.zsh_complete/_kubectl"
+        [[ -f "$_kube_cmp_path" ]] ||  kubectl completion zsh > "$_kube_cmp_path"
     fi
+}
 
-    # cache
-    [[ -d "$KUBE_HOME/cache" ]] || madir -p "$KUBE_HOME/cache"
-    alias kubectl="kubectl --cache-dir $KUBE_HOME/cache "
-
-    ZSH_COMPLETE_DIR="${DOTFILES[HOME_DIR]}/.zsh/.zsh_complete"
-    KUBE_COMPLETE_FILE="$ZSH_COMPLETE_DIR/_kubectl"
-
-    [[ -f $KUBE_COMPLETE_FILE ]] ||  kubectl completion zsh > $KUBE_COMPLETE_FILE
-
-fi
+_dotfiles_init_kube
 
 
 # ------------------------------------------------------------------------------
 # openvpn
+#
+# - references
+#   - https://openvpn.net/community-resources/reference-manual-for-openvpn-2-5/
 # ------------------------------------------------------------------------------
 
 
-if type openvpn >/dev/null; then
+_dotfiles_init_openvpn(){
 
-    # home
-    OPENVPN_HOME="${DOTFILES[HOME_DIR]}/.vpn"
-
-    # PATH
-    OPENVPN_DIR="$BREW_HOME/opt/openvpn"
-    OPENVPN_BIN_DIR="$OPENVPN_DIR/sbin"
-    [[ -d $OPENVPN_BIN_DIR ]] && export PATH="$PATH:$OPENVPN_BIN_DIR"
-
-fi
-
-
-# ------------------------------------------------------------------------------
-# python, ipython, and pyenv
-# ------------------------------------------------------------------------------
-
-
-if type python >/dev/null || type python3 >/dev/null; then
-
-
-    # ----- python
-
-    # home
-    export PYTHON_HOME="${DOTFILES[HOME_DIR]}/.python"
-
-    # config
-    if [[ -f "$PYTHON_HOME/.pythonrc" ]]; then
-        export PYTHONSTARTUP="$PYTHON_HOME/.pythonrc"
-    fi
-
-    # alias
-    alias py="python3 "
-    alias python="python3 "
-    alias pip="pip3 "
-
-    # function
-    function py-clean() {
-
-        # Remove python compiled byte-code and mypy/pytest cache in either the current
-        # directory or in a list of specified directories (including sub directories).
-
-        ZSH_PYCLEAN_PLACES=${*:-'.'}
-        find ${ZSH_PYCLEAN_PLACES} -type f -name "*.py[co]" -delete
-        find ${ZSH_PYCLEAN_PLACES} -type d -name "__pycache__" -delete
-        find ${ZSH_PYCLEAN_PLACES} -depth -type d -name ".mypy_cache" -exec rm -r "{}" +
-        find ${ZSH_PYCLEAN_PLACES} -depth -type d -name ".pytest_cache" -exec rm -r "{}" +
-    }
-
-    # nltk
-    export NLTK_DATA="$PYTHON_HOME/nltk_data"
-    [[ -d $NLTK_DATA ]] || mkdir -p $NLTK_DATA
-
-
-    # ----- pyenv
-
-    if type pyenv >/dev/null || [[ -d "$PYTHON_HOME/.pyenv/pyenv.git" ]]; then
+    if type openvpn >"/dev/null"; then
 
         # home
-        export PYENV_HOME="$PYTHON_HOME/.pyenv"
+        local _openvpn_home_dir="${DOTFILES[HOME_DIR]}/.vpn"
+        [[ -d "$_openvpn_home_dir" ]] || mkdir -p "$_openvpn_home_dir"
 
-        # root
-        if [[ -d "$PYENV_HOME/pyenv.git" ]]; then
-            export PYENV_ROOT="$PYENV_HOME/pyenv.git"
-            PATH="$PYENV_ROOT/bin:$PATH"
-        else
-            export PYENV_ROOT=$PYENV_HOME
+        # PATH
+        if [[ $SYS_NAME = "mac" ]]; then
+
+            local _openvpn_bin_dir="$BREW_HOME/opt/openvpn/sbin"
+            [[ -d "$_openvpn_bin_dir" ]] && export PATH="$PATH:$_openvpn_bin_dir"
+        fi
+    fi
+}
+
+_dotfiles_init_openvpn
+
+
+# ------------------------------------------------------------------------------
+# python
+#
+# - references
+#   - https://docs.python.org/3/using/cmdline.html#environment-variables
+#   - https://www.nltk.org/data.html
+#
+# - envs
+#   - PYTHONSTARTUP
+#
+# pyenv
+#
+# - references
+#   - https://github.com/pyenv/pyenv?tab=readme-ov-file#environment-variables
+#
+# - envs
+#   - PYENV_ROOT
+#
+# ipython
+#
+# - references
+#   - https://ipython.org/ipython-doc/3/config/intro.html#the-ipython-directory
+#
+# - envs
+#   - IPYTHONDIR
+# ------------------------------------------------------------------------------
+
+
+_dotfiles_init_python(){
+
+    if type python >"/dev/null" || type python3 >"/dev/null"; then
+
+        # ----- python
+
+        # alias
+        alias py="python3 "
+        alias python="python3 "
+        alias pip="pip3 "
+
+        # home
+        local _python_home_dir="${DOTFILES[HOME_DIR]}/.python"
+        [[ -d "$_python_home_dir" ]] || mkdir -p "$_python_home_dir"
+
+        # config
+        local _python_config_path="$_python_home_dir/.pythonrc"
+        if [[ -f "$_python_config_path" ]]; then
+            export PYTHONSTARTUP="$_python_config_path"
         fi
 
-        # shims
-        PYENV_SHIMS_PATH="$PYENV_HOME/shims"
-        [[ -d $PYENV_SHIMS_PATH ]] || mkdir -p $PYENV_SHIMS_PATH
-        PATH="$PYENV_SHIMS_PATH:$PATH"
+        # function
+        function py-clean() {
 
-        # lazy load pyenv
-        pyenv() {
-            unset -f pyenv
-            eval "$(command pyenv init -)"
-            eval "$(command pyenv virtualenv-init -)"
-            pyenv $@
+            # Remove python compiled byte-code and mypy/pytest cache in either the current
+            # directory or in a list of specified directories (including sub directories).
+
+            local _zsh_pyclean_places=${*:-'.'}
+            find ${_zsh_pyclean_places} -type f -name "*.py[co]" -delete
+            find ${_zsh_pyclean_places} -type d -name "__pycache__" -delete
+            find ${_zsh_pyclean_places} -depth -type d -name ".mypy_cache" -exec rm -r "{}" +
+            find ${_zsh_pyclean_places} -depth -type d -name ".pytest_cache" -exec rm -r "{}" +
         }
 
-        # link brew installed python
-        if type brew >/dev/null; then
-            pyenv-ln-brew(){
-                ln -s $(brew --cellar python)/* $PYENV_HOME/versions/
+        # nltk
+        local _nltk_data_dir="$_python_home_dir/nltk_data"
+        [[ -d "$_nltk_data_dir" ]] || mkdir -p "$_nltk_data_dir"
+        export NLTK_DATA="$_nltk_data_dir"
+
+
+        # ----- pyenv
+
+        if type pyenv >"/dev/null" || [[ -d "$_python_home_dir/.pyenv/pyenv.git" ]]; then
+
+            # home
+            local _pyenv_home_dir="$_python_home_dir/.pyenv"
+            [[ -d "$_pyenv_home_dir" ]] || mkdir -p "$_pyenv_home_dir"
+
+            # root
+            if [[ -d "$_pyenv_home_dir/pyenv.git" ]]; then
+                export PYENV_ROOT="$_pyenv_home_dir/pyenv.git"
+            else
+                export PYENV_ROOT="$_pyenv_home_dir"
+            fi
+
+            # PATH
+            local _pyenv_bin_dir="$PYENV_ROOT/bin"
+            [[ -d "$_pyenv_bin_dir" ]] && export PATH="$_pyenv_bin_dir:$PATH"
+
+            # shims
+            local _pyenv_shims_path="$_pyenv_home_dir/shims"
+            [[ -d "$_pyenv_shims_path" ]] || mkdir -p "$_pyenv_shims_path"
+
+            # lazy load pyenv
+            pyenv() {
+                unset -f pyenv
+                eval "$(command pyenv init -)"
+                eval "$(command pyenv virtualenv-init -)"
+                pyenv $@
             }
+
+            # link brew installed python
+            if type brew >"/dev/null"; then
+                pyenv-ln-brew(){
+                    ln -s "$(brew --cellar python)/*" "$_pyenv_home_dir/versions/"
+                }
+            fi
         fi
 
+
+        # ----- ipython
+
+        # home
+        local _ipython_home_dir="$_python_home_dir/.ipython"
+        [[ -d "$_ipython_home_dir" ]] || mkdir -p "$_ipython_home_dir"
+
+        # root
+        export IPYTHONDIR="$_ipython_home_dir"
+
+        # ipython use the same version as python
+        alias ipython="python -c 'import IPython; IPython.terminal.ipapp.launch_new_instance()'"
     fi
+}
 
-
-    # ----- ipython
-
-    # home
-    export IPYTHON_HOME="$PYTHON_HOME/.ipython"
-
-    # root
-    export IPYTHONDIR=$IPYTHON_HOME
-
-    # ipython use the same version as python
-    alias ipython="python -c 'import IPython; IPython.terminal.ipapp.launch_new_instance()'"
-
-
-    export PATH
-
-fi
+_dotfiles_init_python
 
 
 # ------------------------------------------------------------------------------
 # ssh
+#
+# - references
+#   - https://man7.org/linux/man-pages/man1/ssh.1.html
+#
+# - envs
+#   - SSH_HOME
+#   - GIT_SSH_COMMAND
 # ------------------------------------------------------------------------------
 
 
-if type ssh >/dev/null; then
+_dotfiles_init_ssh(){
 
-    # home
-    export SSH_HOME="${DOTFILES[HOME_DIR]}/.ssh"
+    if type ssh >"/dev/null"; then
 
-    # config
-    if [[ -f "$SSH_HOME/config" ]]; then
-        SSH_CMD="ssh -F $SSH_HOME/config -o UserKnownHostsFile=$SSH_HOME/known_hosts "
-        alias ssh=$SSH_CMD
-    else
-        SSH_CMD="ssh -o UserKnownHostsFile=$SSH_HOME/known_hosts "
+        # home
+        local _ssh_home_dir="${DOTFILES[HOME_DIR]}/.ssh"
+        [[ -d "$_ssh_home_dir" ]] || mkdir -p "$_ssh_home_dir"
+        export SSH_HOME="$_ssh_home_dir"
+
+        # config
+        local _ssh_config_path="$_ssh_home_dir/config"
+        local _ssh_known_hosts_path="$_ssh_home_dir/known_hosts"
+
+        if [[ -f "$_ssh_config_path" ]]; then
+            local _ssh_cmd="ssh -F $_ssh_config_path -o UserKnownHostsFile=$_ssh_known_hosts_path "
+        else
+            local _ssh_cmd="ssh -o UserKnownHostsFile=$_ssh_known_hosts_path "
+        fi
+
+        # command
+        export GIT_SSH_COMMAND="$_ssh_cmd"
+        alias ssh="$_ssh_cmd"
     fi
+}
 
-    export GIT_SSH_COMMAND=$SSH_CMD
-
-fi
+_dotfiles_init_ssh
 
 
 # ------------------------------------------------------------------------------
 # tmux
+#
+# - references
+#   - https://man7.org/linux/man-pages/man1/tmux.1.html
+#
+# - envs
+#   - TMUX_CONFIG_PATH
+#   - TMUX_CONFIG_LOCAL_PATH
 # ------------------------------------------------------------------------------
 
 
-if type tmux >/dev/null; then
+_dotfiles_init_tmux(){
 
-    # config
-    export TMUX_CONFIG_DIR="${DOTFILES[CONFIG_DIR]}/tmux"
-    if [[ -f "$TMUX_CONFIG_DIR/.tmux.conf" ]]; then
-        alias tmux="tmux -f $TMUX_CONFIG_DIR/.tmux.conf"
+    if type tmux >"/dev/null"; then
+
+        # config
+        local _tmux_config_path="${DOTFILES[CONFIG_DIR]}/tmux/.tmux.conf"
+        local _tmux_config_local_path="${DOTFILES[CONFIG_DIR]}/tmux/.tmux.conf.local"
+
+        if [[ -f "$_tmux_config_path" ]]; then
+            alias tmux="tmux -f $_tmux_config_path"
+            export TMUX_CONFIG_PATH="$_tmux_config_path"
+        fi
+        if [[ -f "$_tmux_config_local_path" ]]; then
+            export TMUX_CONFIG_LOCAL_PATH="$_tmux_config_local_path"
+        fi
     fi
+}
 
-fi
+_dotfiles_init_tmux
 
 
 # ------------------------------------------------------------------------------
 # vim
+#
+# - envs
+#   - VIM_HOME
+#   - VIMINIT
 # ------------------------------------------------------------------------------
 
 
-if type vim >/dev/null; then
+_dotfiles_init_vim(){
 
-    # home
-    export VIM_HOME="${DOTFILES[HOME_DIR]}/.vim"
+    if type vim >"/dev/null"; then
 
-    # config
-    if [[ -f "$VIM_HOME/.vimrc" ]]; then
-        export VIMINIT="source $VIM_HOME/.vimrc"
+        # home
+        local _vim_home_dir="${DOTFILES[HOME_DIR]}/.vim"
+        [[ -d "$_vim_home_dir" ]] || mkdir -p "$_vim_home_dir"
+        export VIM_HOME="$_vim_home_dir"
+
+        # config
+        local _vim_config_path="$_vim_home_dir/.vimrc"
+        if [[ -f "$_vim_config_path" ]]; then
+            export VIMINIT="source $_vim_config_path"
+        fi
     fi
 
-fi
+    # mac
+    if [[ $SYS_NAME = "mac" ]]; then
 
-# mac: use vim installed by brew
-if [[ -f $BREW_HOME/bin/vim ]]; then
-    alias vi="$BREW_HOME/bin/vim "
-    alias vim="$BREW_HOME/bin/vim "
-fi
+        # use vim installed by brew
+        local _mac_vim_bin_path="$BREW_HOME/bin/vim"
+        if [[ -f "$_mac_vim_bin_path" ]]; then
+            alias vi="$_mac_vim_bin_path "
+            alias vim="$_mac_vim_bin_path "
+        fi
+    fi
+}
+
+_dotfiles_init_vim
 
 
 # ------------------------------------------------------------------------------
@@ -380,9 +600,18 @@ fi
 # ------------------------------------------------------------------------------
 
 
-# home
-export VOLTA_HOME="${DOTFILES[HOME_DIR]}/.volta"
+_dotfiles_init_volta(){
 
-if [[ -d $VOLTA_HOME/bin ]]; then
-    export PATH=$VOLTA_HOME/bin:$PATH
-fi
+    if type volta >"/dev/null"; then
+
+        # home
+        local _volta_home_dir="${DOTFILES[HOME_DIR]}/.volta"
+        [[ -d "$_volta_home_dir" ]] || mkdir -p "$_volta_home_dir"
+
+        # PATH
+        local _volta_bin_dir="$_volta_home_dir/bin"
+        [[ -d "$_volta_bin_dir" ]] && export PATH="$_volta_bin_dir:$PATH"
+    fi
+}
+
+_dotfiles_init_volta
