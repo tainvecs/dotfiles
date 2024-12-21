@@ -173,13 +173,13 @@ function _dotfiles_init_emacs(){
         export EMACS_HOME=$_emacs_home_dir
 
         # config
-        local _emacs_config_path="$_emacs_home/init.el"
+        local _emacs_config_path="$_emacs_home_dir/init.el"
         if [[ -f $_emacs_config_path ]]; then
             alias emacs='emacs -q --load "$_emacs_config_path" '
         fi
 
         # PATH
-        local _emacs_bin_dir="$_emacs_home/bin"
+        local _emacs_bin_dir="$_emacs_home_dir/bin"
         [[ -d $_emacs_bin_dir ]] && export PATH="$PATH:$_emacs_bin_dir"
     fi
 }
