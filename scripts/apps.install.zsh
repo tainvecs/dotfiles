@@ -185,32 +185,36 @@ if [[ $SYS_NAME = "mac" ]]; then
     if [[ ${DOTFILES_APPS[nvtop]} = "true" ]]; then
 
         # home
-        _HOME="$DOTFILES_HOME/.es"
-        [[ -d $ES_HOME ]] || mkdir -p $ES_HOME
+        _nvtop_home="$DOTFILES_HOME/.nvtop"
+        [[ -d $_nvtop_home ]] || mkdir -p $_nvtop_home
 
         # check if exist
-        if [[ -d "$ES_HOME/es" ]]; then
+        _nvtop_git_dir="$_nvtop_home/nvtop.git"
+        if [[ -d "$_nvtop_git_dir" ]]; then
 
-            echo_app_installation_message 'es' 'skip'
+            echo_app_installation_message 'nvtop' 'skip'
 
         else
 
-            echo_app_installation_message 'es' 'start'
+            echo_app_installation_message 'nvtop' 'start'
 
-            # version
-            local _es_version=8.17.0
-            local _es_zip_file_name="elasticsearch-$_es_version-darwin-x86_64.tar.gz"
+            local _oldpwd=$PWD
 
-            # download and unzip binary
-            curl -O "https://artifacts.elastic.co/downloads/elasticsearch/$_es_zip_file_name"
-            curl "https://artifacts.elastic.co/downloads/elasticsearch/$_es_zip_file_name.sha512" | shasum -a 512 -c -
-            mkdir "$ES_HOME/es" && tar -xzf "$ES_HOME/$_es_zip_file_name" -C "$ES_HOME/es" --strip-components 1
+            # download
+            git clone https://github.com/Syllo/nvtop.git $_nvtop_git_dir
 
-            # clean up
-            rm "$ES_HOME/$_es_zip_file_name"
+            # build
+            mkdir -p "$_nvtop_git_dir/build" && cd "$_nvtop_git_dir/build"
+            cmake .. -DAPPLE_SUPPORT=ON
+            make
+
+            # install globally on the system
+            sudo make install
+
+            # after
+            cd $_oldpwd
         fi
     fi
-
 
     # openvpn
     if [[ ${DOTFILES_APPS[openvpn]} = "true" ]]; then

@@ -36,7 +36,7 @@ if [[ $OS_TYPE = "Darwin" ]]; then   # macos: xcode-select, homebrew, unzip and 
     brew update
 
     # curl and unzip
-    brew install unzip curl
+    brew install unzip curl cmake
 
 elif [[ $OS_TYPE = "Linux" ]]; then  # linux: apt-get, unzip and curl
 

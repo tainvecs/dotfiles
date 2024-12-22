@@ -706,6 +706,7 @@ home/*/*/*/*
 
 home/.autoenv/*
 home/.emacs/auto-save-list
+home/.nvtop/*
 home/.python/.pyenv/*
 home/.vim/bundle/*
 home/.zsh/.zinit/*
