@@ -170,7 +170,7 @@ function _dotfiles_init_emacs(){
         # config
         local _emacs_config_path="$_emacs_home_dir/init.el"
         if [[ -f $_emacs_config_path ]]; then
-            alias emacs='emacs -q --load "$_emacs_config_path" '
+            alias emacs="emacs -q --load \"$_emacs_config_path\" "
         fi
 
         # PATH
