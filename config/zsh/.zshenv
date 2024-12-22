@@ -83,6 +83,7 @@ declare -a APP_ARR=(
     # "keyd"
     # "kube"
     # "meilisearch"
+    # "nvtop"
     # "openvpn"
     # "peco"
     "python"
