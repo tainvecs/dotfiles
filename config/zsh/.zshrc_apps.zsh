@@ -190,16 +190,18 @@ _dotfiles_init_emacs
 #   - https://www.elastic.co/guide/en/elasticsearch/reference/current/zip-windows.html#windows-service-settings
 #
 # - envs
+#   - ES_HOME
 #   - ES_JAVA_HOME
 # ------------------------------------------------------------------------------
 
 
 function _dotfiles_init_es(){
 
-    if type elasticsearch >"/dev/null"; then
+    local _es_home_dir="${DOTFILES[HOME_DIR]}/.es"
+
+    if type elasticsearch >"/dev/null" || [[ -d "$_es_home_dir/es" ]]; then
 
         # home
-        local _es_home_dir="${DOTFILES[HOME_DIR]}/.es"
         [[ -d $_es_home_dir ]] || mkdir -p $_es_home_dir
         export ES_HOME="$_es_home_dir/es"
 

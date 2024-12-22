@@ -117,10 +117,10 @@ if [[ $SYS_NAME = "mac" ]]; then
             # download and unzip binary
             curl -O "https://artifacts.elastic.co/downloads/elasticsearch/$_es_zip_file_name"
             curl "https://artifacts.elastic.co/downloads/elasticsearch/$_es_zip_file_name.sha512" | shasum -a 512 -c -
-            mkdir "$ES_HOME/es" && tar -xzf "$ES_HOME/$_es_zip_file_name" -C "$ES_HOME/es" --strip-components 1
+            mkdir "$ES_HOME/es" && tar -xzf "$_es_zip_file_name" -C "$ES_HOME/es" --strip-components 1
 
             # clean up
-            rm "$ES_HOME/$_es_zip_file_name"
+            rm $_es_zip_file_name
         fi
     fi
 
