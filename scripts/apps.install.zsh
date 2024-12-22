@@ -66,7 +66,24 @@ if [[ $SYS_NAME = "mac" ]]; then
 
     # docker
     if [[ ${DOTFILES_APPS[docker]} = "true" ]]; then
-        brew install --cask docker
+
+        local _sys_archt=${SYS_ARCHT:-$(uname -m)}
+
+        # ----- docker
+
+        # download
+        curl -O "https://desktop.docker.com/mac/main/$_sys_archt/Docker.dmg?utm_source=docker&utm_medium=webreferral&utm_campaign=docs-driven-download-mac-$_sys_archt"
+
+        # install
+        sudo hdiutil attach Docker.dmg
+        sudo /Volumes/Docker/Docker.app/Contents/MacOS/install
+
+        # clean up
+        sudo hdiutil detach /Volumes/Docker
+        rm Docker.dmg
+
+        # ----- docker-buildx
+        brew install docker-buildx
     fi
 
     # elasticsearch

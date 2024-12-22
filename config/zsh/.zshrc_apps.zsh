@@ -129,12 +129,7 @@ function _dotfiles_init_docker(){
         # config
         # Location of the client config file config.json (default ~/.docker)
         export DOCKER_CONFIG=$_docker_home_dir
-
-        # # credentials
-        # local _docker_credential_file_path="$_docker_home_dir/<credential-file>"
-        # if [[ -f $_docker_credential_file_path ]]; then
-        #     export DOCKER_CERT_PATH=$_docker_credential_file_path
-        # fi
+        export DOCKER_DEFAULT_PLATFORM="linux/$SYS_ARCHT"
 
         # dockerd
         if type dockerd >"/dev/null"; then
