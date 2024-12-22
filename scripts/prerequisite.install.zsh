@@ -25,6 +25,9 @@ if [[ $OS_TYPE = "Darwin" ]]; then   # macos: xcode-select, homebrew, unzip and 
     # xcode-select
     xcode-select --install
 
+    # rosetta
+    softwareupdate --install-rosetta --agree-to-license
+
     # homebrew
     if ! type brew >/dev/null; then
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -32,12 +35,12 @@ if [[ $OS_TYPE = "Darwin" ]]; then   # macos: xcode-select, homebrew, unzip and 
     fi
     brew update
 
-    # curl
+    # curl and unzip
     brew install unzip curl
 
 elif [[ $OS_TYPE = "Linux" ]]; then  # linux: apt-get, unzip and curl
 
-    # curl
+    # curl and unzip
     if type sudo >/dev/null; then
         sudo apt-get update
         sudo apt-get install -y unzip curl
