@@ -40,10 +40,10 @@ zsh $DOTFILES_SCRIPTS/apps.install.zsh
 source "$DOTFILES_ZSH_HOME/.zshrc_apps.zsh"
 
 # set up vim
-zsh $DOTFILES_SCRIPTS/vim.setup.zsh
+type vim >"/dev/null" && zsh $DOTFILES_SCRIPTS/vim.setup.zsh
 
 # set up emacs
-zsh $DOTFILES_SCRIPTS/emacs.setup.zsh
+type emacs >"/dev/null" && zsh $DOTFILES_SCRIPTS/emacs.setup.zsh
 
 # install plugins by zinit plugin manager
 zsh $DOTFILES_SCRIPTS/plugins.install.zsh

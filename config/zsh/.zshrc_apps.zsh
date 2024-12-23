@@ -129,12 +129,7 @@ function _dotfiles_init_docker(){
         # config
         # Location of the client config file config.json (default ~/.docker)
         export DOCKER_CONFIG=$_docker_home_dir
-
-        # # credentials
-        # local _docker_credential_file_path="$_docker_home_dir/<credential-file>"
-        # if [[ -f $_docker_credential_file_path ]]; then
-        #     export DOCKER_CERT_PATH=$_docker_credential_file_path
-        # fi
+        export DOCKER_DEFAULT_PLATFORM="linux/$SYS_ARCHT"
 
         # dockerd
         if type dockerd >"/dev/null"; then
@@ -175,7 +170,7 @@ function _dotfiles_init_emacs(){
         # config
         local _emacs_config_path="$_emacs_home_dir/init.el"
         if [[ -f $_emacs_config_path ]]; then
-            alias emacs='emacs -q --load "$_emacs_config_path" '
+            alias emacs="emacs -q --load \"$_emacs_config_path\" "
         fi
 
         # PATH
@@ -195,16 +190,18 @@ _dotfiles_init_emacs
 #   - https://www.elastic.co/guide/en/elasticsearch/reference/current/zip-windows.html#windows-service-settings
 #
 # - envs
+#   - ES_HOME
 #   - ES_JAVA_HOME
 # ------------------------------------------------------------------------------
 
 
 function _dotfiles_init_es(){
 
-    if type elasticsearch >"/dev/null"; then
+    local _es_home_dir="${DOTFILES[HOME_DIR]}/.es"
+
+    if type elasticsearch >"/dev/null" || [[ -d "$_es_home_dir/es" ]]; then
 
         # home
-        local _es_home_dir="${DOTFILES[HOME_DIR]}/.es"
         [[ -d $_es_home_dir ]] || mkdir -p $_es_home_dir
         export ES_HOME="$_es_home_dir/es"
 
