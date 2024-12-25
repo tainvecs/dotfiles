@@ -126,6 +126,7 @@ declare -a PLUGIN_ARR=(
     # "dust"
     "exa"
     "extract"
+    # "docker-credential-helpers"
     "fast-syntax-highlighting"
     "fd"
     "forgit"

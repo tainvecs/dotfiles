@@ -260,8 +260,25 @@ fi
 
 
 # ------------------------------------------------------------------------------
-# lazydocker
+# docker
 # ------------------------------------------------------------------------------
+
+
+# docker credential helpers
+if [[ ${DOTFILES_PLUGINS[docker-credential-helpers]} = "true" ]] && [[ $ARCHT = "amd64" || $ARCHT = "arm64" ]]; then
+
+    if [[ $SYS_NAME == "mac" ]]; then
+
+        zinit ice wait"2c" lucid from"gh-r" as"program" bpick"docker-credential-osxkeychain-*" \
+              mv"docker-credential-osxkeychain-* -> docker-credential-osxkeychain"
+
+    elif [[ $SYS_NAME == "linux" ]]; then
+        zinit ice wait"2c" lucid from"gh-r" as"program" bpick"docker-credential-secretservice-*" \
+              mv"docker-credential-secretservice-* -> docker-credential-secretservice"
+    fi
+
+    zinit light docker/docker-credential-helpers
+fi
 
 
 # lazydocker
