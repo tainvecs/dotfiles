@@ -287,6 +287,33 @@ _dotfiles_init_go
 
 
 # ------------------------------------------------------------------------------
+# keyd
+#
+# - reference
+#   - https://github.com/rvaiya/keyd
+# ------------------------------------------------------------------------------
+
+
+_dotfiles_init_keyd(){
+
+    if type keyd >"/dev/null" && [[ $SYS_NAME = "linux" ]]; then
+
+        # config
+        KEYD_CONFIG_DIR="${DOTFILES[CONFIG_DIR]}/keyd"
+
+        KEYD_CONFIG_LINK="/etc/keyd/default.conf"
+        KEYD_CONFIG_FILE="$KEYD_CONFIG_DIR/default.conf"
+        if [[ ! -f $KEYD_CONFIG_LINK ]] && [[ -f $KEYD_CONFIG_FILE ]]; then
+            sudo ln -s $KEYD_CONFIG_FILE $KEYD_CONFIG_LINK
+            sudo keyd reload
+        fi
+    fi
+}
+
+_dotfiles_init_keyd
+
+
+# ------------------------------------------------------------------------------
 # kubectl
 #
 # - references
