@@ -639,6 +639,7 @@ _dotfiles_init_volta(){
 
         # home
         [[ -d "$_volta_home_dir" ]] || mkdir -p "$_volta_home_dir"
+        export VOLTA_HOME=$_volta_home_dir
 
         # PATH
         export PATH="$PATH:$_volta_bin_dir"
