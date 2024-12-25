@@ -36,3 +36,11 @@ function sudo_apt_install() {
         fi
     done
 }
+
+
+# $1: user name
+# $2: project name
+function get_github_release_latest_version() {
+    curl -s "https://api.github.com/repos/$1/$2/releases" | \
+        bat -l html | grep tag_name | head -n 1 | cut -d '"' -f 4
+}

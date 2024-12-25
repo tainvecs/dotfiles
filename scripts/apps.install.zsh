@@ -111,7 +111,7 @@ if [[ $SYS_NAME = "mac" ]]; then
             echo_app_installation_message 'es' 'start'
 
             # version
-            local _es_version=8.17.0
+            local _es_version=$(get_github_release_latest_version 'elastic' 'elasticsearch')
             local _es_zip_file_name="elasticsearch-$_es_version-darwin-x86_64.tar.gz"
 
             # download and unzip binary
