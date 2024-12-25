@@ -197,13 +197,19 @@ _dotfiles_init_emacs
 
 function _dotfiles_init_es(){
 
-    local _es_home_dir="${DOTFILES[HOME_DIR]}/.es"
+    # elasticsearch home
+    if [[ $SYS_NAME = "mac" ]]; then
+        local _es_home_dir="${DOTFILES[HOME_DIR]}/.es/es"
+    elif [[ $SYS_NAME = "linux" ]]; then
+        local _es_home_dir="/usr/share/elasticsearch/"
+    fi
 
-    if type elasticsearch >"/dev/null" || [[ -d "$_es_home_dir/es" ]]; then
+    # set up
+    if type elasticsearch >"/dev/null" || [[ -d "$_es_home_dir" ]]; then
 
         # home
         [[ -d $_es_home_dir ]] || mkdir -p $_es_home_dir
-        export ES_HOME="$_es_home_dir/es"
+        export ES_HOME=$_es_home_dir
 
         # path
         local _es_bin_dir="$ES_HOME/bin"
@@ -284,6 +290,33 @@ _dotfiles_init_go(){
 }
 
 _dotfiles_init_go
+
+
+# ------------------------------------------------------------------------------
+# keyd
+#
+# - reference
+#   - https://github.com/rvaiya/keyd
+# ------------------------------------------------------------------------------
+
+
+_dotfiles_init_keyd(){
+
+    if type keyd >"/dev/null" && [[ $SYS_NAME = "linux" ]]; then
+
+        # config
+        KEYD_CONFIG_DIR="${DOTFILES[CONFIG_DIR]}/keyd"
+
+        KEYD_CONFIG_LINK="/etc/keyd/default.conf"
+        KEYD_CONFIG_FILE="$KEYD_CONFIG_DIR/default.conf"
+        if [[ ! -f $KEYD_CONFIG_LINK ]] && [[ -f $KEYD_CONFIG_FILE ]]; then
+            sudo ln -s $KEYD_CONFIG_FILE $KEYD_CONFIG_LINK
+            sudo keyd reload
+        fi
+    fi
+}
+
+_dotfiles_init_keyd
 
 
 # ------------------------------------------------------------------------------
@@ -599,15 +632,17 @@ _dotfiles_init_vim
 
 _dotfiles_init_volta(){
 
-    if type volta >"/dev/null"; then
+    local _volta_home_dir="${DOTFILES[HOME_DIR]}/.volta"
+    local _volta_bin_dir="$_volta_home_dir/bin"
+
+    if { type volta >"/dev/null" } || [[ -d $_volta_bin_dir ]]; then
 
         # home
-        local _volta_home_dir="${DOTFILES[HOME_DIR]}/.volta"
         [[ -d "$_volta_home_dir" ]] || mkdir -p "$_volta_home_dir"
+        export VOLTA_HOME=$_volta_home_dir
 
         # PATH
-        local _volta_bin_dir="$_volta_home_dir/bin"
-        [[ -d "$_volta_bin_dir" ]] && export PATH="$_volta_bin_dir:$PATH"
+        export PATH="$PATH:$_volta_bin_dir"
     fi
 }
 

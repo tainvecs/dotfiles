@@ -743,3 +743,11 @@ resources/*/*/*/*
 # ----- share
 share/*
 !share/**/.gitkeep
+
+
+# ----- share
+state/*
+
+
+# ----- share
+runtime/*

@@ -32,6 +32,12 @@ export XDG_CACHE_HOME="${DOTFILES[ROOT_DIR]}/cache"
 # share
 export XDG_DATA_HOME="${DOTFILES[ROOT_DIR]}/share"
 
+# state
+export XDG_STATE_HOME="${DOTFILES[ROOT_DIR]}/state"
+
+# runtime
+export XDG_RUNTIME_DIR="${DOTFILES[ROOT_DIR]}/runtime"
+
 export DOTFILES
 
 
@@ -83,9 +89,9 @@ declare -a APP_ARR=(
     # "keyd"
     # "kube"
     # "meilisearch"
+    # "nvitop"
     # "nvtop"
     # "openvpn"
-    # "peco"
     "python"
     "pyenv"
     "svn"
@@ -122,6 +128,7 @@ declare -a PLUGIN_ARR=(
     # "bottom"
     "copybuffer"
     "delta"
+    # "docker-credential-helpers"
     # "duf"
     # "dust"
     "exa"
@@ -133,6 +140,7 @@ declare -a PLUGIN_ARR=(
     # "hyperfine"
     # "lazydocker"
     "p10k"
+    # "peco"
     "ripgrep"
     "universalarchive"
     # "urltools"

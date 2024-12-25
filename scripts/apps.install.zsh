@@ -111,7 +111,7 @@ if [[ $SYS_NAME = "mac" ]]; then
             echo_app_installation_message 'es' 'start'
 
             # version
-            local _es_version=8.17.0
+            local _es_version=$(get_github_release_latest_version 'elastic' 'elasticsearch')
             local _es_zip_file_name="elasticsearch-$_es_version-darwin-x86_64.tar.gz"
 
             # download and unzip binary
@@ -226,11 +226,6 @@ if [[ $SYS_NAME = "mac" ]]; then
     brew install unzip
     if [[ ${DOTFILES_APPS[7z]} = "true" ]]; then
         brew install p7zip
-    fi
-
-    # peco
-    if [[ ${DOTFILES_APPS[peco]} = "true" ]]; then
-        brew install peco
     fi
 
     # python
@@ -485,10 +480,13 @@ elif [[ $SYS_NAME = "linux" ]]; then
        ! { dpkg -l elasticsearch &>"/dev/null" }
     then
 
-        # install
-        wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+        # prerequisite
+        wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg
         sudo_apt_install apt-transport-https
-        echo "deb https://artifacts.elastic.co/packages/8.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-8.x.list
+        echo "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://artifacts.elastic.co/packages/8.x/apt stable main" | \
+            sudo tee /etc/apt/sources.list.d/elastic-8.x.list
+
+        # install
         sudo apt-get update && sudo_apt_install elasticsearch
 
         # start
@@ -501,16 +499,30 @@ elif [[ $SYS_NAME = "linux" ]]; then
     # meilisearch
     if [[ ${DOTFILES_APPS[meilisearch]} = "true" ]] && \
        ! { type meilisearch >"/dev/null" } && \
-       ! { dpkg -l meilisearch-http &>"/dev/null" }
+       ! { dpkg -l meilisearch &>"/dev/null" }
     then
-        sudo echo "deb [trusted=yes] https://apt.fury.io/meilisearch/ /" > /etc/apt/sources.list.d/fury.list
-        sudo apt-get update && sudo_apt_install meilisearch-http
+        curl -L https://install.meilisearch.com | sh
+        sudo install -o root -g root -m 0755 meilisearch /usr/local/bin/meilisearch
+        rm meilisearch
     else
         echo_app_installation_message 'meilisearch' 'skip'
     fi
 
+    # nvtop
+    if [[ ${DOTFILES_APPS[nvtop]} = "true" ]]; then
+        sudo_apt_install nvtop
+    fi
+
+    # nvitop
+    # https://github.com/XuehaiPan/nvitop
+    if [[ ${DOTFILES_APPS[nvitop]} = "true" ]]; then
+        if {type nviida-smi >"/dev/null"} && { type pip >"/dev/null" }; then
+            pip install nvitop
+        fi
+    fi
+
     # keyd
-    if [[ ${DOTFILES_APPS["keyd"]} = "true" ]] && \
+    if [[ ${DOTFILES_APPS[keyd]} = "true" ]] && \
            ! { type keyd >/dev/null } && \
            ! { dpkg -l keyd &>/dev/null }
     then
@@ -532,16 +544,11 @@ elif [[ $SYS_NAME = "linux" ]]; then
        ! { type kubectl >"/dev/null" } && \
        ! { dpkg -l kubectl &>"/dev/null" }
     then
-        curl -fLO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+        curl -fLO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/$SYS_ARCHT/kubectl"
         sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
         rm kubectl
     else
         echo_app_installation_message 'kube' 'skip'
-    fi
-
-    # peco
-    if [[ ${DOTFILES_APPS[peco]} = "true" ]]; then
-        sudo_apt_install peco
     fi
 
     # pyenv and pyenv-virtualenv
