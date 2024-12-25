@@ -30,7 +30,7 @@ function sudo_apt_install() {
         # skip the installation if the package is already installed
         if ! { type $in_pkg >"/dev/null" } && \
            ! { dpkg -L $in_pkg &>"/dev/null" } ; then
-            sudo apt-get install -y $in_pkg
+            sudo apt-get install --no-install-recommends --no-install-suggests -y $in_pkg
         else
             echo_app_installation_message $in_pkg 'skip'
         fi
