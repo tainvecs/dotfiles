@@ -523,7 +523,7 @@ elif [[ $SYS_NAME = "linux" ]]; then
     fi
 
     # keyd
-    if [[ ${DOTFILES_APPS["keyd"]} = "true" ]] && \
+    if [[ ${DOTFILES_APPS[keyd]} = "true" ]] && \
            ! { type keyd >/dev/null } && \
            ! { dpkg -l keyd &>/dev/null }
     then
