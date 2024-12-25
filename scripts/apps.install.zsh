@@ -509,6 +509,11 @@ elif [[ $SYS_NAME = "linux" ]]; then
         echo_app_installation_message 'meilisearch' 'skip'
     fi
 
+    # nvtop
+    if [[ ${DOTFILES_APPS[nvtop]} = "true" ]]; then
+        sudo_apt_install nvtop
+    fi
+
     # keyd
     if [[ ${DOTFILES_APPS["keyd"]} = "true" ]] && \
            ! { type keyd >/dev/null } && \
