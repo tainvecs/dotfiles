@@ -228,11 +228,6 @@ if [[ $SYS_NAME = "mac" ]]; then
         brew install p7zip
     fi
 
-    # peco
-    if [[ ${DOTFILES_APPS[peco]} = "true" ]]; then
-        brew install peco
-    fi
-
     # python
     if [[ ${DOTFILES_APPS[python]} = "true" ]]; then
         # brew install python
@@ -554,11 +549,6 @@ elif [[ $SYS_NAME = "linux" ]]; then
         rm kubectl
     else
         echo_app_installation_message 'kube' 'skip'
-    fi
-
-    # peco
-    if [[ ${DOTFILES_APPS[peco]} = "true" ]]; then
-        sudo_apt_install peco
     fi
 
     # pyenv and pyenv-virtualenv

@@ -269,11 +269,11 @@ if [[ ${DOTFILES_PLUGINS[docker-credential-helpers]} = "true" ]] && [[ $ARCHT = 
 
     if [[ $SYS_NAME == "mac" ]]; then
 
-        zinit ice wait"2c" lucid from"gh-r" as"program" bpick"docker-credential-osxkeychain-*" \
+        zinit ice wait"2" lucid from"gh-r" as"program" bpick"docker-credential-osxkeychain-*" \
               mv"docker-credential-osxkeychain-* -> docker-credential-osxkeychain"
 
     elif [[ $SYS_NAME == "linux" ]]; then
-        zinit ice wait"2c" lucid from"gh-r" as"program" bpick"docker-credential-secretservice-*" \
+        zinit ice wait"2" lucid from"gh-r" as"program" bpick"docker-credential-secretservice-*" \
               mv"docker-credential-secretservice-* -> docker-credential-secretservice"
     fi
 
@@ -369,6 +369,18 @@ fi
 
 
 # ------------------------------------------------------------------------------
+# peco
+# ------------------------------------------------------------------------------
+
+
+# peco: interactive filtering tool
+if [[ ${DOTFILES_PLUGINS[peco]} = "true" ]] && [[ $ARCHT = "amd64" || $ARCHT = "arm64" ]]; then
+    zinit ice wait"2" lucid from"gh-r" as"program" pick"peco_*/peco"
+    zinit light peco/peco
+fi
+
+
+# ------------------------------------------------------------------------------
 # OMZ::lib/clipboard.zsh
 # OMZ::plugins/copybuffer
 # ------------------------------------------------------------------------------
@@ -443,6 +455,8 @@ fi
 # dotfiles-kube
 # dotfiles-mac
 # dotfiles-misc
+# dotfiles-ms
+# dotfiles-network
 # dotfiles-update
 # dotfiles-vim
 # ------------------------------------------------------------------------------
