@@ -501,10 +501,11 @@ elif [[ $SYS_NAME = "linux" ]]; then
     # meilisearch
     if [[ ${DOTFILES_APPS[meilisearch]} = "true" ]] && \
        ! { type meilisearch >"/dev/null" } && \
-       ! { dpkg -l meilisearch-http &>"/dev/null" }
+       ! { dpkg -l meilisearch &>"/dev/null" }
     then
-        sudo echo "deb [trusted=yes] https://apt.fury.io/meilisearch/ /" > /etc/apt/sources.list.d/fury.list
-        sudo apt-get update && sudo_apt_install meilisearch-http
+        curl -L https://install.meilisearch.com | sh
+        sudo install -o root -g root -m 0755 meilisearch /usr/local/bin/meilisearch
+        rm meilisearch
     else
         echo_app_installation_message 'meilisearch' 'skip'
     fi
