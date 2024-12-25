@@ -626,15 +626,16 @@ _dotfiles_init_vim
 
 _dotfiles_init_volta(){
 
-    if type volta >"/dev/null"; then
+    local _volta_home_dir="${DOTFILES[HOME_DIR]}/.volta"
+    local _volta_bin_dir="$_volta_home_dir/bin"
+
+    if { type volta >"/dev/null" } || [[ -d $_volta_bin_dir ]]; then
 
         # home
-        local _volta_home_dir="${DOTFILES[HOME_DIR]}/.volta"
         [[ -d "$_volta_home_dir" ]] || mkdir -p "$_volta_home_dir"
 
         # PATH
-        local _volta_bin_dir="$_volta_home_dir/bin"
-        [[ -d "$_volta_bin_dir" ]] && export PATH="$_volta_bin_dir:$PATH"
+        export PATH="$PATH:$_volta_bin_dir"
     fi
 }
 
