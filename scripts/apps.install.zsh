@@ -514,6 +514,14 @@ elif [[ $SYS_NAME = "linux" ]]; then
         sudo_apt_install nvtop
     fi
 
+    # nvitop
+    # https://github.com/XuehaiPan/nvitop
+    if [[ ${DOTFILES_APPS[nvitop]} = "true" ]]; then
+        if {type nviida-smi >"/dev/null"} && { type pip >"/dev/null" }; then
+            pip install nvitop
+        fi
+    fi
+
     # keyd
     if [[ ${DOTFILES_APPS["keyd"]} = "true" ]] && \
            ! { type keyd >/dev/null } && \
