@@ -197,13 +197,19 @@ _dotfiles_init_emacs
 
 function _dotfiles_init_es(){
 
-    local _es_home_dir="${DOTFILES[HOME_DIR]}/.es"
+    # elasticsearch home
+    if [[ $SYS_NAME = "mac" ]]; then
+        local _es_home_dir="${DOTFILES[HOME_DIR]}/.es/es"
+    elif [[ $SYS_NAME = "linux" ]]; then
+        local _es_home_dir="/usr/share/elasticsearch/"
+    fi
 
-    if type elasticsearch >"/dev/null" || [[ -d "$_es_home_dir/es" ]]; then
+    # set up
+    if type elasticsearch >"/dev/null" || [[ -d "$_es_home_dir" ]]; then
 
         # home
         [[ -d $_es_home_dir ]] || mkdir -p $_es_home_dir
-        export ES_HOME="$_es_home_dir/es"
+        export ES_HOME=$_es_home_dir
 
         # path
         local _es_bin_dir="$ES_HOME/bin"
