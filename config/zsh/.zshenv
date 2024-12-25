@@ -32,6 +32,12 @@ export XDG_CACHE_HOME="${DOTFILES[ROOT_DIR]}/cache"
 # share
 export XDG_DATA_HOME="${DOTFILES[ROOT_DIR]}/share"
 
+# state
+export XDG_STATE_HOME="${DOTFILES[ROOT_DIR]}/state"
+
+# runtime
+export XDG_RUNTIME_DIR="${DOTFILES[ROOT_DIR]}/runtime"
+
 export DOTFILES
 
 
