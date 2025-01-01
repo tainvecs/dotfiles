@@ -153,6 +153,7 @@ declare -a PLUGIN_ARR=(
     # "dotfiles-es"
     # "dotfiles-fail2ban"
     "dotfiles-git"
+    # "dotfiles-info"
     # "dotfiles-kube"
     "dotfiles-mac"
     "dotfiles-misc"

@@ -452,6 +452,7 @@ fi
 # dotfiles-docker
 # dotfiles-es
 # dotfiles-git
+# dotfiles-info
 # dotfiles-kube
 # dotfiles-mac
 # dotfiles-misc
@@ -490,6 +491,12 @@ fi
 if [[ ${DOTFILES_PLUGINS[dotfiles-git]} = "true" ]]; then
     zinit ice wait"1" lucid
     zinit snippet "${DOTFILES[PLUGINS_DIR]}/git/.git.plugin.zsh"
+fi
+
+# dotfiles-info
+if [[ ${DOTFILES_PLUGINS[dotfiles-info]} = "true" ]]; then
+    zinit ice wait"1" lucid
+    zinit snippet "${DOTFILES[PLUGINS_DIR]}/info/.info.plugin.zsh"
 fi
 
 # dotfiles-kube
