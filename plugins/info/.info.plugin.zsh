@@ -1,6 +1,9 @@
 #!/bin/zsh
 
 
+_sys_name=$(uname -m)
+
+
 # ------------------------------------------------------------------------------
 #
 # list
@@ -32,60 +35,63 @@
 
 # ----- apt
 
-# list apt source
-function ls-apt-source() {
+if [[ $_sys_name = "Linux" ]]; then
 
-    # list and filter source list
-    local _raw_source_str=$(grep -r --include '*.list' '^deb ' '/etc/apt/')
+    # list apt source
+    function ls-apt-source() {
 
-    # string processing
-    local _source_str=$(sed -re 's/\/etc\/apt\/(sources\.list(:| ))/\1/' \
-                            -e 's/^\/etc\/apt\/sources\.list\.d\///' \
-                            -e 's/[:]?(deb(-src)?) /@ \1@ /' \
-                            -e 's/deb http:\/\/ppa.launchpad.net\/(.*?)\/ubuntu .*/ppa:\1/' \
-                            -e 's/ (https?:[^ ]+) /@ \1@ /' \
-                            -e 's/\s+//g' \
-                            <<< $_raw_source_str)
+        # list and filter source list
+        local _raw_source_str=$(grep -r --include '*.list' '^deb ' '/etc/apt/')
 
-    # split with '@' and print line with indent
-    while IFS='@' read -r _src _type  _opt  _uri _; do
-        echo "Source File: ${_src:=-}"
-        echo "Type:        ${_type:=-}"
-        echo "URI:         ${_uri:=-}"
-        echo "Options:     ${_opt:=-}"
-        echo "\n"
+        # string processing
+        local _source_str=$(sed -re 's/\/etc\/apt\/(sources\.list(:| ))/\1/' \
+                                -e 's/^\/etc\/apt\/sources\.list\.d\///' \
+                                -e 's/[:]?(deb(-src)?) /@ \1@ /' \
+                                -e 's/deb http:\/\/ppa.launchpad.net\/(.*?)\/ubuntu .*/ppa:\1/' \
+                                -e 's/ (https?:[^ ]+) /@ \1@ /' \
+                                -e 's/\s+//g' \
+                                <<< $_raw_source_str)
 
-    done <<< $(LC_ALL=C sort <<< $_source_str)
-}
+        # split with '@' and print line with indent
+        while IFS='@' read -r _src _type  _opt  _uri _; do
+            echo "Source File: ${_src:=-}"
+            echo "Type:        ${_type:=-}"
+            echo "URI:         ${_uri:=-}"
+            echo "Options:     ${_opt:=-}"
+            echo "\n"
 
-# apt gpg key
-function ls-apt-key() {
-    apt-key list 2> >(grep -v 'Warning:' >&2)
-}
+        done <<< $(LC_ALL=C sort <<< $_source_str)
+    }
 
-# apt installed packaged by manual and auto
-function ls-apt-package() {
+    # apt gpg key
+    function ls-apt-key() {
+        apt-key list 2> >(grep -v 'Warning:' >&2)
+    }
 
-    # print header
-    printf '%-43.43s %-40.40s %-12.12s %-80.80s\n' "NAME" "VERSION" "ARCHITECTURE" "SUMMARY"
-    printf '=%.0s' {1..43}
-    printf ' '
-    printf '=%.0s' {1..40}
-    printf ' '
-    printf '=%.0s' {1..12}
-    printf ' '
-    printf '=%.0s' {1..80}
-    printf '\n'
+    # apt installed packaged by manual and auto
+    function ls-apt-package() {
 
-    # process amd sort package strings
-    local _pkg_lines=$(dpkg-query -W -f '${Package}, ${Version}, ${Architecture}, ${binary:Summary}\n' | LC_ALL=C sort)
+        # print header
+        printf '%-43.43s %-40.40s %-12.12s %-80.80s\n' "NAME" "VERSION" "ARCHITECTURE" "SUMMARY"
+        printf '=%.0s' {1..43}
+        printf ' '
+        printf '=%.0s' {1..40}
+        printf ' '
+        printf '=%.0s' {1..12}
+        printf ' '
+        printf '=%.0s' {1..80}
+        printf '\n'
 
-    # split with ', ' and print line with indent
-    while IFS=', ' read -r _name _ver _archt _summary; do
-        printf '%-43.43s %-40.40s %-12.12s %-80.80s\n' $_name $_ver $_archt $_summary
-    done <<< $_pkg_lines
-}
+        # process amd sort package strings
+        local _pkg_lines=$(dpkg-query -W -f '${Package}, ${Version}, ${Architecture}, ${binary:Summary}\n' | LC_ALL=C sort)
 
+        # split with ', ' and print line with indent
+        while IFS=', ' read -r _name _ver _archt _summary; do
+            printf '%-43.43s %-40.40s %-12.12s %-80.80s\n' $_name $_ver $_archt $_summary
+        done <<< $_pkg_lines
+    }
+
+fi
 
 # ----- completion
 
