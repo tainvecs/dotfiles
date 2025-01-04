@@ -10,7 +10,7 @@ function get_system_name() {
         "Linux")
             echo "linux";;
 
-        "Darwin" | "aarch64")
+        "Darwin")
             echo "mac";;
 
         *)
