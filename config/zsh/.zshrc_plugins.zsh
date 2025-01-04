@@ -6,10 +6,8 @@
 # check dependency
 type zinit >/dev/null || return
 
-# linux architecture such as amd64 or arm64
-if type dpkg >/dev/null; then
-    ARCHT=$(dpkg --print-architecture)
-fi
+# such as amd64 or arm64
+ARCHT=${SYS_ARCHT:-$(uname -m)}
 
 
 # ------------------------------------------------------------------------------
