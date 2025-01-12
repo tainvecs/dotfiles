@@ -438,6 +438,7 @@ _dotfiles_init_python(){
         # home
         local _python_home_dir="${DOTFILES[HOME_DIR]}/.python"
         [[ -d "$_python_home_dir" ]] || mkdir -p "$_python_home_dir"
+        export PYTHON_HISTORY="$_python_home_dir/.python_history"
 
         # config
         local _python_config_path="$_python_home_dir/.pythonrc"
