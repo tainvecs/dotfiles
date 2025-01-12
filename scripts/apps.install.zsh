@@ -264,8 +264,36 @@ if [[ $SYS_NAME = "mac" ]]; then
     if [[ ${DOTFILES_APPS[volta]} = "true" ]] && \
        ! { type volta >"/dev/null" }
     then
-        export VOLTA_HOME="$DOTFILES_HOME/.volta"
+
+        # ----- volta
+
+        # home
+        local _volta_home_dir="$DOTFILES_HOME/.volta"
+        [[ -d $_volta_home_dir ]] || mkdir -p $_volta_home_dir
+        export VOLTA_HOME=$_volta_home_dir
+
+        # config
+        local _volta_config_dir="$DOTFILES_CONFIG/volta"
+        [[ -d $_volta_config_dir ]] || mkdir -p $_volta_config_dir
+
+        # install
         curl -fL https://get.volta.sh | bash -s -- --skip-setup
+
+
+        # ----- npm
+
+        # home
+        local _volta_npm_home_dir="$_volta_home_dir/npm"
+        [[ -d "$_volta_npm_home_dir" ]] || mkdir -p "$_volta_npm_home_dir"
+
+        # config
+        local _volta_npm_config_path="$_volta_config_dir/.npmrc"
+        local _volta_npm_config_link="$_volta_npm_home_dir/.npmrc"
+
+        if [[ -f $_volta_npm_config_path ]]; then
+            sudo ln -s $_volta_npm_config_path $_volta_npm_config_link
+            export NPM_CONFIG_USERCONFIG=$_volta_npm_config_path
+        fi
     fi
 
     # vscode

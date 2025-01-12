@@ -627,6 +627,9 @@ _dotfiles_init_vim
 
 # ------------------------------------------------------------------------------
 # volta
+#
+# - references
+#   - https://github.com/npm/npm/issues/14528
 # ------------------------------------------------------------------------------
 
 
@@ -637,12 +640,25 @@ _dotfiles_init_volta(){
 
     if { type volta >"/dev/null" } || [[ -d $_volta_bin_dir ]]; then
 
+        # ----- volta
         # home
         [[ -d "$_volta_home_dir" ]] || mkdir -p "$_volta_home_dir"
         export VOLTA_HOME=$_volta_home_dir
 
         # PATH
         export PATH="$PATH:$_volta_bin_dir"
+
+        # ----- npm
+        # home
+        local _volta_npm_home_dir="$_volta_home_dir/npm"
+        [[ -d "$_volta_npm_home_dir" ]] || mkdir -p "$_volta_npm_home_dir"
+
+        # config
+        local _volta_npm_config_path="$_volta_npm_home_dir/.npmrc"
+
+        if [[ -f $_volta_npm_config_path ]]; then
+            export NPM_CONFIG_USERCONFIG=$_volta_npm_config_path
+        fi
     fi
 }
 
