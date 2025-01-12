@@ -88,6 +88,15 @@ function _dotfiles_init_clojure(){
 
     if type clojure >"/dev/null"; then
 
+        # home
+        local _clj_home_dir="${DOTFILES[HOME_DIR]}/.clojure"
+        [[ -d $_clj_home_dir ]] || mkdir -p $_clj_home_dir
+
+        export CLJ_CONFIG=$_clj_home_dir
+
+        # .m2
+        alias clojure="clojure -Sdeps '{:mvn/local-repo \"$XDG_CACHE_HOME/maven/repository\"}' "
+
         # PATH
         if [[ $SYS_NAME = "mac" ]]; then
             export PATH="$PATH:/Applications/clojure"
@@ -429,6 +438,7 @@ _dotfiles_init_python(){
         # home
         local _python_home_dir="${DOTFILES[HOME_DIR]}/.python"
         [[ -d "$_python_home_dir" ]] || mkdir -p "$_python_home_dir"
+        export PYTHON_HISTORY="$_python_home_dir/.python_history"
 
         # config
         local _python_config_path="$_python_home_dir/.pythonrc"
@@ -627,6 +637,9 @@ _dotfiles_init_vim
 
 # ------------------------------------------------------------------------------
 # volta
+#
+# - references
+#   - https://github.com/npm/npm/issues/14528
 # ------------------------------------------------------------------------------
 
 
@@ -637,13 +650,52 @@ _dotfiles_init_volta(){
 
     if { type volta >"/dev/null" } || [[ -d $_volta_bin_dir ]]; then
 
+        # ----- volta
         # home
         [[ -d "$_volta_home_dir" ]] || mkdir -p "$_volta_home_dir"
         export VOLTA_HOME=$_volta_home_dir
 
         # PATH
         export PATH="$PATH:$_volta_bin_dir"
+
+        # ----- npm
+        # home
+        local _volta_npm_home_dir="$_volta_home_dir/npm"
+        [[ -d "$_volta_npm_home_dir" ]] || mkdir -p "$_volta_npm_home_dir"
+
+        # config
+        local _volta_npm_config_path="$_volta_npm_home_dir/.npmrc"
+
+        if [[ -f $_volta_npm_config_path ]]; then
+            export NPM_CONFIG_USERCONFIG=$_volta_npm_config_path
+        fi
     fi
 }
 
 _dotfiles_init_volta
+
+
+# ------------------------------------------------------------------------------
+# wget
+#
+# - references
+#   - https://www.gnu.org/software/wget/manual/html_node/HTTPS-_0028SSL_002fTLS_0029-Options.html
+# ------------------------------------------------------------------------------
+
+
+_dotfiles_init_wget(){
+
+
+    if type wget >"/dev/null"; then
+
+        # home
+        local _wget_home_dir="${DOTFILES[HOME_DIR]}/.wget"
+        [[ -d "$_wget_home_dir" ]] || mkdir -p "$_wget_home_dir"
+
+        # hsts file
+        local _wget_hsts_file_path="$_wget_home_dir/.wget-hsts"
+        alias wget="wget --hsts-file $_wget_hsts_file_path "
+    fi
+}
+
+_dotfiles_init_wget

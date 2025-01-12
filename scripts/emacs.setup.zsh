@@ -31,7 +31,7 @@ emacs --load "$DOTFILES_HOME/.emacs/init.el" --batch
 
 # install for javascript
 if type npm >/dev/null; then
-    npm install eslint
+    npm install eslint -g
 fi
 
 
