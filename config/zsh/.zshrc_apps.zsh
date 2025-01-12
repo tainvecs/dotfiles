@@ -88,6 +88,15 @@ function _dotfiles_init_clojure(){
 
     if type clojure >"/dev/null"; then
 
+        # home
+        local _clj_home_dir="${DOTFILES[HOME_DIR]}/.clojure"
+        [[ -d $_clj_home_dir ]] || mkdir -p $_clj_home_dir
+
+        export CLJ_CONFIG=$_clj_home_dir
+
+        # .m2
+        alias clojure="clojure -Sdeps '{:mvn/local-repo \"$XDG_CACHE_HOME/maven/repository\"}' "
+
         # PATH
         if [[ $SYS_NAME = "mac" ]]; then
             export PATH="$PATH:/Applications/clojure"
