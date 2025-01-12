@@ -673,3 +673,29 @@ _dotfiles_init_volta(){
 }
 
 _dotfiles_init_volta
+
+
+# ------------------------------------------------------------------------------
+# wget
+#
+# - references
+#   - https://www.gnu.org/software/wget/manual/html_node/HTTPS-_0028SSL_002fTLS_0029-Options.html
+# ------------------------------------------------------------------------------
+
+
+_dotfiles_init_wget(){
+
+
+    if type wget >"/dev/null"; then
+
+        # home
+        local _wget_home_dir="${DOTFILES[HOME_DIR]}/.wget"
+        [[ -d "$_wget_home_dir" ]] || mkdir -p "$_wget_home_dir"
+
+        # hsts file
+        local _wget_hsts_file_path="$_wget_home_dir/.wget-hsts"
+        alias wget="wget --hsts-file $_wget_hsts_file_path "
+    fi
+}
+
+_dotfiles_init_wget
