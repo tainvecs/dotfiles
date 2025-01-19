@@ -254,6 +254,15 @@ if [[ ${DOTFILES_PLUGINS[forgit]} = "true" ]]; then
     export FORGIT_NO_ALIASES=true
     export FORGIT_LOG_GRAPH_ENABLE=false
 
+    # completion
+    local _forgit_cmp_path="${DOTFILES[CONFIG_DIR]}/zsh/.zsh_complete/_forgit"
+    local _forgit_cmp_link="${DOTFILES[HOME_DIR]}/.zsh/.zsh_complete/_forgit"
+
+    if [[ ! -f $_forgit_cmp_path ]]; then
+        curl -fLo $_forgit_cmp_path \
+             "https://raw.githubusercontent.com/wfxr/forgit/main/completions/_git-forgit"
+    fi
+    [[ -L $_forgit_cmp_link || -f $_forgit_cmp_link ]] || ln -s $_forgit_cmp_path $_forgit_cmp_link
 fi
 
 
