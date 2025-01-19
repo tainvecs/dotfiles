@@ -172,3 +172,89 @@ if type pip >/dev/null; then
         done <<< $_pip_lines
     }
 fi
+
+
+# ----- docker
+
+if type docker >/dev/null; then
+
+    # ---- docker login
+    if type jq >/dev/null; then
+
+        # login mapping
+        declare -A _login_mapping=(
+            [ghcr.io]='GitHub'
+            [index.docker.io]='Docker Hub'
+            [nvcr.io]='Nvidia'
+            [registry.gitlab.com]='GitLab'
+        )
+
+        # main
+        function ls-docker-login(){
+
+            # docker config file
+            local _docker_config_path
+            if [[ -d $DOCKER_CONFIG ]] && [[ -f "$DOCKER_CONFIG/config.json" ]]; then
+                _docker_config_path="$DOCKER_CONFIG/config.json"
+            else
+                _docker_config_path="$HOME/.docker/config.json"
+            fi
+
+            # check config file
+            if [[ ! -f $_docker_config_path ]]; then
+                echo "error: docker config not found at '$_docker_config_path'"
+                return 1
+            fi
+
+            # parse config json
+            local _docker_login_auths=$(cat $_docker_config_path | jq '.auths')
+            if [[ $_docker_login_auths = 'null' ]]; then
+                echo "info: no docker login found."
+                return 0
+            fi
+            local _docker_login_uri_lines=$(echo $_docker_login_auths | jq 'keys | .[]')
+
+            # check if login array is empty
+            if [[ ${#_docker_login_uri_lines[@]} == 0 ]]; then
+                echo "info: no docker login found."
+                return 0
+            fi
+
+            # process by line
+            declare -a _array
+            while IFS=',' read -r _line; do
+
+                # process url
+                local _url_line=$(sed -re 's#\"(https?://)?([^/]+)#\2#' \
+                                      -e 's/\"$//' \
+                                      <<< $_line)
+
+                # match login mapping
+                local _registry='-'
+                for _key _val in ${(@kv)_login_mapping}; do
+                    [[ $_url_line = "$_key"* ]] && _registry=$_val && break
+                done
+
+                # result
+                _processed_line=$(printf '%-15.15s %s\n' $_registry $_url_line)
+                _array+=($_processed_line)
+
+            done <<< $_docker_login_uri_lines
+
+            # sort
+            IFS=$'\n' _sorted_lines=($(sort -n <<<"${_array[*]}"))
+            unset IFS
+
+            # output header and sorted line
+            printf '%-15.15s %s\n' "REGISTRY" "URL"
+            printf '=%.0s' {1..15}
+            printf ' '
+            printf '=%.0s' {1..30}
+            printf '\n'
+
+            for _line in ${_sorted_lines[@]}; do
+                echo $_line
+            done
+        }
+    fi
+fi
