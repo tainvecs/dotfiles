@@ -351,8 +351,10 @@ _dotfiles_init_kube(){
         alias kubectl="kubectl --cache-dir $_kube_cache_dir "
 
         # complete
-        local _kube_cmp_path="${DOTFILES[HOME_DIR]}/.zsh/.zsh_complete/_kubectl"
-        [[ -f "$_kube_cmp_path" ]] ||  kubectl completion zsh > "$_kube_cmp_path"
+        local _kube_cmp_path="${DOTFILES[CONFIG_DIR]}/zsh/.zsh_complete/_kubectl"
+        local _kube_cmp_link="${DOTFILES[HOME_DIR]}/.zsh/.zsh_complete/_kubectl"
+        [[ -f $_kube_cmp_path ]] || kubectl completion zsh > $_kube_cmp_path
+        [[ -L $_kube_cmp_link || -f $_kube_cmp_link ]] || ln -s $_kube_cmp_path $_kube_cmp_link
     fi
 }
 
