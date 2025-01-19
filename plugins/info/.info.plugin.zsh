@@ -147,7 +147,7 @@ function ls-link-broken() {
 
 if type pip >/dev/null; then
 
-    function ls-pip-package() {
+    function ls-pip-freeze() {
 
         # print header
         printf '%-30.30s %s\n' "PACKAGE" "VERSION"
@@ -157,7 +157,7 @@ if type pip >/dev/null; then
         printf '\n'
 
         # process strings from pip freeze
-        local _pip_lines=$(pip freeze | sed -E 's/\s*(==|@)\s*/==/g' | sort)
+        local _pip_lines=$(pip freeze | sed -E 's/( )*(==|@)( )*/==/g' | sort)
 
         # print line with indent
         while IFS= read -r _line; do
