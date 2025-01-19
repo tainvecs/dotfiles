@@ -1,7 +1,4 @@
-if type docker >/dev/null; then
+#!/bin/zsh
 
-    function docker-login-gitlab(){
-        docker login "registry.gitlab.com" -u $1 --password-stdin
-    }
 
-fi
+{ type docker >/dev/null } || return
