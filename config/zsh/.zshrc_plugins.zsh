@@ -38,7 +38,6 @@ fi
 
 # ------------------------------------------------------------------------------
 # zsh-autosuggestions
-# zsh-completions
 # ------------------------------------------------------------------------------
 
 
@@ -53,24 +52,15 @@ if [[ ${DOTFILES_PLUGINS[zsh-autosuggestions]} = "true" ]]; then
 fi
 
 
-# zsh completions
-if [[ ${DOTFILES_PLUGINS[zsh-completions]} = "true" ]]; then
-
-    zinit ice wait"0b" lucid blockf
-    zinit light zsh-users/zsh-completions
-
-fi
-
-
 # ------------------------------------------------------------------------------
 # fast-syntax-highlighting
 # ------------------------------------------------------------------------------
 
 
-# syntax highlighting: loading is quite slow
+# syntax highlighting
 if [[ ${DOTFILES_PLUGINS[fast-syntax-highlighting]} = "true" ]]; then
 
-    zinit ice wait"0b" lucid atinit"ZINIT[COMPINIT_OPTS]=-C; zpcompinit; zpcdreplay"
+    zinit ice wait"0b" lucid
     zinit light zdharma-continuum/fast-syntax-highlighting
 
 fi

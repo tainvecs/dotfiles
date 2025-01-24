@@ -22,6 +22,7 @@ bindkey -e
 # load completion
 fpath=($ZSH_COMPLETE_DIR $fpath)
 
-
-# initialize the autocompletion
-autoload -Uz compinit && compinit -i -d $ZSH_COMPDUMP_PATH
+if [[ -f "$ZDOTDIR/.zshrc_initialize.zsh" ]]; then
+    zinit ice wait"0c" lucid
+    zinit snippet "$ZDOTDIR/.zshrc_completion.zsh"
+fi
