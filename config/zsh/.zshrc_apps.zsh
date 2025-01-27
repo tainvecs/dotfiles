@@ -141,7 +141,7 @@ function _dotfiles_init_docker(){
             fi
         fi
 
-        # ----- complete
+        # ----- completion
 
         # docker
         local _docker_cmp_path="${DOTFILES[CONFIG_DIR]}/zsh/.zsh_complete/_docker"
@@ -279,10 +279,13 @@ function _dotfiles_init_gcp(){
         export CLOUDSDK_CONFIG=$_gcp_config_dir
 
         # completion
-        local _gcp_comp_path="$_gcp_home_dir/google-cloud-sdk/completion.zsh.inc"
-        if [[ -f "$_gcp_comp_path" ]]; then
-            source "$_gcp_comp_path"
-        fi
+        local _gcp_cmp_script_path="$_gcp_home_dir/google-cloud-sdk/completion.zsh.inc"
+        if [[ -f $_gcp_cmp_script_path ]]; then
+            local _gcp_cmp_path="${DOTFILES[CONFIG_DIR]}/zsh/.zsh_complete/gcp.zsh.inc"
+            local _gcp_cmp_link="${DOTFILES[HOME_DIR]}/.zsh/.zsh_complete/gcp.zsh.inc"
+            [[ -L $_gcp_cmp_path || -f $_gcp_cmp_path ]] || ln -s $_gcp_cmp_script_path $_gcp_cmp_path
+            [[ -L $_gcp_cmp_link || -f $_gcp_cmp_link ]] || ln -s $_gcp_cmp_path $_gcp_cmp_link
+         fi
     fi
 }
 
@@ -372,7 +375,7 @@ _dotfiles_init_kube(){
         [[ -d "$_kube_cache_dir" ]] || mkdir -p "$_kube_cache_dir"
         alias kubectl="kubectl --cache-dir $_kube_cache_dir "
 
-        # complete
+        # completion
         local _kube_cmp_path="${DOTFILES[CONFIG_DIR]}/zsh/.zsh_complete/_kubectl"
         local _kube_cmp_link="${DOTFILES[HOME_DIR]}/.zsh/.zsh_complete/_kubectl"
         [[ -f $_kube_cmp_path ]] || kubectl completion zsh > $_kube_cmp_path

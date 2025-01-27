@@ -22,7 +22,14 @@ bindkey -e
 # load completion
 fpath=($ZSH_COMPLETE_DIR $fpath)
 
-if [[ -f "$ZDOTDIR/.zshrc_initialize.zsh" ]]; then
-    zinit ice wait"0c" lucid
-    zinit snippet "$ZDOTDIR/.zshrc_completion.zsh"
+# zsh completions
+if [[ ${DOTFILES_PLUGINS[zsh-completions]} = "true" ]]; then
+
+    if [[ -f "$ZDOTDIR/.zshrc_initialize.zsh" ]]; then
+        zinit ice wait"0c" lucid blockf atload"source $ZDOTDIR/.zshrc_completion.zsh"
+        zinit light zsh-users/zsh-completions
+    else
+        zinit ice wait"0c" lucid blockf
+        zinit light zsh-users/zsh-completions
+    fi
 fi
