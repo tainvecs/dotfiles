@@ -38,7 +38,6 @@ fi
 
 # ------------------------------------------------------------------------------
 # zsh-autosuggestions
-# zsh-completions
 # ------------------------------------------------------------------------------
 
 
@@ -53,24 +52,15 @@ if [[ ${DOTFILES_PLUGINS[zsh-autosuggestions]} = "true" ]]; then
 fi
 
 
-# zsh completions
-if [[ ${DOTFILES_PLUGINS[zsh-completions]} = "true" ]]; then
-
-    zinit ice wait"0b" lucid blockf
-    zinit light zsh-users/zsh-completions
-
-fi
-
-
 # ------------------------------------------------------------------------------
 # fast-syntax-highlighting
 # ------------------------------------------------------------------------------
 
 
-# syntax highlighting: loading is quite slow
+# syntax highlighting
 if [[ ${DOTFILES_PLUGINS[fast-syntax-highlighting]} = "true" ]]; then
 
-    zinit ice wait"0b" lucid atinit"ZINIT[COMPINIT_OPTS]=-C; zpcompinit; zpcdreplay"
+    zinit ice wait"0b" lucid
     zinit light zdharma-continuum/fast-syntax-highlighting
 
 fi
@@ -254,6 +244,15 @@ if [[ ${DOTFILES_PLUGINS[forgit]} = "true" ]]; then
     export FORGIT_NO_ALIASES=true
     export FORGIT_LOG_GRAPH_ENABLE=false
 
+    # completion
+    local _forgit_cmp_path="${DOTFILES[CONFIG_DIR]}/zsh/.zsh_complete/_forgit"
+    local _forgit_cmp_link="${DOTFILES[HOME_DIR]}/.zsh/.zsh_complete/_forgit"
+
+    if [[ ! -f $_forgit_cmp_path ]]; then
+        curl -fLo $_forgit_cmp_path \
+             "https://raw.githubusercontent.com/wfxr/forgit/main/completions/_git-forgit"
+    fi
+    [[ -L $_forgit_cmp_link || -f $_forgit_cmp_link ]] || ln -s $_forgit_cmp_path $_forgit_cmp_link
 fi
 
 

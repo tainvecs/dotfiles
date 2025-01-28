@@ -687,6 +687,8 @@ config/vscode/*
 # misc
 config/dlv/*
 
+config/zsh/.zsh_complete/*
+
 !config/**/.gitkeep
 config/**/*.local
 config/configstore

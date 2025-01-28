@@ -22,6 +22,10 @@ bindkey -e
 # load completion
 fpath=($ZSH_COMPLETE_DIR $fpath)
 
-
-# initialize the autocompletion
-autoload -Uz compinit && compinit -i -d $ZSH_COMPDUMP_PATH
+# zsh completions
+if [[ ${DOTFILES_PLUGINS[zsh-completions]} = "true" ]]; then
+    local _cmp_script_path="$ZDOTDIR/.zshrc_completion.zsh"
+    zinit ice wait"0c" lucid blockf \
+        atload"[[ -f $_cmp_script_path ]] && source $_cmp_script_path"
+    zinit light zsh-users/zsh-completions
+fi

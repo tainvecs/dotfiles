@@ -131,16 +131,16 @@ function _dotfiles_init_docker(){
 
     if type docker >"/dev/null"; then
 
-        # home
+        # ----- home
         local _docker_home_dir="${DOTFILES[HOME_DIR]}/.docker"
         [[ -d $_docker_home_dir ]] || mkdir -p $_docker_home_dir
 
-        # config
+        # ----- config
         # Location of the client config file config.json (default ~/.docker)
         export DOCKER_CONFIG=$_docker_home_dir
         export DOCKER_DEFAULT_PLATFORM="linux/$SYS_ARCHT"
 
-        # dockerd
+        # ----- dockerd
         if type dockerd >"/dev/null"; then
 
             # config
@@ -149,6 +149,28 @@ function _dotfiles_init_docker(){
                 alias dockerd="dockerd --config-file $_dockerd_config_file_path "
             fi
         fi
+
+        # ----- completion
+
+        # docker
+        local _docker_cmp_path="${DOTFILES[CONFIG_DIR]}/zsh/.zsh_complete/_docker"
+        local _docker_cmp_link="${DOTFILES[HOME_DIR]}/.zsh/.zsh_complete/_docker"
+
+        if [[ ! -f $_docker_cmp_path ]]; then
+            curl -fLo $_docker_cmp_path \
+                 "https://raw.githubusercontent.com/docker/cli/master/contrib/completion/zsh/_docker"
+        fi
+        [[ -L $_docker_cmp_link || -f $_docker_cmp_link ]] || ln -s $_docker_cmp_path $_docker_cmp_link
+
+        # docker compose
+        local _docker_comp_cmp_path="${DOTFILES[CONFIG_DIR]}/zsh/.zsh_complete/_docker-compose"
+        local _docker_comp_cmp_link="${DOTFILES[HOME_DIR]}/.zsh/.zsh_complete/_docker-compose"
+
+        if [[ ! -f $_docker_comp_cmp_path ]]; then
+            curl -fLo $_docker_comp_cmp_path \
+                 "https://raw.githubusercontent.com/docker/compose/1.29.2/contrib/completion/zsh/_docker-compose"
+        fi
+        [[ -L $_docker_comp_cmp_link || -f $_docker_comp_cmp_link ]] || ln -s $_docker_comp_cmp_path $_docker_comp_cmp_link
     fi
 }
 
@@ -266,10 +288,13 @@ function _dotfiles_init_gcp(){
         export CLOUDSDK_CONFIG=$_gcp_config_dir
 
         # completion
-        local _gcp_comp_path="$_gcp_home_dir/google-cloud-sdk/completion.zsh.inc"
-        if [[ -f "$_gcp_comp_path" ]]; then
-            source "$_gcp_comp_path"
-        fi
+        local _gcp_cmp_script_path="$_gcp_home_dir/google-cloud-sdk/completion.zsh.inc"
+        if [[ -f $_gcp_cmp_script_path ]]; then
+            local _gcp_cmp_path="${DOTFILES[CONFIG_DIR]}/zsh/.zsh_complete/gcp.zsh.inc"
+            local _gcp_cmp_link="${DOTFILES[HOME_DIR]}/.zsh/.zsh_complete/gcp.zsh.inc"
+            [[ -L $_gcp_cmp_path || -f $_gcp_cmp_path ]] || ln -s $_gcp_cmp_script_path $_gcp_cmp_path
+            [[ -L $_gcp_cmp_link || -f $_gcp_cmp_link ]] || ln -s $_gcp_cmp_path $_gcp_cmp_link
+         fi
     fi
 }
 
@@ -359,9 +384,11 @@ _dotfiles_init_kube(){
         [[ -d "$_kube_cache_dir" ]] || mkdir -p "$_kube_cache_dir"
         alias kubectl="kubectl --cache-dir $_kube_cache_dir "
 
-        # complete
-        local _kube_cmp_path="${DOTFILES[HOME_DIR]}/.zsh/.zsh_complete/_kubectl"
-        [[ -f "$_kube_cmp_path" ]] ||  kubectl completion zsh > "$_kube_cmp_path"
+        # completion
+        local _kube_cmp_path="${DOTFILES[CONFIG_DIR]}/zsh/.zsh_complete/_kubectl"
+        local _kube_cmp_link="${DOTFILES[HOME_DIR]}/.zsh/.zsh_complete/_kubectl"
+        [[ -f $_kube_cmp_path ]] || kubectl completion zsh > $_kube_cmp_path
+        [[ -L $_kube_cmp_link || -f $_kube_cmp_link ]] || ln -s $_kube_cmp_path $_kube_cmp_link
     fi
 }
 
