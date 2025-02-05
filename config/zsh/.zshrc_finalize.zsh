@@ -19,9 +19,6 @@ bindkey -e
 # ------------------------------------------------------------------------------
 
 
-# load completion
-fpath=($ZSH_COMPLETE_DIR $fpath)
-
 # zsh completions
 if [[ ${DOTFILES_PLUGINS[zsh-completions]} = "true" ]]; then
     local _cmp_script_path="$ZDOTDIR/.zshrc_completion.zsh"
