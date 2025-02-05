@@ -276,6 +276,7 @@ declare -a CONFIG_PATH_ARR=(
     "$DOTFILES_CONFIG/zsh/.zshrc"
     "$DOTFILES_CONFIG/zsh/.zshrc_initialize.zsh"
     "$DOTFILES_CONFIG/zsh/.zshrc_apps.zsh"
+    "$DOTFILES_CONFIG/zsh/.zshrc_apps.lazy.zsh"
     "$DOTFILES_CONFIG/zsh/.zshrc_plugins.zsh"
     "$DOTFILES_CONFIG/zsh/.zshrc_finalize.zsh"
     "$DOTFILES_CONFIG/zsh/.zshrc_completion.zsh"

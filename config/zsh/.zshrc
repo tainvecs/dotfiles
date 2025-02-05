@@ -25,6 +25,13 @@ fi
 [[ -f "$ZDOTDIR/.zshrc_apps.zsh" ]] && source "$ZDOTDIR/.zshrc_apps.zsh"
 [[ -f "$ZDOTDIR/.zshrc_apps.zsh.local" ]] && source "$ZDOTDIR/.zshrc_apps.zsh.local"
 
+# layz load app config script
+local _app_script_path="$ZDOTDIR/.zshrc_apps.lazy.zsh"
+if [[ -f "$_app_script_path" ]]; then
+    zinit ice wait"1" lucid
+    zinit snippet "$_app_script_path"
+fi
+
 
 # ------------------------------------------------------------------------------
 # plugins
