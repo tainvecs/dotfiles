@@ -1,3 +1,13 @@
+
+
+# zsh startup profile: `time ZSH_PROF=1 zsh -i -c exit`
+# zsh startup log: `zsh -x -i -c exit 2>&1 | sed -u "s/^/[$(date '+%Y-%m-%d %H:%M:%S')] /"`
+# zsh startup benchmark: `hyperfine 'zsh -i -c exit'`
+if [[ -n "$ZSH_PROF" ]]; then
+    zmodload zsh/zprof
+fi
+
+
 # ------------------------------------------------------------------------------
 # initialize zsh
 # ------------------------------------------------------------------------------
@@ -33,3 +43,8 @@
 
 [[ -f "$ZDOTDIR/.zshrc_finalize.zsh" ]] && source "$ZDOTDIR/.zshrc_finalize.zsh"
 [[ -f "$ZDOTDIR/.zshrc_finalize.zsh.local" ]] && source "$ZDOTDIR/.zshrc_finalize.zsh.local"
+
+
+if [[ -n "$ZSH_PROF" ]]; then
+    zprof
+fi
