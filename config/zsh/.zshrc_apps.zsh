@@ -1,4 +1,57 @@
 # ------------------------------------------------------------------------------
+# autoenv
+#
+# - references
+#   - https://github.com/hyperupcall/autoenv
+#
+# - envs
+#   - AUTOENV_AUTH_FILE
+#   - AUTOENV_ENV_FILENAME
+#   - AUTOENV_ENV_LEAVE_FILENAME
+#   - AUTOENV_ENABLE_LEAVE
+# ------------------------------------------------------------------------------
+
+
+function _dotfiles_init_autoenv(){
+
+    # activation script
+    if [[ $SYS_NAME = "mac" ]]; then
+        _autoenv_script_path="$BREW_HOME/opt/autoenv/activate.sh"
+    elif [[ $SYS_NAME = "linux" ]]; then
+        _autoenv_script_path="${DOTFILES[HOME_DIR]}/.autoenv/autoenv.git/activate.sh"
+    fi
+
+    # apply config and activate autoenv
+    if [[ -f $_autoenv_script_path ]]; then
+
+        # home
+        local _autoenv_home_dir="${DOTFILES[HOME_DIR]}/.autoenv"
+        [[ -d $_autoenv_home_dir ]] || mkdir -p $_autoenv_home_dir
+
+        # envs
+        export AUTOENV_AUTH_FILE="$_autoenv_home_dir/.autoenv_authorized"
+        export AUTOENV_ENV_FILENAME=".env"
+        export AUTOENV_ENV_LEAVE_FILENAME=".env.leave"
+        export AUTOENV_ENABLE_LEAVE="1"
+
+        # Lazy-load Autoenv only when `cd` is used
+        function _lazy_load_autoenv() {
+            add-zsh-hook -d chpwd _lazy_load_autoenv  # Remove hook before unfunctioning
+            unfunction _lazy_load_autoenv  # Remove trigger after first use
+            source $_autoenv_script_path
+            cd "$PWD"  # Trigger autoenv
+        }
+
+        # Set a hook on `cd` to load Autoenv only when used
+        autoload -Uz add-zsh-hook
+        add-zsh-hook chpwd _lazy_load_autoenv
+    fi
+}
+
+_dotfiles_init_autoenv
+
+
+# ------------------------------------------------------------------------------
 # aws
 #
 # - references
