@@ -1,12 +1,12 @@
 # ------------------------------------------------------------------------------
-# PATH
+# PATH and FPATH
 #
 # - references
 #   - https://github.zshell.dev/post/zsh/cheatsheet/typeset/
 # ------------------------------------------------------------------------------
 
 
-typeset -U path
+typeset -U path fpath
 
 path=(
     "/usr/local/bin"
@@ -15,10 +15,13 @@ path=(
     "/usr/sbin"
     "/bin"
     "/sbin"
-    $path
+    "${(@)path}"
 )
 
-export PATH
+fpath=(
+    $ZSH_COMPLETE_DIR
+    "${(@)fpath}"
+)
 
 
 # ------------------------------------------------------------------------------
