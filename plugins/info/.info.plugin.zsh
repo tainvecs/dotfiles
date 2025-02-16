@@ -33,6 +33,13 @@ _sys_name=$(uname)
 # ------------------------------------------------------------------------------
 
 
+# ----- alias
+
+function ls-alias() {
+    alias | sort -u
+}
+
+
 # ----- apt
 
 if [[ $_sys_name = "Linux" ]]; then
@@ -198,6 +205,20 @@ if type docker >/dev/null; then
 fi
 
 
+# ----- function
+
+function ls-functions() {
+    print -l -- ${(k)functions} | sort -u
+}
+
+
+# ----- variable
+
+alias ls-env="env | sort"
+alias ls-shell-var="set | sort"
+alias ls-export-var="export -p | sort"
+
+
 # ----- link
 
 # Helper function to find symbolic links
@@ -249,6 +270,13 @@ function ls-link() {
 # - $2: directory to search (optional, defaults to ".")
 function ls-link-broken() {
     _find_symlinks "$1" "$2" "-type l ! -exec test -e {} ; -print"
+}
+
+
+# ----- option
+
+function ls-shell-option() {
+    setopt | sort
 }
 
 
