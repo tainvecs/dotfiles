@@ -280,6 +280,17 @@ function ls-link-broken() {
 }
 
 
+# ----- path
+
+function ls-fpath() {
+    print -l "${(@)fpath}" | sort
+}
+
+function ls-path() {
+    print -l "${(@)path}" | sort
+}
+
+
 # ----- pip
 
 if type pip >/dev/null; then
