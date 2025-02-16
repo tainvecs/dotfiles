@@ -64,37 +64,9 @@ if [[ $_sys_name = "Linux" ]]; then
     }
 
     # apt gpg key
-    # function ls-apt-key() {
-    #     apt-key list 2> >(grep -v 'Warning:' >&2)
-    # }
-
     function ls-apt-key() {
-        gpg --no-default-keyring --keyring /etc/apt/trusted.gpg --list-keys
-        gpg --no-default-keyring --keyring /etc/apt/trusted.gpg.d/*.gpg --list-keys
+        apt-key list 2> >(grep -v 'Warning:' >&2)
     }
-
-    # apt installed packaged by manual and auto
-    # function ls-apt-package() {
-
-    #     # print header
-    #     printf '%-43.43s %-40.40s %-12.12s %-80.80s\n' "NAME" "VERSION" "ARCHITECTURE" "SUMMARY"
-    #     printf '=%.0s' {1..43}
-    #     printf ' '
-    #     printf '=%.0s' {1..40}
-    #     printf ' '
-    #     printf '=%.0s' {1..12}
-    #     printf ' '
-    #     printf '=%.0s' {1..80}
-    #     printf '\n'
-
-    #     # process amd sort package strings
-    #     local _pkg_lines=$(dpkg-query -W -f '${Package}, ${Version}, ${Architecture}, ${binary:Summary}\n' | LC_ALL=C sort)
-
-    #     # split with ', ' and print line with indent
-    #     while IFS=', ' read -r _name _ver _archt _summary; do
-    #         printf '%-43.43s %-40.40s %-12.12s %-80.80s\n' $_name $_ver $_archt $_summary
-    #     done <<< $_pkg_lines
-    # }
 
     function ls-apt-package() {
 
@@ -110,8 +82,8 @@ if [[ $_sys_name = "Linux" ]]; then
         printf '\n'
 
         # Process package information directly from dpkg-query
-        dpkg-query -W -f '${Package}###${Version}###${Architecture}###${binary:Summary}\n' | LC_ALL=C sort | \
-            while IFS='###' read -r _name _ver _archt _summary; do
+        dpkg-query -W -f '${Package},${Version},${Architecture},${binary:Summary}\n' | LC_ALL=C sort | \
+            while IFS=',' read -r _name _ver _archt _summary; do
                 printf '%-43s %-40s %-12s %-80s\n' "$_name" "$_ver" "$_archt" "$_summary"
             done
     }
