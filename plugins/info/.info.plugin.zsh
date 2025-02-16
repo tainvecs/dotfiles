@@ -136,93 +136,6 @@ function ls-completion() {
 }
 
 
-# ----- link
-
-# Helper function to find symbolic links
-# - $1: max depth to search (must be a positive number)
-# - $2: directory to search (optional, defaults to ".")
-function _find_symlinks() {
-    local _max_depth _dir _type
-
-    # Validate max depth argument
-    if [[ -z "$1" || ! "$1" =~ ^[0-9]+$ || "$1" -le 0 ]]; then
-        echo "error: invalid or missing argument: '$1'"
-        echo "Usage: $2 <max-depth> [directory]"
-        return 1
-    fi
-    _max_depth="$1"
-
-    # Set directory to search (default: current directory)
-    _dir="${2:-.}"
-
-    # Validate directory existence
-    if [[ ! -d "$_dir" ]]; then
-        echo "error: '$_dir' is not a valid directory"
-        return 1
-    fi
-
-    # Ensure `find` command exists
-    if ! command -v find &>/dev/null; then
-        echo "error: 'find' command not found"
-        return 1
-    fi
-
-    # Select find type (all symlinks or broken ones)
-    _filter_str="${3:--type l}"  # Default: find all symlinks
-    _filter_arr=(${=_filter_str})
-
-    # Find symbolic links and sort results
-    find "$_dir" -maxdepth "$_max_depth" "${_filter_arr[@]}" | sort
-}
-
-# List symbolic links
-# - $1: max depth to search (must be a positive number)
-# - $2: directory to search (optional, defaults to ".")
-function ls-link() {
-    _find_symlinks "$1" "$2" "-type l"
-}
-
-# List broken symbolic links
-# - $1: max depth to search (must be a positive number)
-# - $2: directory to search (optional, defaults to ".")
-function ls-link-broken() {
-    _find_symlinks "$1" "$2" "-type l ! -exec test -e {} ; -print"
-}
-
-
-# ----- pip
-
-if type pip >/dev/null; then
-
-    alias ls-pip-app="pip list"
-
-    function ls-pip-freeze() {
-
-        # print header
-        printf '%-30.30s %s\n' "PACKAGE" "VERSION"
-        printf '=%.0s' {1..30}
-        printf ' '
-        printf '=%.0s' {1..30}
-        printf '\n'
-
-        # Read pip freeze output into an array
-        local -a _pip_lines
-        _pip_lines=("${(@f)$(pip freeze | sed -E 's/( )*(==|@)( )*/==/g' | sort)}")
-
-        # Process each line
-        for _line in "${_pip_lines[@]}"; do
-            # split with ==
-            local _name=${_line%==*}
-            local _ver=${_line#*==}
-
-            # print
-            printf '%-30.30s %s\n' "$_name" "$_ver"
-        done
-    }
-
-fi
-
-
 # ----- docker
 
 if type docker >/dev/null; then
@@ -310,4 +223,91 @@ if type docker >/dev/null; then
         }
 
     fi
+fi
+
+
+# ----- link
+
+# Helper function to find symbolic links
+# - $1: max depth to search (must be a positive number)
+# - $2: directory to search (optional, defaults to ".")
+function _find_symlinks() {
+    local _max_depth _dir _type
+
+    # Validate max depth argument
+    if [[ -z "$1" || ! "$1" =~ ^[0-9]+$ || "$1" -le 0 ]]; then
+        echo "error: invalid or missing argument: '$1'"
+        echo "Usage: $2 <max-depth> [directory]"
+        return 1
+    fi
+    _max_depth="$1"
+
+    # Set directory to search (default: current directory)
+    _dir="${2:-.}"
+
+    # Validate directory existence
+    if [[ ! -d "$_dir" ]]; then
+        echo "error: '$_dir' is not a valid directory"
+        return 1
+    fi
+
+    # Ensure `find` command exists
+    if ! command -v find &>/dev/null; then
+        echo "error: 'find' command not found"
+        return 1
+    fi
+
+    # Select find type (all symlinks or broken ones)
+    _filter_str="${3:--type l}"  # Default: find all symlinks
+    _filter_arr=(${=_filter_str})
+
+    # Find symbolic links and sort results
+    find "$_dir" -maxdepth "$_max_depth" "${_filter_arr[@]}" | sort
+}
+
+# List symbolic links
+# - $1: max depth to search (must be a positive number)
+# - $2: directory to search (optional, defaults to ".")
+function ls-link() {
+    _find_symlinks "$1" "$2" "-type l"
+}
+
+# List broken symbolic links
+# - $1: max depth to search (must be a positive number)
+# - $2: directory to search (optional, defaults to ".")
+function ls-link-broken() {
+    _find_symlinks "$1" "$2" "-type l ! -exec test -e {} ; -print"
+}
+
+
+# ----- pip
+
+if type pip >/dev/null; then
+
+    alias ls-pip-app="pip list"
+
+    function ls-pip-freeze() {
+
+        # print header
+        printf '%-30.30s %s\n' "PACKAGE" "VERSION"
+        printf '=%.0s' {1..30}
+        printf ' '
+        printf '=%.0s' {1..30}
+        printf '\n'
+
+        # Read pip freeze output into an array
+        local -a _pip_lines
+        _pip_lines=("${(@f)$(pip freeze | sed -E 's/( )*(==|@)( )*/==/g' | sort)}")
+
+        # Process each line
+        for _line in "${_pip_lines[@]}"; do
+            # split with ==
+            local _name=${_line%==*}
+            local _ver=${_line#*==}
+
+            # print
+            printf '%-30.30s %s\n' "$_name" "$_ver"
+        done
+    }
+
 fi
