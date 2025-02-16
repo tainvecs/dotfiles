@@ -753,3 +753,9 @@ state/*
 
 # ----- share
 runtime/*
+
+
+# ----- linux
+config/google-chrome/
+config/mimeapps.list
+config/vlc/
