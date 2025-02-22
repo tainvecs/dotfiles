@@ -5,7 +5,7 @@
 ZINIT[COMPINIT_OPTS]=-C
 
 
-# Download completion files
+# Prepare completion files
 
 # docker and docker compose
 if type docker >"/dev/null"; then
@@ -14,10 +14,7 @@ if type docker >"/dev/null"; then
     local _docker_cmp_path="${DOTFILES[CONFIG_DIR]}/zsh/.zsh_complete/_docker"
     local _docker_cmp_link="${DOTFILES[HOME_DIR]}/.zsh/.zsh_complete/_docker"
 
-    if [[ ! -f $_docker_cmp_path ]]; then
-        curl -sfLo $_docker_cmp_path \
-             "https://raw.githubusercontent.com/docker/cli/master/contrib/completion/zsh/_docker"
-    fi
+    [[ -f $_docker_cmp_path ]] || docker completion zsh > $_docker_cmp_path
     [[ -L $_docker_cmp_link || -f $_docker_cmp_link ]] || ln -s $_docker_cmp_path $_docker_cmp_link
 
     # docker compose
@@ -43,7 +40,6 @@ if [[ ${DOTFILES_PLUGINS[forgit]} = "true" ]]; then
     fi
     [[ -L $_forgit_cmp_link || -f $_forgit_cmp_link ]] || ln -s $_forgit_cmp_path $_forgit_cmp_link
 fi
-
 
 # gcp
 if type gcloud >"/dev/null"; then
