@@ -30,8 +30,8 @@ alias diin='docker image inspect '
 
 alias dib='docker image build '
 alias dit='docker image tag '
-alias dipu='docker pull '
-alias dip='docker push '
+alias dipu='docker image pull '
+alias dip='docker image push '
 
 alias dipr='docker image prune '
 alias dirm='docker image rm '
@@ -44,6 +44,22 @@ alias dnc='docker network create '
 alias dnrm='docker network rm '
 
 # docker volume
-alias dvi='docker volume inspect '
 alias dvls='docker volume ls '
-alias dvprune='docker volume prune '
+alias dvi='docker volume inspect '
+
+alias dvc='docker volume create '
+alias dvrm='docker volume rm '
+alias dvpr='docker volume prune '
+
+# Docker system
+alias dsp='docker system prune '
+alias dsdf='docker system df '
+alias dsi='docker system info '
+
+# Docker compose
+if command -v docker-compose >/dev/null; then
+    alias dcps='docker-compose ps '
+    alias dcl='docker-compose logs '
+    alias dcu='docker-compose up '
+    alias dcd='docker-compose down '
+fi
