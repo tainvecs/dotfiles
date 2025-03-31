@@ -6,7 +6,7 @@
 # Utility Functions
 #
 #
-# Version: 0.0.2
+# Version: 0.0.3
 # Last Modified: 2025-03-31
 #
 # - Dependency
@@ -14,6 +14,26 @@
 #     - .dotfiles/env/color.env
 #
 # ------------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------------------
+#
+# Command
+#
+# - Function
+#   - dotfiles_logging
+#
+# ------------------------------------------------------------------------------
+
+
+# $1: Command name
+function command_exists() {
+    if [[ -z "$1" ]]; then
+        dotfiles_logging "\$1 (command name) not provided." "error"
+        return 2
+    fi
+    command -v "$1" >/dev/null 2>&1 || type "$1" >/dev/null 2>&1
+}
 
 
 # ------------------------------------------------------------------------------
@@ -56,16 +76,16 @@ function dotfiles_logging() {
     case $_log_level in
 
         'error')
-            echo -e "${B_RED}error: $_log_message ${COLOR_OFF}\n" >&2;;
+            echo -e "${B_RED}error: $_log_message ${COLOR_OFF}" >&2;;
 
         'warning')
-            echo -e "${B_YELLOW}warning: $_log_message ${COLOR_OFF}\n" >&2;;
+            echo -e "${B_YELLOW}warning: $_log_message ${COLOR_OFF}" >&2;;
 
         'info')
-            echo -e "${B_GREEN}info: $_log_message ${COLOR_OFF}\n";;
+            echo -e "${B_GREEN}info: $_log_message ${COLOR_OFF}";;
 
         *)
-            echo -e "${B_RED}error: unknown log_level \"$_log_level\" for log_message \"$_log_message\" ${COLOR_OFF}\n" >&2;;
+            echo -e "${B_RED}error: unknown log_level \"$_log_level\" for log_message \"$_log_message\" ${COLOR_OFF}" >&2;;
     esac
 }
 
