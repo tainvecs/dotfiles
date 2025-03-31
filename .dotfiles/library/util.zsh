@@ -6,9 +6,9 @@
 # Utility Functions
 #
 #
-# Version: 0.0.1
+# Version: 0.0.2
 # Last Modified: 2025-03-31
-
+#
 # - Dependency
 #   - Environment Variable
 #     - .dotfiles/env/color.env
@@ -56,22 +56,22 @@ function dotfiles_logging() {
     case $_log_level in
 
         'error')
-            echo -e "${B_RED}error: $_log_message ${COLOR_OFF}\n";;
+            echo -e "${B_RED}error: $_log_message ${COLOR_OFF}\n" >&2;;
 
         'warning')
-            echo -e "${B_YELLOW}warning: $_log_message ${COLOR_OFF}\n";;
+            echo -e "${B_YELLOW}warning: $_log_message ${COLOR_OFF}\n" >&2;;
 
         'info')
             echo -e "${B_GREEN}info: $_log_message ${COLOR_OFF}\n";;
 
         *)
-            echo -e "${B_RED}error: unknown log_level \"$_log_level\" for log_message \"$_log_message\" ${COLOR_OFF}\n";;
+            echo -e "${B_RED}error: unknown log_level \"$_log_level\" for log_message \"$_log_message\" ${COLOR_OFF}\n" >&2;;
     esac
 }
 
 
 # ------------------------------------------------------------------------------
-# strings
+# Strings
 # ------------------------------------------------------------------------------
 
 
