@@ -17,25 +17,25 @@
 
 
 # Check if a variable is a normal (non-associative) array
-is_normal_array() {
+function is_normal_array() {
     local _array_name="$1"
     [[ -v $_array_name && ${parameters[$_array_name]} = array ]]
 }
 
 # Check if a variable is an associative array
-is_associative_array() {
+function is_associative_array() {
     local _array_name="$1"
     [[ -v $_array_name && ${parameters[$_array_name]} = association ]]
 }
 
 # Check if an array has at least one element
-is_non_empty_array() {
+function is_non_empty_array() {
     local _array_name="$1"
     [[ -v $_array_name && ${#${(P)_array_name[@]}} -gt 0 ]]
 }
 
 # Update an associative array from input array elements
-update_associative_array_from_array() {
+function update_associative_array_from_array() {
 
     local _out_asc_array_name="$1"
     local _in_main_array_name="$2"
