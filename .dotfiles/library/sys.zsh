@@ -21,13 +21,13 @@ function get_system_name() {
     case $os_name in
 
         "Linux")
-            echo "linux";;
+            echo "linux" ;;
 
         "Darwin")
-            echo "mac";;
+            echo "mac" ;;
 
         *)
-            echo "unknown($os_name)";;
+            echo "unknown($os_name)" ;;
     esac
 }
 
@@ -39,15 +39,15 @@ function get_system_architecture() {
     case $archt in
 
         "x86_64")
-            echo "amd64";;
+            echo "amd64" ;;
 
         "arm64" | "aarch64")
-            echo "arm64";;
+            echo "arm64" ;;
 
         arm*)
-            echo "arm";;
+            echo "arm" ;;
 
         *)
-            echo "unknown($archt)";;
+            echo "unknown($archt)" ;;
     esac
 }
