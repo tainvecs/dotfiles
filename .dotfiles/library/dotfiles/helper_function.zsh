@@ -6,7 +6,7 @@
 # Helper Functions
 #
 #
-# Version: 0.0.1
+# Version: 0.0.2
 # Last Modified: 2025-03-31
 #
 # - Dependency
@@ -15,6 +15,7 @@
 #     - DOTFILES_PLUGIN_ASC_ARR
 #
 #   - Library
+#     - .dotfiles/library/util.zsh
 #
 # ------------------------------------------------------------------------------
 
@@ -24,7 +25,7 @@
 # Returns: 0 if managed, 1 if not managed, 2 if no argument provided
 is_dotfiles_managed_app() {
     if [[ -z "$1" ]]; then
-        echo "Error: No application name provided" >&2
+        dotfiles_logging "No application name provided." "error"
         return 2
     fi
     [[ "${DOTFILES_APP_ASC_ARR[$1]}" == "true" ]]
@@ -36,7 +37,7 @@ is_dotfiles_managed_app() {
 # Returns: 0 if managed, 1 if not managed, 2 if no argument provided
 is_dotfiles_managed_plugin() {
     if [[ -z "$1" ]]; then
-        echo "Error: No plugin name provided" >&2
+        dotfiles_logging "No plugin name provided." "error"
         return 2
     fi
     [[ "${DOTFILES_PLUGIN_ASC_ARR[$1]}" == "true" ]]

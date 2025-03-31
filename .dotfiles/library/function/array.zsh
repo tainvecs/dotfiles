@@ -6,11 +6,12 @@
 # Array
 #
 #
-# Version: 0.0.1
+# Version: 0.0.2
 # Last Modified: 2025-03-31
 #
 # - Dependency
 #   - Library
+#     - .dotfiles/library/util.zsh
 #
 # ------------------------------------------------------------------------------
 
@@ -42,7 +43,7 @@ update_associative_array_from_array() {
 
     # Check if output_name is defined and is an associative array
     if ! is_associative_array "$_out_asc_array_name"; then
-        echo "Error: '$_out_asc_array_name' must be defined as an associative array before calling this function" >&2
+        dotfiles_logging "'$_out_asc_array_name' must be defined as an associative array before calling this function" "error"
         return 1
     fi
 
@@ -60,6 +61,6 @@ update_associative_array_from_array() {
             eval "${_out_asc_array_name}[$key]=true"
         done
     else
-        echo "Warning: neither '$_in_main_array_name' nor '$_in_fallback_array_name' is valid to set up '$_out_asc_array_name'." >&2
+        dotfiles_logging "neither '$_in_main_array_name' nor '$_in_fallback_array_name' is valid to set up '$_out_asc_array_name'." "warning"
     fi
 }
