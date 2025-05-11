@@ -1,0 +1,265 @@
+# ------------------------------------------------------------------------------
+#
+# Dotfiles App Configuration
+#
+#
+# Version: 0.0.3
+# Last Modified: 2025-05-11
+#
+# - Dependency
+#   - Environment Variable
+#     - DOTFILES_APP_ARR
+#     - DOTFILES_PLUGIN_ARR
+#     - DOTFILES_USER_APP_ARR
+#     - DOTFILES_USER_PLUGIN_ARR
+#   - Library
+#     - $DOTFILES_DOT_LIB_DIR/util.zsh
+#
+# - Environment Variable
+#   - ZSH_PROF
+#   - DOTFILES_SYS_NAME
+#   - DOTFILES_SYS_ARCHT
+#   - DOTFILES_APP_ASC_ARR
+#   - DOTFILES_PLUGIN_ASC_ARR
+#   - ZINIT
+#   - LESSHISTFILE
+#   - TERM
+#   - DOTFILES_FONT_DIR
+#
+# ------------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------------------
+#
+# Profile Start
+#
+# - Environment Variables
+#   - ZSH_PROF
+#
+# ------------------------------------------------------------------------------
+
+
+# zsh startup profile: `time ZSH_PROF=1 zsh -i -c exit`
+# zsh startup log: `zsh -x -i -c exit 2>&1 | sed -u "s/^/[$(date '+%Y-%m-%d %H:%M:%S')] /"`
+# zsh startup benchmark: `hyperfine 'zsh -i -c exit'`
+if [[ -n "$ZSH_PROF" ]]; then
+    zmodload zsh/zprof
+fi
+
+
+# ------------------------------------------------------------------------------
+#
+# Sanity Check
+#
+# - Dependency
+#   - Environment Variable
+#     - DOTFILES_DOT_LIB_DIR
+#   - Library
+#     - $DOTFILES_DOT_LIB_DIR/util.zsh
+#
+# ------------------------------------------------------------------------------
+
+
+if [[ -z "$DOTFILES_DOT_LIB_DIR" ]]; then
+    echo "error: DOTFILES_DOT_LIB_DIR is not set." >&2
+    return 1
+elif [[ ! -f "$DOTFILES_DOT_LIB_DIR/util.zsh" ]]; then
+    echo "error: $DOTFILES_DOT_LIB_DIR/util.zsh is not found." >&2
+    return 1
+fi
+
+
+# ------------------------------------------------------------------------------
+#
+# Library
+#
+# - Environment Variables
+#   - DOTFILES_SYS_NAME
+#   - DOTFILES_SYS_ARCHT
+#
+# ------------------------------------------------------------------------------
+
+
+# load utils
+source "$DOTFILES_DOT_LIB_DIR/util.zsh"
+
+# sys env
+export DOTFILES_SYS_NAME=$(get_system_name)
+export DOTFILES_SYS_ARCHT=$(get_system_architecture)
+
+
+# ------------------------------------------------------------------------------
+#
+# Homebrew
+#
+# - Environment Variables
+#   - HOMEBREW_PREFIX
+#   - HOMEBREW_CELLAR
+#   - HOMEBREW_REPOSITORY
+#
+# ------------------------------------------------------------------------------
+
+
+if [[ $DOTFILES_SYS_NAME = "mac" ]]; then
+
+    # BREW_HOME
+    if [[ -d "/opt/homebrew" ]]; then
+        export BREW_HOME="/opt/homebrew"
+    elif [[ -d "/usr/local/Homebrew" ]]; then
+        export BREW_HOME="/usr/local"
+    else
+        dotfiles_logging "Homebrew not found in standard locations." "error"
+    fi
+
+    # set fpath, PATH, MANPATH and INFOPATH
+    if [[ -n "$BREW_HOME" ]]; then
+        eval $("${BREW_HOME}/bin/brew" shellenv)
+    fi
+fi
+
+
+# ------------------------------------------------------------------------------
+#
+# Zinit
+#
+# - Environment Variables
+#   - ZINIT
+#
+# ------------------------------------------------------------------------------
+
+
+# set zinit variables
+declare -A ZINIT
+
+ZINIT[HOME_DIR]="$ZDOTDIR/zinit"
+ZINIT[BIN_DIR]="${ZINIT[HOME_DIR]}/zinit.git"
+ZINIT[MAN_DIR]=${MANPATH:-"/usr/share/man"}
+ZINIT[COMPINIT_OPTS]=-C  # to suppress warnings
+ZINIT[COMPLETIONS_DIR]="$DOTFILES_ZSH_COMP_DIR"
+ZINIT[ZCOMPDUMP_PATH]="$DOTFILES_ZSH_COMPDUMP_PATH"
+
+export ZINIT
+
+# source zinit binary
+if [[ ! -f "${ZINIT[BIN_DIR]}/zinit.zsh" ]]; then
+    dotfiles_logging "Zinit binary at ${ZINIT[BIN_DIR]}/zinit.zsh not found." "error"
+else
+    source "${ZINIT[BIN_DIR]}/zinit.zsh"
+fi
+
+
+# ------------------------------------------------------------------------------
+#
+# Apps
+#
+# - Environment Variables
+#   - DOTFILES_APP_ASC_ARR
+#
+# ------------------------------------------------------------------------------
+
+
+# dotfiles app associative array
+unset DOTFILES_APP_ASC_ARR
+typeset -A DOTFILES_APP_ASC_ARR
+update_associative_array_from_array "DOTFILES_APP_ASC_ARR" "DOTFILES_USER_APP_ARR" "DOTFILES_APP_ARR"
+
+# set up app configs
+if [[ $DOTFILES_SYS_NAME = "mac" ]] && { ! command_exists brew }; then
+    dotfiles_logging "Brew is not available. App config will not be set." "error"
+elif [[ ${#DOTFILES_APP_ASC_ARR[@]} -eq 0 ]]; then
+    dotfiles_logging "DOTFILES_APP_ASC_ARR is empty. No app config will be set." "warning"
+else
+    :  # Add app-specific setup here if needed
+fi
+
+
+# ------------------------------------------------------------------------------
+#
+# Plugins
+#
+# - Environment Variables
+#   - DOTFILES_PLUGIN_ASC_ARR
+#
+# ------------------------------------------------------------------------------
+
+
+# dotfiles plugin associative array
+unset DOTFILES_PLUGIN_ASC_ARR
+typeset -A DOTFILES_PLUGIN_ASC_ARR
+update_associative_array_from_array "DOTFILES_PLUGIN_ASC_ARR" "DOTFILES_USER_PLUGIN_ARR" "DOTFILES_PLUGIN_ARR"
+
+# set up plugin configs
+if ! command_exists zinit; then
+    dotfiles_logging "Zinit is not available. Plugin will not be loaded." "error"
+elif [[ ${#DOTFILES_PLUGIN_ASC_ARR[@]} -eq 0 ]]; then
+    dotfiles_logging "DOTFILES_PLUGIN_ASC_ARR is empty. No plugin will be loaded." "warning"
+else
+    :  # Add plugin-specific setup here if needed
+fi
+
+
+# ------------------------------------------------------------------------------
+#
+# Completion
+#
+# - Dependency
+#   - zinit
+#
+# ------------------------------------------------------------------------------
+
+
+# zsh completions
+if command_exists zinit; then
+
+    local _cmp_script_path="$DOTFILES_DOT_LIB_DIR/.zsh_completion.zsh"
+
+    zinit ice wait"0c" lucid blockf \
+          atload'[[ -f $_cmp_script_path ]] && source $_cmp_script_path || \
+            dotfiles_logging "Completion script $_cmp_script_path not found." "warn"'
+    zinit light zsh-users/zsh-completions
+fi
+
+
+# ------------------------------------------------------------------------------
+#
+# Misc
+#
+# - less
+#   - LESSHISTFILE
+#
+# - color
+#   - TERM
+#
+# - fonts
+#   - DOTFILES_FONT_DIR
+#
+# ------------------------------------------------------------------------------
+
+
+# less
+export LESSHISTFILE="$XDG_STATE_HOME/less/.lesshst"
+
+# color
+[[ -z "$TERM" || "$TERM" = "xterm" ]] && export TERM="xterm-256color"
+
+# fonts
+if [[ $DOTFILES_SYS_NAME = "mac" ]]; then
+    export DOTFILES_FONT_DIR="$HOME/Library/Fonts"
+elif [[ $DOTFILES_SYS_NAME = "linux" ]]; then
+    export DOTFILES_FONT_DIR="$XDG_DATA_HOME/fonts"
+fi
+
+
+# ------------------------------------------------------------------------------
+#
+# Profile End
+#
+# - Environment Variables
+#   - ZSH_PROF
+#
+# ------------------------------------------------------------------------------
+
+
+if [[ -n "$ZSH_PROF" ]]; then
+    zprof
+fi

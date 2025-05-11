@@ -6,8 +6,8 @@
 # Utility Functions
 #
 #
-# Version: 0.0.4
-# Last Modified: 2025-05-01
+# Version: 0.0.5
+# Last Modified: 2025-05-11
 #
 # - Dependency
 #   - Environment Variable File
@@ -222,7 +222,7 @@ function update_associative_array_from_array() {
             eval "${_out_asc_array_name}[$key]=true"
         done
     else
-        dotfiles_logging "neither '$_in_main_array_name' nor '$_in_fallback_array_name' is valid to set up '$_out_asc_array_name'." "warning"
+        dotfiles_logging "Neither '$_in_main_array_name' nor '$_in_fallback_array_name' is valid to set up '$_out_asc_array_name'." "warning"
     fi
 }
 
@@ -272,7 +272,7 @@ function dotfiles_logging() {
     if [[ -n $1 ]]; then
         _log_message=$1
     else
-        _log_message="function(dotfiles_logging) \$1(message) is not set"
+        _log_message="Function(dotfiles_logging) \$1(message) is not set"
         _log_level='error'
     fi
 
@@ -288,16 +288,16 @@ function dotfiles_logging() {
     case $_log_level in
 
         'error')
-            echo -e "${B_RED}error: $_log_message ${COLOR_OFF}" >&2;;
+            echo -e "${B_RED}Error: $_log_message ${COLOR_OFF}" >&2;;
 
         'warning')
-            echo -e "${B_YELLOW}warning: $_log_message ${COLOR_OFF}" >&2;;
+            echo -e "${B_YELLOW}Warning: $_log_message ${COLOR_OFF}" >&2;;
 
         'info')
-            echo -e "${B_GREEN}info: $_log_message ${COLOR_OFF}";;
+            echo -e "${B_GREEN}Info: $_log_message ${COLOR_OFF}";;
 
         *)
-            echo -e "${B_RED}error: unknown log_level \"$_log_level\" for log_message \"$_log_message\" ${COLOR_OFF}" >&2;;
+            echo -e "${B_RED}Error: unknown log_level \"$_log_level\" for log_message \"$_log_message\" ${COLOR_OFF}" >&2;;
     esac
 }
 
