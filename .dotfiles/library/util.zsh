@@ -6,8 +6,8 @@
 # Utility Functions
 #
 #
-# Version: 0.0.5
-# Last Modified: 2025-05-11
+# Version: 0.0.6
+# Last Modified: 2025-05-12
 #
 # - Dependency
 #   - Environment Variable File
@@ -124,7 +124,7 @@ function get_github_release_latest_version() {
         echo "$_parsed_ver"
         return 0
     else
-        dotfiles_logging "No release version found for GitHub Project $1/$2." "warning"
+        dotfiles_logging "No release version found for GitHub Project $1/$2." "warn"
         return 1
     fi
 }
@@ -180,13 +180,13 @@ function install_apps() {
 # Check if a variable is a normal (non-associative) array
 function is_normal_array() {
     local _array_name="$1"
-    [[ -v $_array_name && ${parameters[$_array_name]} = array ]]
+    [[ -v $_array_name && ${parameters[$_array_name]} == array ]]
 }
 
 # Check if a variable is an associative array
 function is_associative_array() {
     local _array_name="$1"
-    [[ -v $_array_name && ${parameters[$_array_name]} = association ]]
+    [[ -v $_array_name && ${parameters[$_array_name]} == association ]]
 }
 
 # Check if an array has at least one element
@@ -222,7 +222,7 @@ function update_associative_array_from_array() {
             eval "${_out_asc_array_name}[$key]=true"
         done
     else
-        dotfiles_logging "Neither '$_in_main_array_name' nor '$_in_fallback_array_name' is valid to set up '$_out_asc_array_name'." "warning"
+        dotfiles_logging "Neither '$_in_main_array_name' nor '$_in_fallback_array_name' is valid to set up '$_out_asc_array_name'." "warn"
     fi
 }
 
@@ -262,7 +262,7 @@ function command_exists() {
 
 
 # $1: message
-# $2 (optional): level ("error" "warning" "info")
+# $2 (optional): level ("error" "warn" "info")
 function dotfiles_logging() {
 
     local _log_message
@@ -290,8 +290,8 @@ function dotfiles_logging() {
         'error')
             echo -e "${B_RED}Error: $_log_message ${COLOR_OFF}" >&2;;
 
-        'warning')
-            echo -e "${B_YELLOW}Warning: $_log_message ${COLOR_OFF}" >&2;;
+        'warn')
+            echo -e "${B_YELLOW}Warn: $_log_message ${COLOR_OFF}" >&2;;
 
         'info')
             echo -e "${B_GREEN}Info: $_log_message ${COLOR_OFF}";;

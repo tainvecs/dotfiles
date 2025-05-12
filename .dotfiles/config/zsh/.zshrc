@@ -3,8 +3,8 @@
 # Dotfiles App Configuration
 #
 #
-# Version: 0.0.3
-# Last Modified: 2025-05-11
+# Version: 0.0.4
+# Last Modified: 2025-05-12
 #
 # - Dependency
 #   - Environment Variable
@@ -22,9 +22,6 @@
 #   - DOTFILES_APP_ASC_ARR
 #   - DOTFILES_PLUGIN_ASC_ARR
 #   - ZINIT
-#   - LESSHISTFILE
-#   - TERM
-#   - DOTFILES_FONT_DIR
 #
 # ------------------------------------------------------------------------------
 
@@ -100,7 +97,7 @@ export DOTFILES_SYS_ARCHT=$(get_system_architecture)
 # ------------------------------------------------------------------------------
 
 
-if [[ $DOTFILES_SYS_NAME = "mac" ]]; then
+if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
 
     # BREW_HOME
     if [[ -d "/opt/homebrew" ]]; then
@@ -164,12 +161,12 @@ typeset -A DOTFILES_APP_ASC_ARR
 update_associative_array_from_array "DOTFILES_APP_ASC_ARR" "DOTFILES_USER_APP_ARR" "DOTFILES_APP_ARR"
 
 # set up app configs
-if [[ $DOTFILES_SYS_NAME = "mac" ]] && { ! command_exists brew }; then
+if [[ $DOTFILES_SYS_NAME == "mac" ]] && { ! command_exists brew }; then
     dotfiles_logging "Brew is not available. App config will not be set." "error"
 elif [[ ${#DOTFILES_APP_ASC_ARR[@]} -eq 0 ]]; then
-    dotfiles_logging "DOTFILES_APP_ASC_ARR is empty. No app config will be set." "warning"
+    dotfiles_logging "DOTFILES_APP_ASC_ARR is empty. No app config will be set." "warn"
 else
-    :  # Add app-specific setup here if needed
+    :  # TODO: Add app-specific setup here if needed
 fi
 
 
@@ -192,9 +189,9 @@ update_associative_array_from_array "DOTFILES_PLUGIN_ASC_ARR" "DOTFILES_USER_PLU
 if ! command_exists zinit; then
     dotfiles_logging "Zinit is not available. Plugin will not be loaded." "error"
 elif [[ ${#DOTFILES_PLUGIN_ASC_ARR[@]} -eq 0 ]]; then
-    dotfiles_logging "DOTFILES_PLUGIN_ASC_ARR is empty. No plugin will be loaded." "warning"
+    dotfiles_logging "DOTFILES_PLUGIN_ASC_ARR is empty. No plugin will be loaded." "warn"
 else
-    :  # Add plugin-specific setup here if needed
+    :  # TODO: Add plugin-specific setup here if needed
 fi
 
 
@@ -203,7 +200,7 @@ fi
 # Completion
 #
 # - Dependency
-#   - zinit
+#   - Zinit
 #
 # ------------------------------------------------------------------------------
 
@@ -211,42 +208,12 @@ fi
 # zsh completions
 if command_exists zinit; then
 
-    local _cmp_script_path="$DOTFILES_DOT_LIB_DIR/.zsh_completion.zsh"
+    local _cmp_script_path="$DOTFILES_DOT_LIB_DIR/zsh_completion.zsh"
 
     zinit ice wait"0c" lucid blockf \
           atload'[[ -f $_cmp_script_path ]] && source $_cmp_script_path || \
-            dotfiles_logging "Completion script $_cmp_script_path not found." "warn"'
+                 dotfiles_logging "Completion script $_cmp_script_path not found." "warn"'
     zinit light zsh-users/zsh-completions
-fi
-
-
-# ------------------------------------------------------------------------------
-#
-# Misc
-#
-# - less
-#   - LESSHISTFILE
-#
-# - color
-#   - TERM
-#
-# - fonts
-#   - DOTFILES_FONT_DIR
-#
-# ------------------------------------------------------------------------------
-
-
-# less
-export LESSHISTFILE="$XDG_STATE_HOME/less/.lesshst"
-
-# color
-[[ -z "$TERM" || "$TERM" = "xterm" ]] && export TERM="xterm-256color"
-
-# fonts
-if [[ $DOTFILES_SYS_NAME = "mac" ]]; then
-    export DOTFILES_FONT_DIR="$HOME/Library/Fonts"
-elif [[ $DOTFILES_SYS_NAME = "linux" ]]; then
-    export DOTFILES_FONT_DIR="$XDG_DATA_HOME/fonts"
 fi
 
 
