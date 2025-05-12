@@ -208,7 +208,7 @@ fi
 # zsh completions
 if command_exists zinit; then
 
-    local _cmp_script_path="$DOTFILES_DOT_LIB_DIR/zsh_completion.zsh"
+    local _cmp_script_path="$DOTFILES_DOT_LIB_DIR/zsh/completion.zsh"
 
     zinit ice wait"0c" lucid blockf \
           atload'[[ -f $_cmp_script_path ]] && source $_cmp_script_path || \
