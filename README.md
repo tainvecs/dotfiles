@@ -3,34 +3,33 @@
 | App Name      | Mac | Ubuntu | Default Enabled |
 |:--------------|:---:|:------:|:---------------:|
 | 7z            | ✅  | ✅     | ✅              |
-| alt-tab       | ✅  | ✅     |                 |
+| alt-tab       | ✅  |        |                 |
 | autoenv       | ✅  | ✅     | ✅              |
 | aws           | ✅  | ✅     |                 |
 | clojure       | ✅  | ✅     |                 |
-| coreutils     | ✅  | ✅     | ✅              |
 | docker        | ✅  | ✅     | ✅              |
 | elasticsearch | ✅  | ✅     |                 |
 | emacs         | ✅  | ✅     |                 |
 | gcp           | ✅  | ✅     |                 |
 | golang        | ✅  | ✅     |                 |
 | htop          | ✅  | ✅     | ✅              |
-| iterm         | ✅  | ✅     |                 |
+| iterm         | ✅  |        |                 |
 | jdk           | ✅  | ✅     | ✅              |
-| keyd          | ✅  | ✅     |                 |
+| keyd          |     | ✅     |                 |
 | kube          | ✅  | ✅     |                 |
 | meilisearch   | ✅  | ✅     |                 |
 | nvtop         | ✅  | ✅     |                 |
-| nvitop        | ✅  | ✅     |                 |
+| nvitop        |     | ✅     |                 |
 | openvpn       | ✅  | ✅     |                 |
 | python        | ✅  | ✅     | ✅              |
-| pyenv         | ✅  | ✅     | ✅              |
+| pyenv         | ✅  | ✅     |                 |
 | svn           | ✅  | ✅     | ✅              |
 | tmux          | ✅  | ✅     | ✅              |
 | tree          | ✅  | ✅     | ✅              |
-| vim           | ✅  | ✅     | ✅              |
+| vim           | ✅  | ✅     |                 |
 | volta         | ✅  | ✅     |                 |
 | vscode        | ✅  | ✅     |                 |
-| watch         | ✅  | ✅     | ✅              |
+| watch         | ✅  |        | ✅              |
 
 
 # Plugins
