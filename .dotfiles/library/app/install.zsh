@@ -3,10 +3,10 @@
 
 #------------------------------------------------------------------------------
 #
-# Utility Functions
+# Utility Functions for App Installation
 #
 #
-# Version: 0.0.1
+# Version: 0.0.2
 # Last Modified: 2025-05-17
 #
 # - Dependency
@@ -19,8 +19,9 @@
 # ------------------------------------------------------------------------------
 
 
+# Installs 7z (p7zip) for file compression
 # Dependency: unzip
-function _dotfiles_install_7z(){
+function _dotfiles_install_7z() {
 
     if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
         install_apps "p7zip"
@@ -33,7 +34,8 @@ function _dotfiles_install_7z(){
 }
 
 
-function _dotfiles_install_alt-tab(){
+# Installs Alt-Tab (macOS only) for window switching
+function _dotfiles_install_alt-tab() {
 
     if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
         install_apps "alt-tab"
@@ -47,17 +49,16 @@ function _dotfiles_install_alt-tab(){
 }
 
 
-function _dotfiles_install_autoenv(){
+# Installs Autoenv by cloning its Git repository
+function _dotfiles_install_autoenv() {
 
     if [[ $DOTFILES_SYS_NAME == "mac" || $DOTFILES_SYS_NAME == "linux" ]]; then
 
         log_app_installation "autoenv" "start"
 
-        # home
         local _autoenv_home="$DOTFILES_XDG_CONFIG_DIR/autoenv"
         [[ -d $_autoenv_home ]] || mkdir -p $_autoenv_home
 
-        # install
         local _autoenv_git_dir="$_autoenv_home/autoenv.git"
         if [[ ! -d $_autoenv_git_dir ]]; then
             git clone https://github.com/hyperupcall/autoenv.git $_autoenv_git_dir
@@ -72,8 +73,9 @@ function _dotfiles_install_autoenv(){
 }
 
 
+# Installs AWS CLI, with manual download on Linux
 # Dependency: curl, unzip
-function _dotfiles_install_aws(){
+function _dotfiles_install_aws() {
 
     if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
         install_apps "awscli"
@@ -91,25 +93,20 @@ function _dotfiles_install_aws(){
         local _aws_home="$DOTFILES_XDG_CONFIG_DIR/aws"
         [[ -d $_aws_home ]] || mkdir -p $_aws_home
 
-        # clean up
-        if [[ -d "$_aws_home/aws" ]]; then
-            rm -r "$_aws_home/aws"
-        fi
-        if [[ -f "$_aws_home/awscliv2.zip" ]]; then
-            rm "$_aws_home/awscliv2.zip"
-        fi
-
         # download installer
+        [[ -d "$_aws_home/aws" ]] && rm -r "$_aws_home/aws"
+        [[ -f "$_aws_home/awscliv2.zip" ]] && rm -f "$_aws_home/awscliv2.zip"
+
         if [[ $DOTFILES_SYS_ARCHT == "arm64" ]]; then
             curl -fL "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "$_aws_home/awscliv2.zip" || {
                 log_app_installation "aws" "fail"
-                rm "$_aws_home/awscliv2.zip"
+                rm -f "$_aws_home/awscliv2.zip"
                 return 1
             }
         elif [[ $DOTFILES_SYS_ARCHT == "amd64" ]]; then
             curl -fL "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "$_aws_home/awscliv2.zip" || {
                 log_app_installation "aws" "fail"
-                rm "$_aws_home/awscliv2.zip"
+                rm -f "$_aws_home/awscliv2.zip"
                 return 1
             }
         else
@@ -118,7 +115,7 @@ function _dotfiles_install_aws(){
         fi
 
         # unzip and install
-        unzip "$_aws_home/awscliv2.zip" -d $_aws_home && rm "$_aws_home/awscliv2.zip"
+        unzip "$_aws_home/awscliv2.zip" -d $_aws_home && rm -f "$_aws_home/awscliv2.zip"
         sudo "$_aws_home/aws/install"
 
     else
@@ -127,7 +124,8 @@ function _dotfiles_install_aws(){
 }
 
 
-function _dotfiles_install_clojure(){
+# Installs Clojure programming language tools
+function _dotfiles_install_clojure() {
 
     if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
         install_apps "clojure/tools/clojure"
@@ -140,8 +138,9 @@ function _dotfiles_install_clojure(){
 }
 
 
+# Installs Docker, with manual setup on macOS and repository on Linux
 # Dependency: curl
-function _dotfiles_install_docker(){
+function _dotfiles_install_docker() {
 
     # skip if already installed
     if command_exists "docker"; then
@@ -151,7 +150,7 @@ function _dotfiles_install_docker(){
 
     # check if system archt is supported
     if [[ $DOTFILES_SYS_ARCHT != "arm64" && $DOTFILES_SYS_ARCHT != "amd64" ]]; then
-        log_app_installation "aws" "sys-archt-unknown"
+        log_app_installation "docker" "sys-archt-unknown"
         return 2
     fi
 
@@ -169,7 +168,7 @@ function _dotfiles_install_docker(){
 
         # clean up
         sudo hdiutil detach /Volumes/Docker
-        rm Docker.dmg
+        rm -f Docker.dmg
 
         # ----- docker-buildx
         brew install docker-buildx
@@ -179,7 +178,7 @@ function _dotfiles_install_docker(){
         log_app_installation "docker" "start"
 
         curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > "/dev/null"
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
         sudo apt-get update && sudo_apt_install docker-ce docker-ce-cli containerd.io
 
     else
@@ -189,6 +188,7 @@ function _dotfiles_install_docker(){
 }
 
 
+# Installs Elasticsearch, with tarball on macOS and repository on Linux
 # Dependency: wget and curl
 function _dotfiles_install_elasticsearch() {
 
@@ -210,18 +210,15 @@ function _dotfiles_install_elasticsearch() {
         local _es_version=$(get_github_release_latest_version 'elastic' 'elasticsearch')
         local _es_zip_file_name="elasticsearch-$_es_version-darwin-x86_64.tar.gz"
 
-        # clean up
-        if [[ -d "$_es_home/es" ]]; then
-            rm -r "$_es_home/es"
-        fi
-
         # download, verify, and extract
+        [[ -d "$_es_home/es" ]] && rm -r "$_es_home/es"
+
         curl -O "https://artifacts.elastic.co/downloads/elasticsearch/$_es_zip_file_name"
         curl "https://artifacts.elastic.co/downloads/elasticsearch/$_es_zip_file_name.sha512" | shasum -a 512 -c -
         mkdir "$_es_home/es" && tar -xzf "$_es_zip_file_name" -C "$_es_home/es" --strip-components 1
 
         # Clean up
-        rm $_es_zip_file_name
+        rm -f "$_es_zip_file_name"
 
     elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
 
@@ -250,7 +247,8 @@ function _dotfiles_install_elasticsearch() {
 }
 
 
-function _dotfiles_install_emacs(){
+# Installs Emacs text editor
+function _dotfiles_install_emacs() {
 
     if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
 
@@ -267,7 +265,7 @@ function _dotfiles_install_emacs(){
         brew install emacs-plus
 
     elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
-        install_apps emacs
+        install_apps "emacs"
     else
         log_app_installation "emacs" "sys-name-unknown"
         return 2
@@ -275,8 +273,9 @@ function _dotfiles_install_emacs(){
 }
 
 
+# Installs Google Cloud SDK
 # Dependency: curl
-function _dotfiles_install_gcp(){
+function _dotfiles_install_gcp() {
 
     # skip if already installed
     if command_exists "gcloud"; then
@@ -296,6 +295,7 @@ function _dotfiles_install_gcp(){
         # brew install --cask google-cloud-sdk
         curl -fL https://sdk.cloud.google.com > "$_gcp_home/install.sh"
         bash "$_gcp_home/install.sh" --disable-prompts --install-dir=$_gcp_home
+        rm -f "$_gcp_home/install.sh"
 
     else
         log_app_installation "gcp" "sys-name-unknown"
@@ -304,12 +304,13 @@ function _dotfiles_install_gcp(){
 }
 
 
-function _dotfiles_install_golang(){
+# Installs Go programming language
+function _dotfiles_install_golang() {
 
     if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
-        install_apps go
+        install_apps "go"
     elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
-        install_apps golang
+        install_apps "golang"
     else
         log_app_installation "golang" "sys-name-unknown"
         return 2
@@ -317,7 +318,8 @@ function _dotfiles_install_golang(){
 }
 
 
-function _dotfiles_install_htop(){
+# Installs htop system-monitoring tool
+function _dotfiles_install_htop() {
 
     if [[ $DOTFILES_SYS_NAME == "mac" || $DOTFILES_SYS_NAME == "linux" ]]; then
         install_apps htop
@@ -328,7 +330,8 @@ function _dotfiles_install_htop(){
 }
 
 
-function _dotfiles_install_iterm(){
+# Installs iTerm2 (macOS only) terminal emulator
+function _dotfiles_install_iterm() {
 
     if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
 
@@ -352,13 +355,14 @@ function _dotfiles_install_iterm(){
 }
 
 
-function _dotfiles_install_jdk(){
+# Installs Java Development Kit (JDK)
+function _dotfiles_install_jdk() {
 
     if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
         # brew install --cask oracle-jdk
-        install_apps openjdk
+        install_apps "openjdk"
     elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
-        install_apps default-jdk
+        install_apps "default-jdk"
     else
         log_app_installation "jdk" "sys-name-unknown"
         return 2
@@ -366,7 +370,8 @@ function _dotfiles_install_jdk(){
 }
 
 
-function _dotfiles_install_keyd(){
+# Installs keyd (Linux only) for keyboard remapping
+function _dotfiles_install_keyd() {
 
     if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
         log_app_installation "keyd" "sys-name-not-supported"
@@ -401,8 +406,9 @@ function _dotfiles_install_keyd(){
 }
 
 
+# Installs Kubernetes CLI (kubectl)
 # Dependency: curl
-function _dotfiles_install_kube(){
+function _dotfiles_install_kube() {
 
     if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
         install_apps "kubectl"
@@ -416,7 +422,7 @@ function _dotfiles_install_kube(){
 
         # check if system archt is supported
         if [[ $DOTFILES_SYS_ARCHT != "arm64" && $DOTFILES_SYS_ARCHT != "amd64" ]]; then
-            log_app_installation "aws" "sys-archt-unknown"
+            log_app_installation "kube" "sys-archt-unknown"
             return 2
         fi
 
@@ -425,7 +431,7 @@ function _dotfiles_install_kube(){
 
         curl -fLO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/$DOTFILES_SYS_ARCHT/kubectl"
         sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-        rm kubectl
+        rm -f kubectl
 
     else
         log_app_installation "kube" "sys-name-unknown"
@@ -434,8 +440,9 @@ function _dotfiles_install_kube(){
 }
 
 
+# Installs Meilisearch search engine
 # Dependency: curl
-function _dotfiles_install_meilisearch(){
+function _dotfiles_install_meilisearch() {
 
     if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
         install_apps "meilisearch"
@@ -452,7 +459,7 @@ function _dotfiles_install_meilisearch(){
 
         curl -L https://install.meilisearch.com | sh
         sudo install -o root -g root -m 0755 meilisearch /usr/local/bin/meilisearch
-        rm meilisearch
+        rm -f meilisearch
 
     else
         log_app_installation "meilisearch" "sys-name-unknown"
@@ -461,16 +468,17 @@ function _dotfiles_install_meilisearch(){
 }
 
 
+# Installs nvtop GPU monitoring tool
 # Dependency: cmake and make
-function _dotfiles_install_nvtop(){
+function _dotfiles_install_nvtop() {
+
+    # skip if already installed
+    if command_exists "nvtop"; then
+        log_app_installation "nvtop" "skip"
+        return 0
+    fi
 
     if [[ $DOTFILES_SYS_NAME == "mac" || $DOTFILES_SYS_NAME == "linux" ]]; then
-
-        # skip if already installed
-        if command_exists "nvtop"; then
-            log_app_installation "nvtop" "skip"
-            return 0
-        fi
 
         # install
         # sudo apt-get install nvtop
@@ -482,11 +490,9 @@ function _dotfiles_install_nvtop(){
 
         # check if exist
         local _nvtop_git_dir="$_nvtop_home/nvtop.git"
-        if [[ ! -d "$_nvtop_git_dir" ]]; then
+        if [[ ! -d $_nvtop_git_dir ]]; then
 
             log_app_installation "nvtop" "start"
-
-            local _oldpwd=$PWD
 
             # download, build and install
             git clone https://github.com/Syllo/nvtop.git $_nvtop_git_dir
@@ -494,7 +500,7 @@ function _dotfiles_install_nvtop(){
             cmake .. -DAPPLE_SUPPORT=ON
             make && sudo make install
 
-            cd $_oldpwd
+            cd -
         fi
 
     else
@@ -504,8 +510,9 @@ function _dotfiles_install_nvtop(){
 }
 
 
+# Installs nvitop (Linux only) GPU monitoring tool via pip
 # Dependency: nvidia-smi and pip
-function _dotfiles_install_nvitop(){
+function _dotfiles_install_nvitop() {
 
     if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
         log_app_installation "nvitop" "sys-name-not-supported"
@@ -519,11 +526,13 @@ function _dotfiles_install_nvitop(){
         fi
 
         # check dependency
-        if { ! command_exists nvidia-smi } || { ! command_exists pip }; then
+        if { ! command_exists "nvidia-smi" } || { ! command_exists "pip" }; then
             log_app_installation "nvitop" "dependency-missing"
+            return 1
         fi
 
         # install with pip
+        log_app_installation "nvitop" "start"
         pip install nvitop
 
     else
@@ -533,7 +542,8 @@ function _dotfiles_install_nvitop(){
 }
 
 
-function _dotfiles_install_openvpn(){
+# Installs OpenVPN for virtual private networking
+function _dotfiles_install_openvpn() {
 
     if [[ $DOTFILES_SYS_NAME == "mac" || $DOTFILES_SYS_NAME == "linux" ]]; then
         install_apps "openvpn"
@@ -545,6 +555,7 @@ function _dotfiles_install_openvpn(){
 }
 
 
+# Installs Python and upgrades pip
 function _dotfiles_install_python(){
 
     if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
@@ -559,6 +570,7 @@ function _dotfiles_install_python(){
 }
 
 
+# Installs pyenv for Python version management
 function _dotfiles_install_pyenv() {
 
     # skip if already installed
@@ -598,6 +610,7 @@ function _dotfiles_install_pyenv() {
 }
 
 
+# Installs Subversion (SVN) version control
 function _dotfiles_install_svn() {
 
     if [[ $DOTFILES_SYS_NAME == "mac" || $DOTFILES_SYS_NAME == "linux" ]]; then
@@ -609,6 +622,7 @@ function _dotfiles_install_svn() {
 }
 
 
+# Installs tmux terminal multiplexer
 function _dotfiles_install_tmux() {
 
     if [[ $DOTFILES_SYS_NAME == "mac" || $DOTFILES_SYS_NAME == "linux" ]]; then
@@ -620,6 +634,7 @@ function _dotfiles_install_tmux() {
 }
 
 
+# Installs tree command for directory listing
 function _dotfiles_install_tree() {
 
     if [[ $DOTFILES_SYS_NAME == "mac" || $DOTFILES_SYS_NAME == "linux" ]]; then
@@ -631,6 +646,7 @@ function _dotfiles_install_tree() {
 }
 
 
+# Installs Vim text editor
 function _dotfiles_install_vim() {
 
     if [[ $DOTFILES_SYS_NAME == "mac" || $DOTFILES_SYS_NAME == "linux" ]]; then
@@ -642,16 +658,17 @@ function _dotfiles_install_vim() {
 }
 
 
+# Installs Volta for Node.js version management
 # Dependency: curl
 function _dotfiles_install_volta() {
 
-    if [[ $DOTFILES_SYS_NAME == "mac" || $DOTFILES_SYS_NAME == "linux" ]]; then
+    # skip if already installed
+    if command_exists "volta"; then
+        log_app_installation "volta" "skip"
+        return 0
+    fi
 
-        # skip if already installed
-        if command_exists "volta"; then
-            log_app_installation "volta" "skip"
-            return 0
-        fi
+    if [[ $DOTFILES_SYS_NAME == "mac" || $DOTFILES_SYS_NAME == "linux" ]]; then
 
         log_app_installation "volta" "start"
 
@@ -677,6 +694,7 @@ function _dotfiles_install_volta() {
 }
 
 
+# Installs Visual Studio Code editor
 # Dependency: wget
 function _dotfiles_install_vscode() {
 
@@ -726,6 +744,7 @@ function _dotfiles_install_vscode() {
 }
 
 
+# Installs watch command (macOS only) for running commands periodically
 function _dotfiles_install_watch() {
 
     if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
