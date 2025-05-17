@@ -14,7 +14,7 @@
 #     - .dotfiles/env/color.env
 #
 #   - Environment Variable
-#     - DOTFILES_SYS_ARCHT
+#     - DOTFILES_SYS_NAME
 #     - DOTFILES_APP_ASC_ARR
 #     - DOTFILES_PLUGIN_ASC_ARR
 #
@@ -27,6 +27,7 @@
 #
 # - Dependency
 #   - Environment Variable
+#     - DOTFILES_SYS_NAME
 #     - DOTFILES_SYS_ARCHT
 #     - DOTFILES_APP_ASC_ARR
 #
@@ -48,6 +49,21 @@ function log_app_installation() {
 
         "skip")
             dotfiles_logging "Skip \"$1\" installation as it is already installed." "info" ;;
+
+        "fail")
+            dotfiles_logging "Failed \"$1\" installation." "error" ;;
+
+        "sys-archt-unknown")
+            dotfiles_logging "\"$1\" not installed. Unknown system architecture DOTFILES_SYS_ARCHT (${DOTFILES_SYS_ARCHT})." "error" ;;
+
+        "sys-name-not-supported")
+            dotfiles_logging "\"$1\" not installed. \"$1\" is not supported for '$DOTFILES_SYS_NAME'." "warn" ;;
+
+        "sys-name-unknown")
+            dotfiles_logging "\"$1\" not installed. Unknown system name DOTFILES_SYS_NAME (${DOTFILES_SYS_NAME})." "error" ;;
+
+        "dependency-missing")
+            dotfiles_logging "\"$1\" not installed. Dependency missing." "error" ;;
 
         *)
             echo 'log_app_installation: Print app installation message'
@@ -71,14 +87,14 @@ function is_app_installed() {
     fi
 
     # Check if an app is installed using dpkg-query (linux) or brew (mac)
-    case $DOTFILES_SYS_ARCHT in
+    case $DOTFILES_SYS_NAME in
 
         "linux")
             dpkg-query -s "$_app_name" &>/dev/null ;;
         "mac")
             brew list "$_app_name" --quiet &>/dev/null ;;
         *)
-            dotfiles_logging "Unknown system architecture '${DOTFILES_SYS_ARCHT}' determined from DOTFILES_SYS_ARCHT." "error"
+            log_app_installation "$_in_app" 'sys-name-unknown'
             return 2 ;;
     esac
 
@@ -150,7 +166,7 @@ function install_apps() {
         fi
 
         # Install app
-        case $DOTFILES_SYS_ARCHT in
+        case $DOTFILES_SYS_NAME in
 
             "linux")
                 log_app_installation "$_in_app" 'start'
@@ -159,7 +175,7 @@ function install_apps() {
                 log_app_installation "$_in_app" 'start'
                 brew install "$_in_app" ;;
             *)
-                dotfiles_logging "Unknown system architecture '${DOTFILES_SYS_ARCHT}' determined from DOTFILES_SYS_ARCHT." "error"
+                log_app_installation "$_in_app" 'sys-name-unknown'
                 return 2 ;;
         esac
     done
