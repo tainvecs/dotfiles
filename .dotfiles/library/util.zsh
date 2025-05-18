@@ -197,7 +197,7 @@ function install_apps() {
                     log_app_installation "$_in_app" "update"
 
                     if sudo apt install --only-upgrade "$_in_app"; then
-                        dotfiles_logging "Successfully updated $_in_app." "info"
+                        log_app_installation "$_in_app" "success"
                     else
                         log_app_installation "$_in_app" "fail"
                     fi
@@ -214,7 +214,7 @@ function install_apps() {
                     log_app_installation "$_in_app" "start"
 
                     if brew install "$_in_app"; then
-                        dotfiles_logging "Successfully installed $_in_app." "info"
+                        log_app_installation "$_in_app" "success"
                     else
                         log_app_installation "$_in_app" "fail"
                     fi
@@ -224,7 +224,7 @@ function install_apps() {
                     log_app_installation "$_in_app" "update"
 
                     if brew upgrade "$_in_app"; then
-                        dotfiles_logging "Successfully updated $_in_app." "info"
+                        log_app_installation "$_in_app" "success"
                     else
                         log_app_installation "$_in_app" "fail"
                     fi
