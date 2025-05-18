@@ -78,7 +78,7 @@ function log_app_installation() {
 
         *)
             echo "log_app_installation: Invalid status code \"$status\""
-            echo 'Usage: log_app_installation <app_name> <status>'
+            echo "Usage: log_app_installation <app_name> <status>"
             echo -n '  <status> should be one of: "start", "skip", "fail", "success",'
             echo '"sys-archt-unknown", "sys-name-not-supported", "sys-name-unknown", "dependency-missing"' ;;
     esac
@@ -106,7 +106,7 @@ function is_app_installed() {
         "mac")
             brew list "$_app_name" --quiet &>/dev/null ;;
         *)
-            log_app_installation "$_in_app" 'sys-name-unknown'
+            log_app_installation "$_in_app" "sys-name-unknown"
             return 2 ;;
     esac
 
@@ -184,26 +184,26 @@ function install_apps() {
 
                 if ! {command_exists "$_in_app" || is_app_installed "$_in_app"}; then
 
-                    log_app_installation "$_in_app" 'start'
+                    log_app_installation "$_in_app" "start"
 
                     if sudo apt-get install --no-install-recommends --no-install-suggests -y "$_in_app"; then
-                        log_app_installation "$_in_app" 'success'
+                        log_app_installation "$_in_app" "success"
                     else
-                        log_app_installation "$_in_app" 'fail'
+                        log_app_installation "$_in_app" "fail"
                     fi
 
                 elif $update_flag; then
 
-                    log_app_installation "$_in_app" 'update'
+                    log_app_installation "$_in_app" "update"
 
                     if sudo apt install --only-upgrade "$_in_app"; then
                         dotfiles_logging "Successfully updated $_in_app." "info"
                     else
-                        log_app_installation "$_in_app" 'fail'
+                        log_app_installation "$_in_app" "fail"
                     fi
 
                 else
-                    log_app_installation "$_in_app" 'skip'
+                    log_app_installation "$_in_app" "skip"
                     continue
                 fi ;;
 
@@ -211,31 +211,31 @@ function install_apps() {
 
                 if ! {command_exists "$_in_app" || is_app_installed "$_in_app"}; then
 
-                    log_app_installation "$_in_app" 'start'
+                    log_app_installation "$_in_app" "start"
 
                     if brew install "$_in_app"; then
                         dotfiles_logging "Successfully installed $_in_app." "info"
                     else
-                        log_app_installation "$_in_app" 'fail'
+                        log_app_installation "$_in_app" "fail"
                     fi
 
                 elif $update_flag; then
 
-                    log_app_installation "$_in_app" 'update'
+                    log_app_installation "$_in_app" "update"
 
                     if brew upgrade "$_in_app"; then
                         dotfiles_logging "Successfully updated $_in_app." "info"
                     else
-                        log_app_installation "$_in_app" 'fail'
+                        log_app_installation "$_in_app" "fail"
                     fi
 
                 else
-                    log_app_installation "$_in_app" 'skip'
+                    log_app_installation "$_in_app" "skip"
                     continue
                 fi ;;
 
             *)
-                log_app_installation "$_in_app" 'sys-name-unknown'
+                log_app_installation "$_in_app" "sys-name-unknown"
                 return 2 ;;
         esac
     done
@@ -349,7 +349,7 @@ function dotfiles_logging() {
         _log_message=$1
     else
         _log_message="Function(dotfiles_logging) \$1(message) is not set"
-        _log_level='error'
+        _log_level="error"
     fi
 
     if [[ -n $_log_level ]]; then
@@ -357,19 +357,19 @@ function dotfiles_logging() {
     elif [[ -n $2 ]]; then
         _log_level=$2
     else
-        _log_level='info'
+        _log_level="info"
     fi
 
     # log message
     case $_log_level in
 
-        'error')
+        "error")
             echo -e "${B_RED}Error: $_log_message ${COLOR_OFF}" >&2;;
 
-        'warn')
+        "warn")
             echo -e "${B_YELLOW}Warn: $_log_message ${COLOR_OFF}" >&2;;
 
-        'info')
+        "info")
             echo -e "${B_GREEN}Info: $_log_message ${COLOR_OFF}";;
 
         *)
