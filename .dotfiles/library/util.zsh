@@ -6,8 +6,8 @@
 # Utility Functions
 #
 #
-# Version: 0.0.6
-# Last Modified: 2025-05-12
+# Version: 0.0.7
+# Last Modified: 2025-05-18
 #
 # - Dependency
 #   - Environment Variable File
@@ -15,6 +15,7 @@
 #
 #   - Environment Variable
 #     - DOTFILES_SYS_NAME
+#     - DOTFILES_SYS_ARCHT
 #     - DOTFILES_APP_ASC_ARR
 #     - DOTFILES_PLUGIN_ASC_ARR
 #
@@ -39,36 +40,47 @@
 
 # Print app installation message
 # $1: package name
-# $2: function code ("start", "skip")
+# $2: function code ("start", "skip", "fail", "success",
+#                    "sys-archt-unknown", "sys-name-not-supported",
+#                    "sys-name-unknown", "dependency-missing")
 function log_app_installation() {
 
-    case $2 in
+    local app_name=$1
+    local status=$2
 
+    case $status in
         "start")
-            dotfiles_logging "Start \"$1\" installation." "info" ;;
+            dotfiles_logging "Start \"$app_name\" installation." "info" ;;
 
         "skip")
-            dotfiles_logging "Skip \"$1\" installation as it is already installed." "info" ;;
+            dotfiles_logging "Skip \"$app_name\" installation as it is already installed." "info" ;;
+
+        "update")
+            dotfiles_logging "\"$app_name\" is already installed. Checking for update." "info" ;;
 
         "fail")
-            dotfiles_logging "Failed \"$1\" installation." "error" ;;
+            dotfiles_logging "Failed to install/update \"$app_name\"." "error" ;;
+
+        "success")
+            dotfiles_logging "Successfully installed/updated \"$app_name\"." "info" ;;
 
         "sys-archt-unknown")
-            dotfiles_logging "\"$1\" not installed. Unknown system architecture DOTFILES_SYS_ARCHT (${DOTFILES_SYS_ARCHT})." "error" ;;
+            dotfiles_logging "\"$app_name\" not installed. Unknown system architecture DOTFILES_SYS_ARCHT (${DOTFILES_SYS_ARCHT})." "error" ;;
 
         "sys-name-not-supported")
-            dotfiles_logging "\"$1\" not installed. \"$1\" is not supported for '$DOTFILES_SYS_NAME'." "warn" ;;
+            dotfiles_logging "\"$app_name\" not installed. \"$app_name\" is not supported for '$DOTFILES_SYS_NAME'." "warn" ;;
 
         "sys-name-unknown")
-            dotfiles_logging "\"$1\" not installed. Unknown system name DOTFILES_SYS_NAME (${DOTFILES_SYS_NAME})." "error" ;;
+            dotfiles_logging "\"$app_name\" not installed. Unknown system name DOTFILES_SYS_NAME (${DOTFILES_SYS_NAME})." "error" ;;
 
         "dependency-missing")
-            dotfiles_logging "\"$1\" not installed. Dependency missing." "error" ;;
+            dotfiles_logging "\"$app_name\" not installed. Dependency missing." "error" ;;
 
         *)
-            echo 'log_app_installation: Print app installation message'
-            echo '  $1: package name'
-            echo '  $2: function code ("start", "skip")' ;;
+            echo "log_app_installation: Invalid status code \"$status\""
+            echo 'Usage: log_app_installation <app_name> <status>'
+            echo -n '  <status> should be one of: "start", "skip", "fail", "success",'
+            echo '"sys-archt-unknown", "sys-name-not-supported", "sys-name-unknown", "dependency-missing"' ;;
     esac
 }
 
@@ -156,24 +168,72 @@ function install_apps() {
         return 2
     fi
 
+    # Check for --update flag
+    local update_flag=false
+    if [[ "$1" == "--update" ]]; then
+        update_flag=true
+        shift
+    fi
+
     # Install app(s) with apt (linux) or brew (mac)
     for _in_app in "$@"; do
 
-        # Skip if already installed
-        if command_exists "$_in_app" || is_app_installed "$_in_app"; then
-            log_app_installation "$_in_app" 'skip'
-            continue
-        fi
-
-        # Install app
         case $DOTFILES_SYS_NAME in
 
             "linux")
-                log_app_installation "$_in_app" 'start'
-                sudo apt-get install --no-install-recommends --no-install-suggests -y "$_in_app" ;;
+
+                if ! {command_exists "$_in_app" || is_app_installed "$_in_app"}; then
+
+                    log_app_installation "$_in_app" 'start'
+
+                    if sudo apt-get install --no-install-recommends --no-install-suggests -y "$_in_app"; then
+                        log_app_installation "$_in_app" 'success'
+                    else
+                        log_app_installation "$_in_app" 'fail'
+                    fi
+
+                elif $update_flag; then
+
+                    log_app_installation "$_in_app" 'update'
+
+                    if sudo apt install --only-upgrade "$_in_app"; then
+                        dotfiles_logging "Successfully updated $_in_app." "info"
+                    else
+                        log_app_installation "$_in_app" 'fail'
+                    fi
+
+                else
+                    log_app_installation "$_in_app" 'skip'
+                    continue
+                fi ;;
+
             "mac")
-                log_app_installation "$_in_app" 'start'
-                brew install "$_in_app" ;;
+
+                if ! {command_exists "$_in_app" || is_app_installed "$_in_app"}; then
+
+                    log_app_installation "$_in_app" 'start'
+
+                    if brew install "$_in_app"; then
+                        dotfiles_logging "Successfully installed $_in_app." "info"
+                    else
+                        log_app_installation "$_in_app" 'fail'
+                    fi
+
+                elif $update_flag; then
+
+                    log_app_installation "$_in_app" 'update'
+
+                    if brew upgrade "$_in_app"; then
+                        dotfiles_logging "Successfully updated $_in_app." "info"
+                    else
+                        log_app_installation "$_in_app" 'fail'
+                    fi
+
+                else
+                    log_app_installation "$_in_app" 'skip'
+                    continue
+                fi ;;
+
             *)
                 log_app_installation "$_in_app" 'sys-name-unknown'
                 return 2 ;;
@@ -350,7 +410,15 @@ function join_by { local IFS="$1"; shift; echo "$*"; }
 
 
 # ------------------------------------------------------------------------------
+#
 # System
+#
+# - Dependency
+#   - Environment Variable
+#     - DOTFILES_SYS_NAME
+#     - DOTFILES_SYS_ARCHT
+#     - DOTFILES_APP_ASC_ARR
+#
 # ------------------------------------------------------------------------------
 
 
@@ -372,6 +440,11 @@ function get_system_name() {
 }
 
 
+function is_supported_system_name() {
+    [[ $DOTFILES_SYS_NAME == "mac" || $DOTFILES_SYS_NAME == "linux" ]]
+}
+
+
 function get_system_architecture() {
 
     local archt=$(uname -m)
@@ -390,4 +463,9 @@ function get_system_architecture() {
         *)
             echo "unknown($archt)" ;;
     esac
+}
+
+
+function is_supported_system_archt() {
+    [[ $DOTFILES_SYS_ARCHT == "amd64" || $DOTFILES_SYS_ARCHT == "arm64" ]]
 }
