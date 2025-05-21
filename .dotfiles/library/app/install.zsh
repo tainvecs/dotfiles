@@ -6,10 +6,12 @@
 # Utility Functions for App Installation
 #
 #
-# Version: 0.0.2
-# Last Modified: 2025-05-17
+# Version: 0.0.3
+# Last Modified: 2025-05-21
 #
 # - Dependency
+#   - Environment Variable File
+#     - .dotfiles/env/misc.env
 #   - Environment Variable
 #     - DOTFILES_SYS_NAME
 #     - DOTFILES_SYS_ARCHT
@@ -23,13 +25,32 @@
 # Dependency: unzip
 function _dotfiles_install_7z() {
 
+    # sanity check
+    if ! is_supported_system_name; then
+        log_app_installation "7z" "sys-name-not-supported"
+        return $RC_UNSUPPORTED
+    fi
+    if ! command_exists "unzip"; then
+        log_app_installation "7z" "dependency-missing"
+        return $RC_DEPENDENCY_MISSING
+    fi
+
+    # install or update
     if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
-        install_apps "p7zip"
+
+        if ! command_exists "7z"; then
+            install_apps "p7zip"
+        else
+            install_apps --update "p7zip"
+        fi
+
     elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
-        install_apps "p7zip-full"
-    else
-        log_app_installation "7z" "sys-name-unknown"
-        return 2
+
+        if ! command_exists "7z"; then
+            install_apps "p7zip-full"
+        else
+            install_apps --update "p7zip-full"
+        fi
     fi
 }
 
@@ -37,14 +58,17 @@ function _dotfiles_install_7z() {
 # Installs Alt-Tab (macOS only) for window switching
 function _dotfiles_install_alt-tab() {
 
-    if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
-        install_apps "alt-tab"
-    elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
+    # sanity check
+    if [[ $DOTFILES_SYS_NAME != "mac" ]]; then
         log_app_installation "alt-tab" "sys-name-not-supported"
-        return 2
+        return $RC_UNSUPPORTED
+    fi
+
+    # install or update
+    if ! is_app_installed "alt-tab"; then
+        install_apps "alt-tab"
     else
-        log_app_installation "alt-tab" "sys-name-unknown"
-        return 2
+        install_apps --update "alt-tab"
     fi
 }
 
@@ -52,23 +76,30 @@ function _dotfiles_install_alt-tab() {
 # Installs Autoenv by cloning its Git repository
 function _dotfiles_install_autoenv() {
 
-    if [[ $DOTFILES_SYS_NAME == "mac" || $DOTFILES_SYS_NAME == "linux" ]]; then
+    # sanity check
+    if ! is_supported_system_name; then
+        log_app_installation "autoenv" "sys-name-not-supported"
+        return $RC_UNSUPPORTED
+    fi
 
-        log_app_installation "autoenv" "start"
+    # install or update
+    local _autoenv_home="$DOTFILES_XDG_CONFIG_DIR/autoenv"
+    [[ -d $_autoenv_home ]] || mkdir -p $_autoenv_home
 
-        local _autoenv_home="$DOTFILES_XDG_CONFIG_DIR/autoenv"
-        [[ -d $_autoenv_home ]] || mkdir -p $_autoenv_home
-
-        local _autoenv_git_dir="$_autoenv_home/autoenv.git"
-        if [[ ! -d $_autoenv_git_dir ]]; then
-            git clone https://github.com/hyperupcall/autoenv.git $_autoenv_git_dir
-        else
-            git -C $_autoenv_git_dir pull
-        fi
-
+    local _autoenv_git_dir="$_autoenv_home/autoenv.git"
+    if [[ ! -d $_autoenv_git_dir ]]; then
+        log_app_installation "autoenv" "install"
+        git clone https://github.com/hyperupcall/autoenv.git $_autoenv_git_dir
     else
-        log_app_installation "autoenv" "sys-name-unknown"
-        return 2
+        log_app_installation "autoenv" "update"
+        git -C $_autoenv_git_dir pull
+    fi
+
+    if [[ $? -eq 0 ]]; then
+        log_app_installation "autoenv" "success"
+    else
+        log_app_installation "autoenv" "fail"
+        return $RC_ERROR
     fi
 }
 
@@ -77,17 +108,30 @@ function _dotfiles_install_autoenv() {
 # Dependency: curl, unzip
 function _dotfiles_install_aws() {
 
-    if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
-        install_apps "awscli"
-    elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
+    # sanity check
+    if ! is_supported_system_name; then
+        log_app_installation "aws" "sys-name-not-supported"
+        return $RC_UNSUPPORTED
+    fi
+    if ! is_supported_system_archt; then
+        log_app_installation "aws" "sys-archt-not-supported"
+        return $RC_UNSUPPORTED
+    fi
+    if ! command_exists "curl" || ! command_exists "unzip"; then
+        log_app_installation "aws" "dependency-missing"
+        return $RC_DEPENDENCY_MISSING
+    fi
 
-        # skip if already installed
-        if command_exists "aws"; then
-            log_app_installation "aws" "skip"
-            return 0
+    # install or update
+    if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
+
+        if ! command_exists "aws"; then
+            install_apps "awscli"
+        else
+            install_apps --update "awscli"
         fi
 
-        log_app_installation "aws" "start"
+    elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
 
         # home
         local _aws_home="$DOTFILES_XDG_CONFIG_DIR/aws"
@@ -101,25 +145,32 @@ function _dotfiles_install_aws() {
             curl -fL "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "$_aws_home/awscliv2.zip" || {
                 log_app_installation "aws" "fail"
                 rm -f "$_aws_home/awscliv2.zip"
-                return 1
+                return $RC_ERROR
             }
         elif [[ $DOTFILES_SYS_ARCHT == "amd64" ]]; then
             curl -fL "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "$_aws_home/awscliv2.zip" || {
                 log_app_installation "aws" "fail"
                 rm -f "$_aws_home/awscliv2.zip"
-                return 1
+                return $RC_ERROR
             }
+        fi
+        unzip "$_aws_home/awscliv2.zip" -d $_aws_home && rm -f "$_aws_home/awscliv2.zip"
+
+        # install or update
+        if ! command_exists "aws"; then
+            log_app_installation "aws" "install"
+            sudo "$_aws_home/aws/install"
         else
-            log_app_installation "aws" "sys-archt-unknown"
-            return 2
+            log_app_installation "aws" "update"
+            sudo "$_aws_home/aws/install" --update
         fi
 
-        # unzip and install
-        unzip "$_aws_home/awscliv2.zip" -d $_aws_home && rm -f "$_aws_home/awscliv2.zip"
-        sudo "$_aws_home/aws/install"
-
-    else
-        log_app_installation "aws" "sys-name-unknown"
+        if [[ $? -eq 0 ]]; then
+            log_app_installation "aws" "success"
+        else
+            log_app_installation "aws" "fail"
+            return $RC_ERROR
+        fi
     fi
 }
 
@@ -127,13 +178,24 @@ function _dotfiles_install_aws() {
 # Installs Clojure programming language tools
 function _dotfiles_install_clojure() {
 
+    # sanity check
+    if ! is_supported_system_name; then
+        log_app_installation "clojure" "sys-name-not-supported"
+        return $RC_UNSUPPORTED
+    fi
+
+    # install or update
+    local _clojure_app_name
     if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
-        install_apps "clojure/tools/clojure"
+        _clojure_app_name="clojure/tools/clojure"
     elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
-        install_apps "clojure"
+        _clojure_app_name="clojure"
+    fi
+
+    if ! command_exists "clojure"; then
+        install_apps "$_clojure_app_name"
     else
-        log_app_installation "clojure" "sys-name-unknown"
-        return 2
+        install_apps --update "$_clojure_app_name"
     fi
 }
 
@@ -142,133 +204,146 @@ function _dotfiles_install_clojure() {
 # Dependency: curl
 function _dotfiles_install_docker() {
 
-    # skip if already installed
-    if command_exists "docker"; then
-        log_app_installation "docker" "skip"
-        return 0
+    # sanity check
+    if ! is_supported_system_name; then
+        log_app_installation "docker" "sys-name-not-supported"
+        return $RC_UNSUPPORTED
     fi
-
-    # check if system archt is supported
-    if [[ $DOTFILES_SYS_ARCHT != "arm64" && $DOTFILES_SYS_ARCHT != "amd64" ]]; then
-        log_app_installation "docker" "sys-archt-unknown"
-        return 2
+    if ! is_supported_system_archt; then
+        log_app_installation "autoenv" "sys-archt-not-supported"
+        return $RC_UNSUPPORTED
+    fi
+    if ! command_exists "curl"; then
+        log_app_installation "docker" "dependency-missing"
+        return $RC_DEPENDENCY_MISSING
     fi
 
     if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
 
-        log_app_installation "docker" "start"
-
-        # ----- docker
-        # download
-        curl -O "https://desktop.docker.com/mac/main/$DOTFILES_SYS_ARCHT/Docker.dmg?utm_source=docker&utm_medium=webreferral&utm_campaign=docs-driven-download-mac-$DOTFILES_SYS_ARCHT"
+        # skip
+        if command_exists "docker"; then
+            log_app_installation "docker" "skip"
+            return $RC_SUCCESS
+        fi
 
         # install
+        log_app_installation "docker" "install"
+        local _install_status
+
+        # ----- docker
+        curl -O "https://desktop.docker.com/mac/main/$DOTFILES_SYS_ARCHT/Docker.dmg?utm_source=docker&utm_medium=webreferral&utm_campaign=docs-driven-download-mac-$DOTFILES_SYS_ARCHT"
+
         sudo hdiutil attach Docker.dmg
         sudo /Volumes/Docker/Docker.app/Contents/MacOS/install
-
-        # clean up
+        _install_status=$?
         sudo hdiutil detach /Volumes/Docker
         rm -f Docker.dmg
 
+        if [[ $_install_status -ne $RC_SUCCESS ]]; then
+            log_app_installation "docker" "fail"
+            return $RC_ERROR
+        fi
+
         # ----- docker-buildx
-        brew install docker-buildx
+        brew install docker-buildx || {
+            log_app_installation "docker" "fail"
+            _install_status=$RC_ERROR
+            return $RC_ERROR
+        }
+
+        [[ $_install_status -eq $RC_SUCCESS ]] && log_app_installation "docker" "success"
 
     elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
 
-        log_app_installation "docker" "start"
-
         curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
         echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-        sudo apt-get update && sudo_apt_install docker-ce docker-ce-cli containerd.io
+        sudo apt-get update
 
-    else
-        log_app_installation "docker" "sys-name-unknown"
-        return 2
+        if ! command_exists "docker"; then
+            install_apps "docker-ce docker-ce-cli containerd.io"
+        else
+            install_apps --update "docker-ce docker-ce-cli containerd.io"
+        fi
     fi
 }
 
 
 # Installs Elasticsearch, with tarball on macOS and repository on Linux
-# Dependency: wget and curl
+# Dependency: curl
 function _dotfiles_install_elasticsearch() {
 
-    # skip if already installed
-    if command_exists "elasticsearch"; then
+    # skip
+    if is_app_installed "elasticsearch"; then
         log_app_installation "elasticsearch" "skip"
-        return 0
+        return $RC_SUCCESS
     fi
 
+    # sanity check
+    if ! is_supported_system_name; then
+        log_app_installation "elasticsearch" "sys-name-not-supported"
+        return $RC_UNSUPPORTED
+    fi
+    if ! is_supported_system_archt; then
+        log_app_installation "elasticsearch" "sys-archt-not-supported"
+        return $RC_UNSUPPORTED
+    fi
+    if ! command_exists "curl"; then
+        log_app_installation "elasticsearch" "dependency-missing"
+        return $RC_DEPENDENCY_MISSING
+    fi
+
+    # home
+    local _es_home="$DOTFILES_XDG_CONFIG_DIR/es"
+    [[ -d $_es_home ]] || mkdir -p $_es_home
+
+    # get version
+    local _es_sys_name
+    local _es_sys_archt
     if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
-
-        # home
-        local _es_home="$DOTFILES_XDG_CONFIG_DIR/es"
-        [[ -d $_es_home ]] || mkdir -p $_es_home
-
-        log_app_installation "elasticsearch" "start"
-
-        # get version
-        local _es_version=$(get_github_release_latest_version 'elastic' 'elasticsearch')
-        local _es_zip_file_name="elasticsearch-$_es_version-darwin-x86_64.tar.gz"
-
-        # download, verify, and extract
-        [[ -d "$_es_home/es" ]] && rm -r "$_es_home/es"
-
-        curl -O "https://artifacts.elastic.co/downloads/elasticsearch/$_es_zip_file_name"
-        curl "https://artifacts.elastic.co/downloads/elasticsearch/$_es_zip_file_name.sha512" | shasum -a 512 -c -
-        mkdir "$_es_home/es" && tar -xzf "$_es_zip_file_name" -C "$_es_home/es" --strip-components 1
-
-        # Clean up
-        rm -f "$_es_zip_file_name"
-
+        _es_sys_name="darwin"
     elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
-
-        # skip if already installed
-        if is_app_installed "elasticsearch"; then
-            log_app_installation "elasticsearch" "skip"
-            return 0
-        fi
-
-        log_app_installation "elasticsearch" "start"
-
-        # add repository and install
-        wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg
-        install_apps "apt-transport-https"
-        echo "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://artifacts.elastic.co/packages/8.x/apt stable main" | \
-            sudo tee /etc/apt/sources.list.d/elastic-8.x.list
-        sudo apt-get update && sudo_apt_install elasticsearch
-
-        # enable service
-        sudo systemctl enable elasticsearch.service
-
-    else
-        log_app_installation "elasticsearch" "sys-name-unknown"
-        return 2
+        _es_sys_name="linux"
     fi
+    if [[ $DOTFILES_SYS_ARCHT == "amd64" ]]; then
+        _es_sys_archt="x86_64"
+    elif [[ $DOTFILES_SYS_ARCHT == "arm64" ]]; then
+        _es_sys_archt="aarch64"
+    fi
+    local _es_version=$(get_github_release_latest_version "elastic" "elasticsearch")
+    local _es_zip_file_name="elasticsearch-$_es_version-$_es_sys_name-$_es_sys_archt.tar.gz"
+
+    # clean up, download, verify, extract and install
+    [[ -d "$_es_home/es" ]] && rm -r "$_es_home/es"
+
+    curl -O "https://artifacts.elastic.co/downloads/elasticsearch/$_es_zip_file_name"
+    curl "https://artifacts.elastic.co/downloads/elasticsearch/$_es_zip_file_name.sha512" | shasum -a 512 -c -
+    mkdir "$_es_home/es" && tar -xzf "$_es_zip_file_name" -C "$_es_home/es" --strip-components 1
+    rm -f "$_es_zip_file_name"
 }
 
 
 # Installs Emacs text editor
 function _dotfiles_install_emacs() {
 
+    # sanity check
+    if ! is_supported_system_name; then
+        log_app_installation "emacs" "sys-name-not-supported"
+        return $RC_UNSUPPORTED
+    fi
+
+    # install or update
+    local _emacs_app_name
     if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
-
-        # skip if already installed
-        if command_exists "emacs" || is_app_installed "emacs"; then
-            log_app_installation "emacs" "skip"
-            return 0
-        fi
-
-        # install
-        log_app_installation "emacs" "start"
-
         brew tap d12frosted/emacs-plus
-        brew install emacs-plus
-
+        _emacs_app_name="emacs-plus"
     elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
-        install_apps "emacs"
+        _emacs_app_name="emacs"
+    fi
+
+    if ! command_exists "emacs"; then
+        install_apps $_emacs_app_name
     else
-        log_app_installation "emacs" "sys-name-unknown"
-        return 2
+        install_apps --update $_emacs_app_name
     fi
 }
 
@@ -277,29 +352,36 @@ function _dotfiles_install_emacs() {
 # Dependency: curl
 function _dotfiles_install_gcp() {
 
-    # skip if already installed
-    if command_exists "gcloud"; then
-        log_app_installation "gcp" "skip"
-        return 0
+    # sanity check
+    if ! is_supported_system_name; then
+        log_app_installation "gcp" "sys-name-not-supported"
+        return $RC_UNSUPPORTED
+    fi
+    if ! command_exists "curl"; then
+        log_app_installation "gcp" "dependency-missing"
+        return $RC_DEPENDENCY_MISSING
     fi
 
-    if [[ $DOTFILES_SYS_NAME == "mac" || $DOTFILES_SYS_NAME == "linux" ]]; then
+    # skip if installed
+    if command_exists "gcloud"; then
+        log_app_installation "gcp" "skip"
+        return $RC_SUCCESS
+    fi
 
-        log_app_installation "gcp" "start"
+    # install
+    log_app_installation "gcp" "install"
 
-        # home
-        local _gcp_home="$DOTFILES_XDG_CONFIG_DIR/gcp"
-        [[ -d $_gcp_home ]] || mkdir -p $_gcp_home
+    local _gcp_home="$DOTFILES_XDG_CONFIG_DIR/gcp"
+    [[ -d $_gcp_home ]] || mkdir -p $_gcp_home
 
-        # install
-        # brew install --cask google-cloud-sdk
-        curl -fL https://sdk.cloud.google.com > "$_gcp_home/install.sh"
-        bash "$_gcp_home/install.sh" --disable-prompts --install-dir=$_gcp_home
+    curl -fL https://sdk.cloud.google.com > "$_gcp_home/install.sh"
+    if bash "$_gcp_home/install.sh" --disable-prompts --install-dir=$_gcp_home; then
+        log_app_installation "gcp" "success"
         rm -f "$_gcp_home/install.sh"
-
     else
-        log_app_installation "gcp" "sys-name-unknown"
-        return 2
+        log_app_installation "gcp" "fail"
+        rm -f "$_gcp_home/install.sh"
+        return $RC_ERROR
     fi
 }
 
@@ -307,13 +389,25 @@ function _dotfiles_install_gcp() {
 # Installs Go programming language
 function _dotfiles_install_golang() {
 
+    # sanity check
+    if ! is_supported_system_name; then
+        log_app_installation "golang" "sys-name-not-supported"
+        return $RC_UNSUPPORTED
+    fi
+
+    # select package name
+    local _golang_app_name
     if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
-        install_apps "go"
+        _golang_app_name="go"
     elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
-        install_apps "golang"
+        _golang_app_name="golang-go"
+    fi
+
+    # install or update
+    if ! command_exists "go"; then
+        install_apps "$_golang_app_name"
     else
-        log_app_installation "golang" "sys-name-unknown"
-        return 2
+        install_apps --update "$_golang_app_name"
     fi
 }
 
@@ -321,11 +415,17 @@ function _dotfiles_install_golang() {
 # Installs htop system-monitoring tool
 function _dotfiles_install_htop() {
 
-    if [[ $DOTFILES_SYS_NAME == "mac" || $DOTFILES_SYS_NAME == "linux" ]]; then
-        install_apps htop
+    # sanity check
+    if ! is_supported_system_name; then
+        log_app_installation "htop" "sys-name-not-supported"
+        return $RC_UNSUPPORTED
+    fi
+
+    # install or update
+    if ! command_exists "htop"; then
+        install_apps "htop"
     else
-        log_app_installation "htop" "sys-name-unknown"
-        return 2
+        install_apps --update "htop"
     fi
 }
 
@@ -333,24 +433,25 @@ function _dotfiles_install_htop() {
 # Installs iTerm2 (macOS only) terminal emulator
 function _dotfiles_install_iterm() {
 
-    if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
-
-        # skip if already installed
-        if is_app_installed "iterm2"; then
-            log_app_installation "iterm" "skip"
-            return 0
-        fi
-
-        # install
-        log_app_installation "iterm" "start"
-        brew install --cask iterm2
-
-    elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
+    # sanity check
+    if [[ $DOTFILES_SYS_NAME != "mac" ]]; then
         log_app_installation "iterm" "sys-name-not-supported"
-        return 2
+        return $RC_UNSUPPORTED
+    fi
+
+    # skip if installed
+    if is_app_installed "iterm2"; then
+        log_app_installation "iterm" "skip"
+        return $RC_SUCCESS
+    fi
+
+    # install (using brew cask since it's a GUI app)
+    log_app_installation "iterm" "install"
+    if brew install --cask iterm2; then
+        log_app_installation "iterm" "success"
     else
-        log_app_installation "iterm" "sys-name-unknown"
-        return 2
+        log_app_installation "iterm" "fail"
+        return $RC_ERROR
     fi
 }
 
@@ -358,14 +459,25 @@ function _dotfiles_install_iterm() {
 # Installs Java Development Kit (JDK)
 function _dotfiles_install_jdk() {
 
+    # sanity check
+    if ! is_supported_system_name; then
+        log_app_installation "jdk" "sys-name-not-supported"
+        return $RC_UNSUPPORTED
+    fi
+
+    # select package name
+    local _jdk_app_name
     if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
-        # brew install --cask oracle-jdk
-        install_apps "openjdk"
+        _jdk_app_name="openjdk"
     elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
-        install_apps "default-jdk"
+        _jdk_app_name="default-jdk"
+    fi
+
+    # install or update
+    if ! command_exists "java"; then
+        install_apps "$_jdk_app_name"
     else
-        log_app_installation "jdk" "sys-name-unknown"
-        return 2
+        install_apps --update "$_jdk_app_name"
     fi
 }
 
@@ -373,35 +485,61 @@ function _dotfiles_install_jdk() {
 # Installs keyd (Linux only) for keyboard remapping
 function _dotfiles_install_keyd() {
 
-    if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
+    # sanity check
+    if [[ $DOTFILES_SYS_NAME != "linux" ]]; then
         log_app_installation "keyd" "sys-name-not-supported"
-        return 2
-    elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
+        return $RC_UNSUPPORTED
+    fi
 
-        # skip if already installed
-        if command_exists "keyd" || is_app_installed "keyd"; then
-            log_app_installation "keyd" "skip"
-            return 0
-        fi
+    # install or update
+    local _keyd_home="$DOTFILES_XDG_CONFIG_DIR/keyd"
+    [[ -d $_keyd_home ]] || mkdir -p $_keyd_home
+    local _keyd_git_dir="$_keyd_home/keyd.git"
 
-        log_app_installation "keyd" "start"
+    if command_exists "keyd" || is_app_installed "keyd"; then
 
-        # home
-        local _keyd_home="$DOTFILES_XDG_CONFIG_DIR/keyd"
-        [[ -d $_keyd_home ]] || mkdir -p $_keyd_home
-
-        # install manually
-        local _keyd_git_dir="$_keyd_home/keyd.git"
         if [[ ! -d $_keyd_git_dir ]]; then
-            git clone https://github.com/rvaiya/keyd $_keyd_git_dir
+            dotfiles_logging "Warn: $_keyd_git_dir is missing." "warn"
+            log_app_installation "keyd" "skip"
+            return $RC_SUCCESS
+        else
+            log_app_installation "keyd" "update"
+            git -C $_keyd_git_dir pull
         fi
-        cd $_keyd_git_dir && make && sudo make install
 
-        # start
-        sudo systemctl enable keyd && sudo systemctl start keyd
     else
-        log_app_installation "keyd" "sys-name-unknown"
-        return 2
+
+        if [[ ! -d $_keyd_git_dir ]]; then
+
+            log_app_installation "keyd" "install"
+            git clone https://github.com/rvaiya/keyd $_keyd_git_dir
+
+            if pushd $_keyd_git_dir >/dev/null; then
+                if make && sudo make install; then
+                    sudo systemctl enable keyd && sudo systemctl start keyd
+                    log_app_installation "keyd" "success"
+                    popd >/dev/null
+                else
+                    log_app_installation "keyd" "fail"
+                    popd >/dev/null
+                    return $RC_ERROR
+                fi
+            else
+                log_app_installation "keyd" "fail"
+                return $RC_ERROR
+            fi
+
+        else
+            log_app_installation "keyd" "update"
+            git -C $_keyd_git_dir pull
+        fi
+    fi
+
+    if [[ $? -eq 0 ]]; then
+        log_app_installation "keyd" "success"
+    else
+        log_app_installation "keyd" "fail"
+        return $RC_ERROR
     fi
 }
 
@@ -410,32 +548,50 @@ function _dotfiles_install_keyd() {
 # Dependency: curl
 function _dotfiles_install_kube() {
 
-    if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
-        install_apps "kubectl"
-    elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
+    # sanity check
+    if ! is_supported_system_name; then
+        log_app_installation "kube" "sys-name-not-supported"
+        return $RC_UNSUPPORTED
+    fi
+    if ! command_exists "curl"; then
+        log_app_installation "kube" "dependency-missing"
+        return $RC_DEPENDENCY_MISSING
+    fi
 
-        # skip if already installed
-        if command_exists "kubectl" || is_app_installed "kubectl"; then
-            log_app_installation "kube" "skip"
-            return 0
+    # handle macOS
+    if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
+
+        if ! command_exists "kubectl"; then
+            install_apps "kubectl"
+        else
+            install_apps --update "kubectl"
         fi
 
-        # check if system archt is supported
-        if [[ $DOTFILES_SYS_ARCHT != "arm64" && $DOTFILES_SYS_ARCHT != "amd64" ]]; then
-            log_app_installation "kube" "sys-archt-unknown"
-            return 2
+    elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
+
+        # skip if installed
+        if command_exists "kubectl"; then
+            log_app_installation "kube" "skip"
+            return $RC_SUCCESS
+        fi
+
+        # check architecture
+        if ! is_supported_system_archt; then
+            log_app_installation "kube" "sys-archt-not-supported"
+            return $RC_UNSUPPORTED
         fi
 
         # install
-        log_app_installation "kube" "start"
-
+        log_app_installation "kube" "install"
         curl -fLO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/$DOTFILES_SYS_ARCHT/kubectl"
-        sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-        rm -f kubectl
-
-    else
-        log_app_installation "kube" "sys-name-unknown"
-        return 2
+        if sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl; then
+            log_app_installation "kube" "success"
+            rm -f kubectl
+        else
+            log_app_installation "kube" "fail"
+            rm -f kubectl
+            return $RC_ERROR
+        fi
     fi
 }
 
@@ -444,168 +600,233 @@ function _dotfiles_install_kube() {
 # Dependency: curl
 function _dotfiles_install_meilisearch() {
 
+    # sanity check
+    if ! is_supported_system_name; then
+        log_app_installation "meilisearch" "sys-name-not-supported"
+        return $RC_UNSUPPORTED
+    fi
+    if ! command_exists "curl"; then
+        log_app_installation "meilisearch" "dependency-missing"
+        return $RC_DEPENDENCY_MISSING
+    fi
+
+    # handle macOS
     if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
-        install_apps "meilisearch"
+
+        if ! command_exists "meilisearch"; then
+            install_apps "meilisearch"
+        else
+            install_apps --update "meilisearch"
+        fi
+
     elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
 
-        # skip if already installed
-        if command_exists "meilisearch" || is_app_installed "meilisearch"; then
+        # skip if installed
+        if command_exists "meilisearch"; then
             log_app_installation "meilisearch" "skip"
-            return 0
+            return $RC_SUCCESS
         fi
 
         # install
-        log_app_installation "meilisearch" "start"
+        log_app_installation "meilisearch" "install"
 
         curl -L https://install.meilisearch.com | sh
-        sudo install -o root -g root -m 0755 meilisearch /usr/local/bin/meilisearch
-        rm -f meilisearch
-
-    else
-        log_app_installation "meilisearch" "sys-name-unknown"
-        return 2
+        if sudo install -o root -g root -m 0755 meilisearch /usr/local/bin/meilisearch; then
+            log_app_installation "meilisearch" "success"
+            rm -f meilisearch
+        else
+            log_app_installation "meilisearch" "fail"
+            rm -f meilisearch
+            return $RC_ERROR
+        fi
     fi
 }
 
 
 # Installs nvtop GPU monitoring tool
-# Dependency: cmake and make
+# Dependency: cmake, make
 function _dotfiles_install_nvtop() {
 
-    # skip if already installed
-    if command_exists "nvtop"; then
-        log_app_installation "nvtop" "skip"
-        return 0
+    # sanity check
+    if ! is_supported_system_name; then
+        log_app_installation "nvtop" "sys-name-not-supported"
+        return $RC_UNSUPPORTED
+    fi
+    if ! command_exists "cmake" || ! command_exists "make"; then
+        log_app_installation "nvtop" "dependency-missing"
+        return $RC_DEPENDENCY_MISSING
     fi
 
-    if [[ $DOTFILES_SYS_NAME == "mac" || $DOTFILES_SYS_NAME == "linux" ]]; then
+    # skip if installed
+    if command_exists "nvtop"; then
+        log_app_installation "nvtop" "skip"
+        return $RC_SUCCESS
+    fi
 
-        # install
-        # sudo apt-get install nvtop
-        # https://github.com/Syllo/nvtop?tab=readme-ov-file#nvtop-build
+    # install
+    log_app_installation "nvtop" "install"
 
-        # home
-        local _nvtop_home="$DOTFILES_XDG_CONFIG_DIR/nvtop"
-        [[ -d $_nvtop_home ]] || mkdir -p $_nvtop_home
+    local _nvtop_home="$DOTFILES_XDG_CONFIG_DIR/nvtop"
+    [[ -d $_nvtop_home ]] || mkdir -p $_nvtop_home
 
-        # check if exist
-        local _nvtop_git_dir="$_nvtop_home/nvtop.git"
-        if [[ ! -d $_nvtop_git_dir ]]; then
+    local _nvtop_git_dir="$_nvtop_home/nvtop.git"
+    if [[ ! -d $_nvtop_git_dir ]]; then
 
-            log_app_installation "nvtop" "start"
+        git clone https://github.com/Syllo/nvtop.git $_nvtop_git_dir
+        mkdir -p "$_nvtop_git_dir/build"
 
-            # download, build and install
-            git clone https://github.com/Syllo/nvtop.git $_nvtop_git_dir
-            mkdir -p "$_nvtop_git_dir/build" && cd "$_nvtop_git_dir/build"
-            cmake .. -DAPPLE_SUPPORT=ON
-            make && sudo make install
-
-            cd -
+        if pushd "$_nvtop_git_dir/build" >/dev/null; then
+            if cmake .. -DAPPLE_SUPPORT=ON && make && sudo make install; then
+                log_app_installation "nvtop" "success"
+                popd >/dev/null
+            else
+                log_app_installation "nvtop" "fail"
+                popd >/dev/null
+                return $RC_ERROR
+            fi
+        else
+            log_app_installation "nvtop" "fail"
+            return $RC_ERROR
         fi
-
     else
-        log_app_installation "nvtop" "sys-name-unknown"
-        return 2
+        log_app_installation "nvtop" "skip"
     fi
 }
 
 
 # Installs nvitop (Linux only) GPU monitoring tool via pip
-# Dependency: nvidia-smi and pip
+# Dependency: nvidia-smi, pip
 function _dotfiles_install_nvitop() {
 
-    if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
+    # sanity check
+    if [[ $DOTFILES_SYS_NAME != "linux" ]]; then
         log_app_installation "nvitop" "sys-name-not-supported"
-        return 2
-    elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
+        return $RC_UNSUPPORTED
+    fi
+    if ! command_exists "nvidia-smi" || ! command_exists "pip"; then
+        log_app_installation "nvitop" "dependency-missing"
+        return $RC_DEPENDENCY_MISSING
+    fi
 
-        # skip if already installed
-        if command_exists "nvitop"; then
-            log_app_installation "nvitop" "skip"
-            return 0
-        fi
-
-        # check dependency
-        if { ! command_exists "nvidia-smi" } || { ! command_exists "pip" }; then
-            log_app_installation "nvitop" "dependency-missing"
-            return 1
-        fi
-
-        # install with pip
-        log_app_installation "nvitop" "start"
+    # install or update
+    if ! command_exists "nvitop"; then
+        log_app_installation "nvitop" "install"
         pip install nvitop
-
     else
-        log_app_installation "nvitop" "sys-name-unknown"
-        return 2
+        log_app_installation "nvitop" "update"
+        pip install --upgrade nvitop
+    fi
+
+    if [[ $? -eq 0 ]]; then
+        log_app_installation "nvitop" "success"
+    else
+        log_app_installation "nvitop" "fail"
+        return $RC_ERROR
     fi
 }
 
 
-# Installs OpenVPN for virtual private networking
+# Installrts OpenVPN for virtual private networking
 function _dotfiles_install_openvpn() {
 
-    if [[ $DOTFILES_SYS_NAME == "mac" || $DOTFILES_SYS_NAME == "linux" ]]; then
+    # sanity check
+    if ! is_supported_system_name; then
+        log_app_installation "openvpn" "sys-name-not-supported"
+        return $RC_UNSUPPORTED
+    fi
+
+    # install or update
+    if ! command_exists "openvpn"; then
         install_apps "openvpn"
-        # sudo brew services start openvpn
     else
-        log_app_installation "openvpn" "sys-name-unknown"
-        return 2
+        install_apps --update "openvpn"
     fi
 }
 
 
 # Installs Python and upgrades pip
-function _dotfiles_install_python(){
+function _dotfiles_install_python() {
 
-    if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
-        sudo pip install --upgrade pip
-    elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
-        install_apps "python3 python3-pip python3-dev build-essential"
-        sudo pip3 install --upgrade pip
-    else
-        log_app_installation "python" "sys-name-unknown"
-        return 2
+    # sanity check
+    if ! is_supported_system_name; then
+        log_app_installation "python" "sys-name-not-supported"
+        return $RC_UNSUPPORTED
     fi
+
+    # install Python and pip
+    local _python_app_name
+    if [[ $DOTFILES_SYS_NAME == "linux" ]]; then
+        install_apps "python3 python3-pip python3-dev build-essential"
+    fi
+
+    # upgrade pip
+    sudo pip3 install --upgrade pip
 }
 
 
 # Installs pyenv for Python version management
 function _dotfiles_install_pyenv() {
 
-    # skip if already installed
-    if command_exists "pyenv"; then
-        log_app_installation "pyenv" "skip"
-        return 0
+    # sanity check
+    if ! is_supported_system_name; then
+        log_app_installation "pyenv" "sys-name-not-supported"
+        return $RC_UNSUPPORTED
     fi
 
+    # install or update
     if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
 
-        log_app_installation "pyenv" "start"
-        install_apps "openssl readline sqlite3 xz zlib pyenv pyenv-virtualenv"
+        if ! command_exists "pyenv" && ! is_app_installed "pyenv"; then
+            install_apps "openssl readline sqlite3 xz zlib pyenv pyenv-virtualenv"
+        else
+            install_apps --upgrade "pyenv pyenv-virtualenv"
+        fi
 
     elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
-
-        log_app_installation "pyenv" "start"
-
-        # install prerequisites
-        install_apps "make libssl-dev zlib1g-dev libbz2-dev libreadline-dev"
-        install_apps "libsqlite3-dev llvm libncursesw5-dev xz-utils tk-dev"
-        install_apps "libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev"
 
         # home directory
         local _pyenv_home="$DOTFILES_XDG_CONFIG_DIR/pyenv"
         [[ -d $_pyenv_home ]] || mkdir -p $_pyenv_home
 
-        # clone repositories
+        # pyenv home
         local _pyenv_git_dir="$_pyenv_home/pyenv.git"
         local _pyenv_venv_git_dir="$_pyenv_home/pyenv.git/plugins/pyenv-virtualenv"
-        [[ -d $_pyenv_git_dir ]] || git clone https://github.com/pyenv/pyenv.git $_pyenv_git_dir
-        [[ -d $_pyenv_venv_git_dir ]] || git clone https://github.com/pyenv/pyenv-virtualenv.git $_pyenv_venv_git_dir
 
-    else
-        log_app_installation "pyenv" "sys-name-unknown"
-        return 2
+        # install or update
+        if ! command_exists "pyenv" && ! is_app_installed "pyenv"; then
+
+            log_app_installation "pyenv" "install"
+
+            # install prerequisites
+            install_apps "make libssl-dev zlib1g-dev libbz2-dev libreadline-dev"
+            install_apps "libsqlite3-dev llvm libncursesw5-dev xz-utils tk-dev"
+            install_apps "libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev"
+
+            # install with git
+            [[ -d $_pyenv_git_dir ]] && rm -r $_pyenv_git_dir
+            [[ -d $_pyenv_venv_git_dir ]] || rm -r $_pyenv_venv_git_dir
+
+            git clone https://github.com/pyenv/pyenv.git $_pyenv_git_dir || {
+                log_app_installation "pyenv" "fail"
+                return $RC_ERROR
+            }
+            git clone https://github.com/pyenv/pyenv-virtualenv.git $_pyenv_venv_git_dir || {
+                log_app_installation "pyenv" "fail"
+                return $RC_ERROR
+            }
+
+        else
+            git -C $_pyenv_git_dir pull || {
+                log_app_installation "pyenv" "fail"
+                return $RC_ERROR
+            }
+            git -C $_pyenv_venv_git_dir pull || {
+                log_app_installation "pyenv" "fail"
+                return $RC_ERROR
+            }
+        fi
+
+        log_app_installation "pyenv" "success"
     fi
 }
 
@@ -613,11 +834,17 @@ function _dotfiles_install_pyenv() {
 # Installs Subversion (SVN) version control
 function _dotfiles_install_svn() {
 
-    if [[ $DOTFILES_SYS_NAME == "mac" || $DOTFILES_SYS_NAME == "linux" ]]; then
+    # sanity check
+    if ! is_supported_system_name; then
+        log_app_installation "svn" "sys-name-not-supported"
+        return $RC_UNSUPPORTED
+    fi
+
+    # install or update
+    if ! command_exists "svn"; then
         install_apps "subversion"
     else
-        log_app_installation "svn" "sys-name-unknown"
-        return 2
+        install_apps --update "subversion"
     fi
 }
 
@@ -625,11 +852,17 @@ function _dotfiles_install_svn() {
 # Installs tmux terminal multiplexer
 function _dotfiles_install_tmux() {
 
-    if [[ $DOTFILES_SYS_NAME == "mac" || $DOTFILES_SYS_NAME == "linux" ]]; then
+    # sanity check
+    if ! is_supported_system_name; then
+        log_app_installation "tmux" "sys-name-not-supported"
+        return $RC_UNSUPPORTED
+    fi
+
+    # install or update
+    if ! command_exists "tmux"; then
         install_apps "tmux"
     else
-        log_app_installation "tmux" "sys-name-unknown"
-        return 2
+        install_apps --update "tmux"
     fi
 }
 
@@ -637,11 +870,17 @@ function _dotfiles_install_tmux() {
 # Installs tree command for directory listing
 function _dotfiles_install_tree() {
 
-    if [[ $DOTFILES_SYS_NAME == "mac" || $DOTFILES_SYS_NAME == "linux" ]]; then
+    # sanity check
+    if ! is_supported_system_name; then
+        log_app_installation "tree" "sys-name-not-supported"
+        return $RC_UNSUPPORTED
+    fi
+
+    # install or update
+    if ! command_exists "tree"; then
         install_apps "tree"
     else
-        log_app_installation "tree" "sys-name-unknown"
-        return 2
+        install_apps --update "tree"
     fi
 }
 
@@ -649,11 +888,17 @@ function _dotfiles_install_tree() {
 # Installs Vim text editor
 function _dotfiles_install_vim() {
 
-    if [[ $DOTFILES_SYS_NAME == "mac" || $DOTFILES_SYS_NAME == "linux" ]]; then
+    # sanity check
+    if ! is_supported_system_name; then
+        log_app_installation "vim" "sys-name-not-supported"
+        return $RC_UNSUPPORTED
+    fi
+
+    # install or update
+    if ! command_exists "vim"; then
         install_apps "vim"
     else
-        log_app_installation "vim" "sys-name-unknown"
-        return 2
+        install_apps --update "vim"
     fi
 }
 
@@ -662,98 +907,109 @@ function _dotfiles_install_vim() {
 # Dependency: curl
 function _dotfiles_install_volta() {
 
-    # skip if already installed
-    if command_exists "volta"; then
-        log_app_installation "volta" "skip"
-        return 0
+    # sanity check
+    if ! is_supported_system_name; then
+        log_app_installation "volta" "sys-name-not-supported"
+        return $RC_UNSUPPORTED
+    fi
+    if ! command_exists "curl"; then
+        log_app_installation "volta" "dependency-missing"
+        return $RC_DEPENDENCY_MISSING
     fi
 
-    if [[ $DOTFILES_SYS_NAME == "mac" || $DOTFILES_SYS_NAME == "linux" ]]; then
+    # skip if installed
+    if command_exists "volta"; then
+        log_app_installation "volta" "skip"
+        return $RC_SUCCESS
+    fi
 
-        log_app_installation "volta" "start"
+    # install
+    log_app_installation "volta" "install"
 
-        # home directory
-        local _volta_home="$DOTFILES_XDG_CONFIG_DIR/volta"
-        [[ -d $_volta_home ]] || mkdir -p $_volta_home
-        export VOLTA_HOME=$_volta_home
+    local _volta_home="$DOTFILES_XDG_CONFIG_DIR/volta"
+    [[ -d $_volta_home ]] || mkdir -p $_volta_home
+    export VOLTA_HOME=$_volta_home
 
-        # volta npm config
-        local _volta_npm_home_dir="$_volta_home/npm"
-        [[ -d $_volta_npm_home_dir ]] || mkdir -p $_volta_npm_home_dir
+    local _volta_npm_home_dir="$_volta_home/npm"
+    [[ -d $_volta_npm_home_dir ]] || mkdir -p $_volta_npm_home_dir
+    local _volta_npm_config_path="$_volta_npm_home_dir/.npmrc"
+    export NPM_CONFIG_USERCONFIG=$_volta_npm_config_path
 
-        local _volta_npm_config_path="$_volta_npm_home_dir/.npmrc"
-        export NPM_CONFIG_USERCONFIG=$_volta_npm_config_path
-
-        # install
-        curl https://get.volta.sh | bash -s -- --skip-setup
-
+    if curl https://get.volta.sh | bash -s -- --skip-setup; then
+        log_app_installation "volta" "success"
     else
-        log_app_installation "volta" "sys-name-unknown"
-        return 2
+        log_app_installation "volta" "fail"
+        return $RC_ERROR
     fi
 }
 
 
 # Installs Visual Studio Code editor
-# Dependency: wget
+# Dependency: wget (Linux only)
 function _dotfiles_install_vscode() {
 
-    # skip if already installed
-    if command_exists "code"; then
-        log_app_installation "vscode" "skip"
-        return 0
+    # sanity check
+    if ! is_supported_system_name; then
+        log_app_installation "vscode" "sys-name-not-supported"
+        return $RC_UNSUPPORTED
     fi
 
+    # install
     if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
 
-        # skip if already installed
-        if is_app_installed "visual-studio-code"; then
-            log_app_installation "vscode" "skip"
-            return 0
+        if ! command_exists "code" && ! is_app_installed "visual-studio-code"; then
+            log_app_installation "vscode" "install"
+            brew install --cask visual-studio-code
+        else
+            log_app_installation "vscode" "update"
+            brew upgrade --cask visual-studio-code
         fi
-
-        # install with brew cask
-        log_app_installation "vscode" "start"
-        brew install --cask visual-studio-code
 
     elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
 
-        # skip if already installed
-        if is_app_installed "code"; then
-            log_app_installation "vscode" "skip"
-            return 0
+        if ! command_exists "wget"; then
+            log_app_installation "vscode" "dependency-missing"
+            return $RC_DEPENDENCY_MISSING
         fi
 
-        # Add repository and install
-        log_app_installation "vscode" "start"
+        if ! command_exists "code" && ! is_app_installed "code"; then
 
-        sudo apt-get install wget gpg
-        wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
-        sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
-        echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" | sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null
-        rm -f packages.microsoft.gpg
+            log_app_installation "vscode" "install"
 
-        install_apps "apt-transport-https"
-        sudo apt update
-        sudo_apt_install code
+            wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
+            sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
+            echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" | sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null
+            rm -f packages.microsoft.gpg
 
+            sudo apt-get update
+            sudo apt-get install -y code
+
+        else
+            install_apps --update "code"
+        fi
+    fi
+
+    if [[ $? -eq 0 ]]; then
+        log_app_installation "vscode" "success"
     else
-        log_app_installation "vscode" "sys-name-unknown"
-        return 2
+        log_app_installation "vscode" "fail"
+        return $RC_ERROR
     fi
 }
-
 
 # Installs watch command (macOS only) for running commands periodically
 function _dotfiles_install_watch() {
 
-    if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
-        install_apps "watch"
-    elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
+    # sanity check
+    if [[ $DOTFILES_SYS_NAME != "mac" ]]; then
         log_app_installation "watch" "sys-name-not-supported"
-        return 0
+        return $RC_UNSUPPORTED
+    fi
+
+    # install or update
+    if ! command_exists "watch"; then
+        install_apps "watch"
     else
-        log_app_installation "watch" "sys-name-unknown"
-        return 2
+        install_apps --update "watch"
     fi
 }

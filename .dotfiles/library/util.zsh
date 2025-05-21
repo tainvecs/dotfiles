@@ -6,12 +6,13 @@
 # Utility Functions
 #
 #
-# Version: 0.0.7
+# Version: 0.0.8
 # Last Modified: 2025-05-18
 #
 # - Dependency
 #   - Environment Variable File
 #     - .dotfiles/env/color.env
+#     - .dotfiles/env/misc.env
 #
 #   - Environment Variable
 #     - DOTFILES_SYS_NAME
@@ -40,16 +41,16 @@
 
 # Print app installation message
 # $1: package name
-# $2: function code ("start", "skip", "fail", "success",
-#                    "sys-archt-unknown", "sys-name-not-supported",
-#                    "sys-name-unknown", "dependency-missing")
+# $2: function code ("install", "skip", "fail", "success",
+#                    "sys-archt-not-supported", "sys-name-not-supported", "dependency-missing")
 function log_app_installation() {
 
     local app_name=$1
     local status=$2
 
     case $status in
-        "start")
+
+        "install")
             dotfiles_logging "Start \"$app_name\" installation." "info" ;;
 
         "skip")
@@ -64,14 +65,11 @@ function log_app_installation() {
         "success")
             dotfiles_logging "Successfully installed/updated \"$app_name\"." "info" ;;
 
-        "sys-archt-unknown")
-            dotfiles_logging "\"$app_name\" not installed. Unknown system architecture DOTFILES_SYS_ARCHT (${DOTFILES_SYS_ARCHT})." "error" ;;
-
         "sys-name-not-supported")
             dotfiles_logging "\"$app_name\" not installed. \"$app_name\" is not supported for '$DOTFILES_SYS_NAME'." "warn" ;;
 
-        "sys-name-unknown")
-            dotfiles_logging "\"$app_name\" not installed. Unknown system name DOTFILES_SYS_NAME (${DOTFILES_SYS_NAME})." "error" ;;
+        "sys-archt-not-supported")
+            dotfiles_logging "\"$app_name\" not installed. \"$app_name\" is not supported for '$DOTFILES_SYS_ARCHT'." "warn" ;;
 
         "dependency-missing")
             dotfiles_logging "\"$app_name\" not installed. Dependency missing." "error" ;;
@@ -79,8 +77,8 @@ function log_app_installation() {
         *)
             echo "log_app_installation: Invalid status code \"$status\""
             echo "Usage: log_app_installation <app_name> <status>"
-            echo -n '  <status> should be one of: "start", "skip", "fail", "success",'
-            echo '"sys-archt-unknown", "sys-name-not-supported", "sys-name-unknown", "dependency-missing"' ;;
+            echo -n '  <status> should be one of: "install", "skip", "fail", "success",'
+            echo '"sys-name-not-supported", "sys-name-not-supported", "dependency-missing"' ;;
     esac
 }
 
@@ -93,7 +91,7 @@ function is_app_installed() {
     local _app_name
     if [[ -z "$1" ]]; then
         dotfiles_logging "No application name provided." "error"
-        return 2
+        return $RC_ERROR
     else
         _app_name="$1"
     fi
@@ -106,8 +104,8 @@ function is_app_installed() {
         "mac")
             brew list "$_app_name" --quiet &>/dev/null ;;
         *)
-            log_app_installation "$_in_app" "sys-name-unknown"
-            return 2 ;;
+            log_app_installation "$_in_app" "sys-name-not-supported"
+            return $RC_UNSUPPORTED ;;
     esac
 
     # explicitly return success
@@ -121,7 +119,7 @@ function is_app_installed() {
 function is_dotfiles_managed_app() {
     if [[ -z "$1" ]]; then
         dotfiles_logging "No application name provided." "error"
-        return 2
+        return $RC_ERROR
     fi
     [[ "${DOTFILES_APP_ASC_ARR[$1]}" == "true" ]]
 }
@@ -134,10 +132,10 @@ function get_github_release_latest_version() {
     # Input checking
     if [[ -z "$1" ]]; then
         dotfiles_logging "\$1 (GitHub username) not provided." "error"
-        return 2
+        return $RC_ERROR
     elif [[ -z "$2" ]]; then
         dotfiles_logging "\$2 (GitHub repository name) not provided." "error"
-        return 2
+        return $RC_ERROR
     fi
 
     # Retrieve information from GitHub repo release page
@@ -150,10 +148,10 @@ function get_github_release_latest_version() {
     # Result
     if [[ -n "$_parsed_ver" ]]; then
         echo "$_parsed_ver"
-        return 0
+        return $RC_SUCCESS
     else
         dotfiles_logging "No release version found for GitHub Project $1/$2." "warn"
-        return 1
+        return $RC_ERROR
     fi
 }
 
@@ -165,7 +163,7 @@ function install_apps() {
     # Check input
     if [[ -z "$1" ]]; then
         dotfiles_logging "No application name provided." "error"
-        return 2
+        return $RC_ERROR
     fi
 
     # Check for --update flag
@@ -184,7 +182,7 @@ function install_apps() {
 
                 if ! {command_exists "$_in_app" || is_app_installed "$_in_app"}; then
 
-                    log_app_installation "$_in_app" "start"
+                    log_app_installation "$_in_app" "install"
 
                     if sudo apt-get install --no-install-recommends --no-install-suggests -y "$_in_app"; then
                         log_app_installation "$_in_app" "success"
@@ -211,7 +209,7 @@ function install_apps() {
 
                 if ! {command_exists "$_in_app" || is_app_installed "$_in_app"}; then
 
-                    log_app_installation "$_in_app" "start"
+                    log_app_installation "$_in_app" "install"
 
                     if brew install "$_in_app"; then
                         log_app_installation "$_in_app" "success"
@@ -235,8 +233,8 @@ function install_apps() {
                 fi ;;
 
             *)
-                log_app_installation "$_in_app" "sys-name-unknown"
-                return 2 ;;
+                log_app_installation "$_in_app" "sys-name-not-supported"
+                return $RC_UNSUPPORTED ;;
         esac
     done
 }
@@ -281,7 +279,7 @@ function update_associative_array_from_array() {
     # Check if output_name is defined and is an associative array
     if ! is_associative_array "$_out_asc_array_name"; then
         dotfiles_logging "'$_out_asc_array_name' must be defined as an associative array before calling this function" "error"
-        return 1
+        return $RC_ERROR
     fi
 
     # Determine which array's elements to use
@@ -318,7 +316,7 @@ function update_associative_array_from_array() {
 function command_exists() {
     if [[ -z "$1" ]]; then
         dotfiles_logging "\$1 (command name) not provided." "error"
-        return 2
+        return $RC_ERROR
     fi
     command -v "$1" >/dev/null 2>&1 || type "$1" >/dev/null 2>&1
 }
@@ -395,7 +393,7 @@ function dotfiles_logging() {
 function is_dotfiles_managed_plugin() {
     if [[ -z "$1" ]]; then
         dotfiles_logging "No plugin name provided." "error"
-        return 2
+        return $RC_ERROR
     fi
     [[ "${DOTFILES_PLUGIN_ASC_ARR[$1]}" == "true" ]]
 }
