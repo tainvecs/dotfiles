@@ -138,7 +138,7 @@ function _dotfiles_install_aws() {
         [[ -d $_aws_home ]] || mkdir -p $_aws_home
 
         # download installer
-        [[ -d "$_aws_home/aws" ]] && rm -r "$_aws_home/aws"
+        [[ -d "$_aws_home/aws" ]] && rm -rf "$_aws_home/aws"
         [[ -f "$_aws_home/awscliv2.zip" ]] && rm -f "$_aws_home/awscliv2.zip"
 
         if [[ $DOTFILES_SYS_ARCHT == "arm64" ]]; then
@@ -313,7 +313,7 @@ function _dotfiles_install_elasticsearch() {
     local _es_zip_file_name="elasticsearch-$_es_version-$_es_sys_name-$_es_sys_archt.tar.gz"
 
     # clean up, download, verify, extract and install
-    [[ -d "$_es_home/es" ]] && rm -r "$_es_home/es"
+    [[ -d "$_es_home/es" ]] && rm -rf "$_es_home/es"
 
     curl -O "https://artifacts.elastic.co/downloads/elasticsearch/$_es_zip_file_name"
     curl "https://artifacts.elastic.co/downloads/elasticsearch/$_es_zip_file_name.sha512" | shasum -a 512 -c -
@@ -803,8 +803,8 @@ function _dotfiles_install_pyenv() {
             install_apps "libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev"
 
             # install with git
-            [[ -d $_pyenv_git_dir ]] && rm -r $_pyenv_git_dir
-            [[ -d $_pyenv_venv_git_dir ]] || rm -r $_pyenv_venv_git_dir
+            [[ -d $_pyenv_git_dir ]] && rm -rf $_pyenv_git_dir
+            [[ -d $_pyenv_venv_git_dir ]] || rm -rf $_pyenv_venv_git_dir
 
             git clone https://github.com/pyenv/pyenv.git $_pyenv_git_dir || {
                 log_app_installation "pyenv" "fail"
