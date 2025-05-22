@@ -6,8 +6,8 @@
 # Zsh Completion: Load and Trigger Completion with Zinit
 #
 #
-# Version: 0.0.1
-# Last Modified: 2025-05-12
+# Version: 0.0.2
+# Last Modified: 2025-05-22
 #
 # - Dependency
 #   - Tool
@@ -23,6 +23,7 @@
 #   - forgit
 #   - gcp
 #   - kube
+#   - volta
 #
 # ------------------------------------------------------------------------------
 
@@ -69,6 +70,13 @@ fi
 if command_exists "kubectl"; then
     local _kube_cmp_path="$DOTFILES_ZSH_COMP_DIR/_kubectl"
     [[ -f $_kube_cmp_path ]] || kubectl completion zsh > $_kube_cmp_path
+fi
+
+
+# volta
+if command_exists "volta"; then
+    local _volta_cmp_path="$DOTFILES_ZSH_COMP_DIR/_volta"
+    [[ -f $_volta_cmp_path ]] || volta completions --output $_volta_cmp_path
 fi
 
 
