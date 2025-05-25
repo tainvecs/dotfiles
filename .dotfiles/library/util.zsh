@@ -237,7 +237,8 @@ function log_app_initialization() {
             dotfiles_logging "\"$_app_name\" not initialized. \"$_app_name\" is not supported for '$DOTFILES_SYS_ARCHT'." "warn" ;;
 
         *)
-            echo "log_app_initialization: Invalid status code \"$_status\""
+            dotfiles_logging "log_app_initialization: Invalid status code \"$_status\"" "error"
+
             echo "Usage: log_app_initialization <app_name> <status>"
             echo '  <status> should be one of: "fail", "success", "sys-name-not-supported", "sys-archt-not-supported".' ;;
     esac
@@ -279,7 +280,8 @@ function log_app_installation() {
             dotfiles_logging "\"$_app_name\" not installed. Dependency missing." "error" ;;
 
         *)
-            echo "log_app_installation: Invalid status code \"$_status\""
+            dotfiles_logging "log_app_installation: Invalid status code \"$_status\"" "error"
+
             echo "Usage: log_app_installation <app_name> <status>"
             echo -n '  <status> should be one of: "install", "skip", "fail", "success",'
             echo '"sys-name-not-supported", "sys-archt-not-supported", "dependency-missing"' ;;
@@ -450,7 +452,7 @@ function setup_dotfiles_app_home() {
 
     ensure_directory "$_app_home_dir"
 
-    echo $_app_home_dir
+    echo "$_app_home_dir"
 }
 
 # Setup dotfiles config with symlink
