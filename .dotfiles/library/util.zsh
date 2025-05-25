@@ -6,8 +6,8 @@
 # Utility Functions
 #
 #
-# Version: 0.0.9
-# Last Modified: 2025-05-24
+# Version: 0.0.10
+# Last Modified: 2025-05-25
 #
 # - Dependency
 #   - Environment Variable File
@@ -36,82 +36,131 @@
 #   - Function
 #     - dotfiles_logging
 #
+#   - App
+#     - brew
+#     - curl
+#     - grep
+#     - jq
+#
 # ------------------------------------------------------------------------------
 
 
-# Print app installation message
-# $1: package name
-# $2: function code ("install", "skip", "fail", "success",
-#                    "sys-archt-not-supported", "sys-name-not-supported", "dependency-missing")
-function log_app_installation() {
+# $1: GitHub username
+# $2: GitHub repository name
+function get_github_release_latest_version() {
 
-    local app_name=$1
-    local status=$2
+    # Input checking
+    if [[ -z "$1" ]]; then
+        dotfiles_logging "\$1 (GitHub username) not provided." "error"
+        return $RC_ERROR
+    elif [[ -z "$2" ]]; then
+        dotfiles_logging "\$2 (GitHub repository name) not provided." "error"
+        return $RC_ERROR
+    fi
 
-    case $status in
+    # Retrieve information from GitHub repo release page
+    local _url="https://api.github.com/repos/$1/$2/releases"
+    local _resp=$(curl -s "$_url")
+    if [[ $? -ne 0 ]]; then
+        dotfiles_logging "Failed to fetch data from $_url" "error"
+        return $RC_ERROR
+    fi
 
-        "install")
-            dotfiles_logging "Start \"$app_name\" installation." "info" ;;
+    # Parse response
+    local _parsed_ver=$(echo "$_resp" | grep -m 1 tag_name | cut -d '"' -f 4)
 
-        "skip")
-            dotfiles_logging "Skip \"$app_name\" installation as it is already installed." "info" ;;
-
-        "update")
-            dotfiles_logging "\"$app_name\" is already installed. Checking for update." "info" ;;
-
-        "fail")
-            dotfiles_logging "Failed to install/update \"$app_name\"." "error" ;;
-
-        "success")
-            dotfiles_logging "Successfully installed/updated \"$app_name\"." "info" ;;
-
-        "sys-name-not-supported")
-            dotfiles_logging "\"$app_name\" not installed. \"$app_name\" is not supported for '$DOTFILES_SYS_NAME'." "warn" ;;
-
-        "sys-archt-not-supported")
-            dotfiles_logging "\"$app_name\" not installed. \"$app_name\" is not supported for '$DOTFILES_SYS_ARCHT'." "warn" ;;
-
-        "dependency-missing")
-            dotfiles_logging "\"$app_name\" not installed. Dependency missing." "error" ;;
-
-        *)
-            echo "log_app_installation: Invalid status code \"$status\""
-            echo "Usage: log_app_installation <app_name> <status>"
-            echo -n '  <status> should be one of: "install", "skip", "fail", "success",'
-            echo '"sys-name-not-supported", "sys-name-not-supported", "dependency-missing"' ;;
-    esac
+    # Result
+    if [[ -n "$_parsed_ver" ]]; then
+        echo "$_parsed_ver"
+        return $RC_SUCCESS
+    else
+        dotfiles_logging "No release version found for GitHub Project $1/$2." "warn"
+        return $RC_ERROR
+    fi
 }
 
+# Install applications
+# $@: Package names
+function install_apps() {
 
-# Print app initialization message
-# $1: package name
-# $2: function code ("fail", "success", "sys-name-not-supported", "sys-archt-not-supported")
-function log_app_initialization() {
+    # Check input
+    if [[ -z "$1" ]]; then
+        dotfiles_logging "No application name provided." "error"
+        return $RC_ERROR
+    fi
 
-    local app_name=$1
-    local status=$2
+    # Check for --update flag
+    local _update_flag=false
+    if [[ "$1" == "--update" ]]; then
+        _update_flag=true
+        shift
+    fi
 
-    case $status in
+    # Install app(s) with apt (linux) or brew (mac)
+    for _app_name in "$@"; do
 
-        "fail")
-            dotfiles_logging "Failed to initialization \"$app_name\"." "error" ;;
+        case $DOTFILES_SYS_NAME in
 
-        "success")
-            dotfiles_logging "Successfully initialized \"$app_name\"." "info" ;;
+            "linux")
 
-        "sys-name-not-supported")
-            dotfiles_logging "\"$app_name\" not initialized. \"$app_name\" is not supported for '$DOTFILES_SYS_NAME'." "warn" ;;
+                if ! {command_exists "$_app_name" || is_app_installed "$_app_name"}; then
 
-        "sys-archt-not-supported")
-            dotfiles_logging "\"$app_name\" not initialized. \"$app_name\" is not supported for '$DOTFILES_SYS_ARCHT'." "warn" ;;
+                    log_app_installation "$_app_name" "install"
 
-        *)
-            echo "log_app_initialization: Invalid status code \"$status\""
-            echo "Usage: log_app_initialization <app_name> <status>"
-            echo '  <status> should be one of: "fail", "success", "sys-name-not-supported", "sys-archt-not-supported".' ;;
-    esac
+                    if sudo apt-get install --no-install-recommends --no-install-suggests -y "$_app_name"; then
+                        log_app_installation "$_app_name" "success"
+                    else
+                        log_app_installation "$_app_name" "fail"
+                    fi
+
+                elif $_update_flag; then
+
+                    log_app_installation "$_app_name" "update"
+
+                    if sudo apt install --only-upgrade "$_app_name"; then
+                        log_app_installation "$_app_name" "success"
+                    else
+                        log_app_installation "$_app_name" "fail"
+                    fi
+
+                else
+                    log_app_installation "$_app_name" "skip"
+                    continue
+                fi ;;
+
+            "mac")
+
+                if ! {command_exists "$_app_name" || is_app_installed "$_app_name"}; then
+
+                    log_app_installation "$_app_name" "install"
+
+                    if brew install "$_app_name"; then
+                        log_app_installation "$_app_name" "success"
+                    else
+                        log_app_installation "$_app_name" "fail"
+                    fi
+
+                elif $_update_flag; then
+
+                    log_app_installation "$_app_name" "update"
+
+                    if brew upgrade "$_app_name"; then
+                        log_app_installation "$_app_name" "success"
+                    else
+                        log_app_installation "$_app_name" "fail"
+                    fi
+
+                else
+                    log_app_installation "$_app_name" "skip"
+                    continue
+                fi ;;
+
+            *)
+                log_app_installation "$_app_name" "sys-name-not-supported"
+                return $RC_UNSUPPORTED ;;
+        esac
+    done
 }
-
 
 # Check if an application is installed.
 # Returns 0 if installed, non-zero otherwise.
@@ -134,7 +183,7 @@ function is_app_installed() {
         "mac")
             brew list "$_app_name" --quiet &>/dev/null ;;
         *)
-            log_app_installation "$_in_app" "sys-name-not-supported"
+            log_app_installation "$_app_name" "sys-name-not-supported"
             return $RC_UNSUPPORTED ;;
     esac
 
@@ -142,131 +191,76 @@ function is_app_installed() {
     return $?
 }
 
+# Print app initialization message
+# $1: package name
+# $2: function code ("fail", "success", "sys-name-not-supported", "sys-archt-not-supported")
+function log_app_initialization() {
 
-# Check if an application is in the managed list
-# Usage: is_dotfiles_managed_app "app_name"
-# Returns: 0 if managed, 1 if not managed, 2 if no argument provided
-function is_dotfiles_managed_app() {
-    if [[ -z "$1" ]]; then
-        dotfiles_logging "No application name provided." "error"
-        return $RC_ERROR
-    fi
-    [[ "${DOTFILES_APP_ASC_ARR[$1]}" == "true" ]]
+    local _app_name=$1
+    local _status=$2
+
+    case $_status in
+
+        "fail")
+            dotfiles_logging "Failed to initialization \"$_app_name\"." "error" ;;
+
+        "success")
+            dotfiles_logging "Successfully initialized \"$_app_name\"." "info" ;;
+
+        "sys-name-not-supported")
+            dotfiles_logging "\"$_app_name\" not initialized. \"$_app_name\" is not supported for '$DOTFILES_SYS_NAME'." "warn" ;;
+
+        "sys-archt-not-supported")
+            dotfiles_logging "\"$_app_name\" not initialized. \"$_app_name\" is not supported for '$DOTFILES_SYS_ARCHT'." "warn" ;;
+
+        *)
+            echo "log_app_initialization: Invalid status code \"$_status\""
+            echo "Usage: log_app_initialization <app_name> <status>"
+            echo '  <status> should be one of: "fail", "success", "sys-name-not-supported", "sys-archt-not-supported".' ;;
+    esac
 }
 
+# Print app installation message
+# $1: package name
+# $2: function code ("install", "skip", "fail", "success",
+#                    "sys-archt-not-supported", "sys-name-not-supported", "dependency-missing")
+function log_app_installation() {
 
-# $1: GitHub username
-# $2: GitHub repository name
-function get_github_release_latest_version() {
+    local _app_name=$1
+    local _status=$2
 
-    # Input checking
-    if [[ -z "$1" ]]; then
-        dotfiles_logging "\$1 (GitHub username) not provided." "error"
-        return $RC_ERROR
-    elif [[ -z "$2" ]]; then
-        dotfiles_logging "\$2 (GitHub repository name) not provided." "error"
-        return $RC_ERROR
-    fi
+    case $_status in
 
-    # Retrieve information from GitHub repo release page
-    local _url="https://api.github.com/repos/$1/$2/releases"
-    local _resp=$(curl -s "$_url")
+        "install")
+            dotfiles_logging "Start \"$_app_name\" installation." "info" ;;
 
-    # Parse response
-    local _parsed_ver=$(echo "$_resp" | grep -m 1 tag_name | cut -d '"' -f 4)
+        "skip")
+            dotfiles_logging "Skip \"$_app_name\" installation as it is already installed." "info" ;;
 
-    # Result
-    if [[ -n "$_parsed_ver" ]]; then
-        echo "$_parsed_ver"
-        return $RC_SUCCESS
-    else
-        dotfiles_logging "No release version found for GitHub Project $1/$2." "warn"
-        return $RC_ERROR
-    fi
-}
+        "update")
+            dotfiles_logging "\"$_app_name\" is already installed. Checking for update." "info" ;;
 
+        "fail")
+            dotfiles_logging "Failed to install/update \"$_app_name\"." "error" ;;
 
-# Install applications
-# $@: Package names
-function install_apps() {
+        "success")
+            dotfiles_logging "Successfully installed/updated \"$_app_name\"." "info" ;;
 
-    # Check input
-    if [[ -z "$1" ]]; then
-        dotfiles_logging "No application name provided." "error"
-        return $RC_ERROR
-    fi
+        "sys-name-not-supported")
+            dotfiles_logging "\"$_app_name\" not installed. \"$_app_name\" is not supported for '$DOTFILES_SYS_NAME'." "warn" ;;
 
-    # Check for --update flag
-    local update_flag=false
-    if [[ "$1" == "--update" ]]; then
-        update_flag=true
-        shift
-    fi
+        "sys-archt-not-supported")
+            dotfiles_logging "\"$_app_name\" not installed. \"$_app_name\" is not supported for '$DOTFILES_SYS_ARCHT'." "warn" ;;
 
-    # Install app(s) with apt (linux) or brew (mac)
-    for _in_app in "$@"; do
+        "dependency-missing")
+            dotfiles_logging "\"$_app_name\" not installed. Dependency missing." "error" ;;
 
-        case $DOTFILES_SYS_NAME in
-
-            "linux")
-
-                if ! {command_exists "$_in_app" || is_app_installed "$_in_app"}; then
-
-                    log_app_installation "$_in_app" "install"
-
-                    if sudo apt-get install --no-install-recommends --no-install-suggests -y "$_in_app"; then
-                        log_app_installation "$_in_app" "success"
-                    else
-                        log_app_installation "$_in_app" "fail"
-                    fi
-
-                elif $update_flag; then
-
-                    log_app_installation "$_in_app" "update"
-
-                    if sudo apt install --only-upgrade "$_in_app"; then
-                        log_app_installation "$_in_app" "success"
-                    else
-                        log_app_installation "$_in_app" "fail"
-                    fi
-
-                else
-                    log_app_installation "$_in_app" "skip"
-                    continue
-                fi ;;
-
-            "mac")
-
-                if ! {command_exists "$_in_app" || is_app_installed "$_in_app"}; then
-
-                    log_app_installation "$_in_app" "install"
-
-                    if brew install "$_in_app"; then
-                        log_app_installation "$_in_app" "success"
-                    else
-                        log_app_installation "$_in_app" "fail"
-                    fi
-
-                elif $update_flag; then
-
-                    log_app_installation "$_in_app" "update"
-
-                    if brew upgrade "$_in_app"; then
-                        log_app_installation "$_in_app" "success"
-                    else
-                        log_app_installation "$_in_app" "fail"
-                    fi
-
-                else
-                    log_app_installation "$_in_app" "skip"
-                    continue
-                fi ;;
-
-            *)
-                log_app_installation "$_in_app" "sys-name-not-supported"
-                return $RC_UNSUPPORTED ;;
-        esac
-    done
+        *)
+            echo "log_app_installation: Invalid status code \"$_status\""
+            echo "Usage: log_app_installation <app_name> <status>"
+            echo -n '  <status> should be one of: "install", "skip", "fail", "success",'
+            echo '"sys-name-not-supported", "sys-archt-not-supported", "dependency-missing"' ;;
+    esac
 }
 
 
@@ -280,13 +274,6 @@ function install_apps() {
 #
 # ------------------------------------------------------------------------------
 
-
-# Check if a variable is a normal (non-associative) array
-function is_normal_array() {
-    local _array_name="$1"
-    [[ -v $_array_name && ${parameters[$_array_name]} == array ]]
-}
-
 # Check if a variable is an associative array
 function is_associative_array() {
     local _array_name="$1"
@@ -297,6 +284,12 @@ function is_associative_array() {
 function is_non_empty_array() {
     local _array_name="$1"
     [[ -v $_array_name && ${#${(P)_array_name[@]}} -gt 0 ]]
+}
+
+# Check if a variable is a normal (non-associative) array
+function is_normal_array() {
+    local _array_name="$1"
+    [[ -v $_array_name && ${parameters[$_array_name]} == array ]]
 }
 
 # Update an associative array from input array elements
@@ -326,7 +319,8 @@ function update_associative_array_from_array() {
             eval "${_out_asc_array_name}[$key]=true"
         done
     else
-        dotfiles_logging "Neither '$_in_main_array_name' nor '$_in_fallback_array_name' is valid to set up '$_out_asc_array_name'." "warn"
+        dotfiles_logging "Neither '$_in_main_array_name' nor '$_in_fallback_array_name' is valid to set up '$_out_asc_array_name'." "error"
+        return $RC_ERROR
     fi
 }
 
@@ -349,6 +343,183 @@ function command_exists() {
         return $RC_ERROR
     fi
     command -v "$1" >/dev/null 2>&1 || type "$1" >/dev/null 2>&1
+}
+
+
+# ------------------------------------------------------------------------------
+# Directory
+# ------------------------------------------------------------------------------
+
+
+# Create a directory if it doesn't exist
+# $1: directory path
+function ensure_directory() {
+    [[ -d "$1" ]] || mkdir -p "$1"
+}
+
+
+# ------------------------------------------------------------------------------
+#
+# Dotfiles
+#
+# - Dependency
+#   - Functions
+#     - dotfiles_logging
+#     - ensure_directory
+#
+# ------------------------------------------------------------------------------
+
+
+# Check if an application is in the managed list
+# Usage: is_dotfiles_managed_app "app_name"
+# Returns: 0 if managed, 1 if not managed, 2 if no argument provided
+function is_dotfiles_managed_app() {
+    if [[ -z "$1" ]]; then
+        dotfiles_logging "No application name provided." "error"
+        return $RC_ERROR
+    fi
+    [[ "${DOTFILES_APP_ASC_ARR[$1]}" == "true" ]]
+}
+
+# Check if a plugin is in the managed list
+# Usage: is_dotfiles_managed_plugin "plugin_name"
+# Returns: 0 if managed, 1 if not managed, 2 if no argument provided
+function is_dotfiles_managed_plugin() {
+    if [[ -z "$1" ]]; then
+        dotfiles_logging "No plugin name provided." "error"
+        return $RC_ERROR
+    fi
+    [[ "${DOTFILES_PLUGIN_ASC_ARR[$1]}" == "true" ]]
+}
+
+# Setup standard app directory structure
+# $1: app name
+# Returns: app_home_dir path via echo
+function setup_dotfiles_app_home() {
+
+    local _app_name="$1"
+    local _app_home_dir="$DOTFILES_XDG_CONFIG_DIR/$_app_name"
+
+    ensure_directory "$_app_home_dir"
+
+    echo $_app_home_dir
+}
+
+# Setup dotfiles config with symlink
+# $1: app name
+# $2: app home directory
+# $3: config filename
+# Returns: config link path via echo if successful, exits on failure
+function setup_dotfiles_config() {
+
+    local _app_name="$1"
+    local _app_home_dir="$2"
+    local _config_filename="$3"
+
+    local _dotfiles_config_path="$DOTFILES_DOT_CONFIG_DIR/$_app_name/$_config_filename"
+    local _config_link="$_app_home_dir/$_config_filename"
+
+    if ! create_validated_symlink "$_dotfiles_config_path" "$_config_link"; then
+        dotfiles_logging "Failed to link dotfiles $_app_name config from $_dotfiles_config_path to $_config_link." "warn"
+    fi
+
+    if [[ -f "$_config_link" ]]; then
+        echo "$_config_link"
+        return $RC_SUCCESS
+    else
+        return $RC_ERROR
+    fi
+}
+
+# Setup history symlink to user history directory
+# $1: app name
+# $2: history filename in XDG_STATE
+# $3: history filename in user directory (optional, defaults to "$app_name.history")
+function setup_dotfiles_history_link() {
+
+    # sanity check
+    [[ -d "$DOTFILES_USER_HIST_DIR" ]] || return $RC_NO_ERROR
+
+    # link state history -> user history
+    local _app_name="$1"
+    local _state_history_file="$2"
+    local _user_history_file="${3:-$_app_name.history}"
+
+    local _history_path="$DOTFILES_XDG_STATE_DIR/$_app_name/$_state_history_file"
+    local _history_link="$DOTFILES_USER_HIST_DIR/$_user_history_file"
+
+    [[ -e "$_history_link" ]] || ln -s "$_history_path" "$_history_link"
+}
+
+# Setup user config with symlink
+# $1: app name
+# $2: user config filename
+# $3: app home directory
+# $4: config filename
+# Returns: config link path via echo
+function setup_dotfiles_user_config() {
+
+    local _app_name="$1"
+    local _user_config_filename="$2"
+    local _app_home_dir="$3"
+    local _config_filename="$4"
+
+    local _user_config_path="$DOTFILES_USER_CONFIG_DIR/$_app_name/$_user_config_filename"
+    local _config_link="$_app_home_dir/$_config_filename"
+
+    if ! create_validated_symlink "$_user_config_path" "$_config_link"; then
+        dotfiles_logging "Failed to link $_app_name user config from $_user_config_path to $_config_link." "warn"
+    fi
+
+    echo $_config_link
+}
+
+# Setup user credentials with symlink
+# $1: app name
+# $2: app home directory
+# $3: credentials filename
+# Returns: credentials link path via echo
+function setup_dotfiles_user_credentials() {
+
+    local _app_name="$1"
+    local _app_home_dir="$2"
+    local _creds_filename="${3:-credentials}"
+
+    local _user_creds_path="$DOTFILES_USER_SECRET_DIR/$_app_name/$_creds_filename"
+    local _creds_link="$_app_home_dir/$_creds_filename"
+
+    if ! create_validated_symlink "$_user_creds_path" "$_creds_link"; then
+        dotfiles_logging "Failed to link $_app_name user credentials from $_user_creds_path to $_creds_link." "warn"
+    fi
+
+    echo $_creds_link
+}
+
+
+# ------------------------------------------------------------------------------
+# Link
+# ------------------------------------------------------------------------------
+
+
+# Create a symbolic link with validation and logging
+# $1: source path
+# $2: link path
+function create_validated_symlink() {
+
+    local _source_path="$1"
+    local _link_path="$2"
+
+    # create symlink
+    [[ -e "$_link_path" ]] || ln -s "$_source_path" "$_link_path"
+
+    # validate
+    if [[ ! -e "$_source_path" ]]; then
+        return $RC_NO_ERROR
+    elif [[ $(realpath "$_source_path") != $(realpath "$_link_path") ]]; then
+        return $RC_ERROR
+    fi
+
+    return $RC_SUCCESS
 }
 
 
@@ -408,7 +579,7 @@ function dotfiles_logging() {
 
 # ------------------------------------------------------------------------------
 #
-# Plugin
+# PATH
 #
 # - Dependency
 #   - Functions
@@ -417,15 +588,30 @@ function dotfiles_logging() {
 # ------------------------------------------------------------------------------
 
 
-# Check if a plugin is in the managed list
-# Usage: is_dotfiles_managed_plugin "plugin_name"
-# Returns: 0 if managed, 1 if not managed, 2 if no argument provided
-function is_dotfiles_managed_plugin() {
-    if [[ -z "$1" ]]; then
-        dotfiles_logging "No plugin name provided." "error"
-        return $RC_ERROR
+# Add directory to the end of PATH if not already present
+# $1: directory path
+function append_dir_to_path() {
+
+    local _dir_path="$1"
+
+    if [[ -d "$_dir_path" ]]; then
+        [[ ":$PATH:" != *":$_dir_path:"* ]] && export PATH="$PATH:$_dir_path"
+    else
+        dotfiles_logging "Directory $_dir_path missing. Skip from adding it to PATH. " "warn"
     fi
-    [[ "${DOTFILES_PLUGIN_ASC_ARR[$1]}" == "true" ]]
+}
+
+# Add directory to beginning of PATH if not already present
+# $1: directory path
+function prepend_dir_to_path() {
+
+    local _dir_path="$1"
+
+    if [[ -d "$_dir_path" ]]; then
+        [[ ":$PATH:" != *":$_dir_path:"* ]] && export PATH="$_dir_path:$PATH"
+    else
+        dotfiles_logging "Directory $_dir_path missing. Skip from adding it to PATH. " "warn"
+    fi
 }
 
 
@@ -450,34 +636,11 @@ function join_by { local IFS="$1"; shift; echo "$*"; }
 # ------------------------------------------------------------------------------
 
 
-function get_system_name() {
-
-    local os_name=$(uname)
-
-    case $os_name in
-
-        "Linux")
-            echo "linux" ;;
-
-        "Darwin")
-            echo "mac" ;;
-
-        *)
-            echo "unknown($os_name)" ;;
-    esac
-}
-
-
-function is_supported_system_name() {
-    [[ $DOTFILES_SYS_NAME == "mac" || $DOTFILES_SYS_NAME == "linux" ]]
-}
-
-
 function get_system_architecture() {
 
-    local archt=$(uname -m)
+    local _archt=$(uname -m)
 
-    case $archt in
+    case $_archt in
 
         "x86_64")
             echo "amd64" ;;
@@ -489,11 +652,31 @@ function get_system_architecture() {
             echo "arm" ;;
 
         *)
-            echo "unknown($archt)" ;;
+            echo "unknown($_archt)" ;;
     esac
 }
 
+function get_system_name() {
+
+    local _os_name=$(uname)
+
+    case $_os_name in
+
+        "Linux")
+            echo "linux" ;;
+
+        "Darwin")
+            echo "mac" ;;
+
+        *)
+            echo "unknown($_os_name)" ;;
+    esac
+}
 
 function is_supported_system_archt() {
     [[ $DOTFILES_SYS_ARCHT == "amd64" || $DOTFILES_SYS_ARCHT == "arm64" ]]
+}
+
+function is_supported_system_name() {
+    [[ $DOTFILES_SYS_NAME == "mac" || $DOTFILES_SYS_NAME == "linux" ]]
 }
