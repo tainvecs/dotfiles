@@ -212,6 +212,45 @@ function _dotfiles_init_docker() {
 
 # ------------------------------------------------------------------------------
 #
+# Elasticsearch
+#
+# Slow, should be loaded in background with zinit.
+#
+# - References
+#   - https://www.elastic.co/guide/en/fleet/current/agent-environment-variables.html#env-enroll-agent
+#   - https://www.elastic.co/guide/en/elasticsearch/reference/current/zip-windows.html#windows-service-settings
+#
+# - Environment Variables
+#   - ES_HOME
+#   - ES_JAVA_HOME
+#
+# ------------------------------------------------------------------------------
+
+
+function _dotfiles_init_es(){
+
+    # sanity check
+    local _es_home_dir="$DOTFILES_XDG_CONFIG_DIR/es/es"
+    if [[ ! -d "$_es_home_dir" ]]; then
+        log_app_initialization "es" "fail"
+        return $RC_ERROR
+    fi
+
+    # home
+    export ES_HOME=$_es_home_dir
+
+    # path
+    append_dir_to_path "$_es_home_dir/bin"
+
+    # java
+    if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
+        export ES_JAVA_HOME="${JAVA_HOME:-$(/usr/libexec/java_home)}"
+    fi
+}
+
+
+# ------------------------------------------------------------------------------
+#
 # emacs
 #
 # - References
