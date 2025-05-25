@@ -1,35 +1,36 @@
 # Apps
 
-| App Name      | Mac | Ubuntu | Default Enabled |
-|:--------------|:---:|:------:|:---------------:|
-| 7z            | ✅  | ✅     | ✅              |
-| alt-tab       | ✅  |        |                 |
-| autoenv       | ✅  | ✅     | ✅              |
-| aws           | ✅  | ✅     |                 |
-| clojure       | ✅  | ✅     |                 |
-| docker        | ✅  | ✅     | ✅              |
-| elasticsearch | ✅  | ✅     |                 |
-| emacs         | ✅  | ✅     |                 |
-| gcp           | ✅  | ✅     |                 |
-| golang        | ✅  | ✅     |                 |
-| htop          | ✅  | ✅     | ✅              |
-| iterm         | ✅  |        |                 |
-| jdk           | ✅  | ✅     | ✅              |
-| keyd          |     | ✅     |                 |
-| kube          | ✅  | ✅     |                 |
-| meilisearch   | ✅  | ✅     |                 |
-| nvtop         | ✅  | ✅     |                 |
-| nvitop        |     | ✅     |                 |
-| openvpn       | ✅  | ✅     |                 |
-| python        | ✅  | ✅     | ✅              |
-| pyenv         | ✅  | ✅     |                 |
-| svn           | ✅  | ✅     | ✅              |
-| tmux          | ✅  | ✅     | ✅              |
-| tree          | ✅  | ✅     | ✅              |
-| vim           | ✅  | ✅     |                 |
-| volta         | ✅  | ✅     |                 |
-| vscode        | ✅  | ✅     |                 |
-| watch         | ✅  |        | ✅              |
+| App Name      | Mac Installation | Ubuntu Installation | User Config | User Secret | Default Enabled |
+|:--------------|:----------------:|:-------------------:|:-----------:|:-----------:|:---------------:|
+| 7z            | ✅               | ✅                  |             |             | ✅              |
+| alt-tab       | ✅               |                     |             |             |                 |
+| autoenv       | ✅               | ✅                  |             |             | ✅              |
+| aws           | ✅               | ✅                  | ✅          | ✅          |                 |
+| clojure       | ✅               | ✅                  |             |             |                 |
+| docker        | ✅               | ✅                  | ✅          |             | ✅              |
+| elasticsearch | ✅               | ✅                  |             |             |                 |
+| emacs         | ✅               | ✅                  | ✅          |             |                 |
+| gcp           | ✅               | ✅                  | ✅          |             |                 |
+| golang        | ✅               | ✅                  |             |             |                 |
+| htop          | ✅               | ✅                  | ✅          |             | ✅              |
+| iterm         | ✅               |                     |             |             |                 |
+| jdk           | ✅               | ✅                  |             |             | ✅              |
+| keyd          |                  | ✅                  | ✅          |             |                 |
+| kube          | ✅               | ✅                  | ✅          | ✅          |                 |
+| meilisearch   | ✅               | ✅                  |             |             |                 |
+| nvtop         | ✅               | ✅                  |             |             |                 |
+| nvitop        |                  | ✅                  |             |             |                 |
+| openvpn       | ✅               | ✅                  |             |             |                 |
+| python        | ✅               | ✅                  | ✅          |             | ✅              |
+| pyenv         | ✅               | ✅                  |             |             |                 |
+| ssh           |                  |                     | ✅          | ✅          | ✅              |
+| svn           | ✅               | ✅                  |             |             | ✅              |
+| tmux          | ✅               | ✅                  | ✅          |             | ✅              |
+| tree          | ✅               | ✅                  |             |             | ✅              |
+| vim           | ✅               | ✅                  | ✅          |             |                 |
+| volta         | ✅               | ✅                  | ✅          |             |                 |
+| vscode        | ✅               | ✅                  |             |             |                 |
+| watch         | ✅               |                     |             |             | ✅              |
 
 
 # Plugins
