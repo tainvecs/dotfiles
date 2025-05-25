@@ -33,7 +33,7 @@
 #   - Return Codes
 #     - RC_SUCCESS
 #     - RC_ERROR
-#     - RC_NO_ERROR
+#     - RC_SKIPPED
 #     - RC_UNSUPPORTED
 #
 # ------------------------------------------------------------------------------
@@ -410,7 +410,7 @@ function ensure_directory() {
 #     - DOTFILES_USER_HIST_DIR
 #     - RC_SUCCESS
 #     - RC_ERROR
-#     - RC_NO_ERROR
+#     - RC_SKIPPED
 #
 #   - Functions
 #     - dotfiles_logging
@@ -488,7 +488,7 @@ function setup_dotfiles_config() {
 function setup_dotfiles_history_link() {
 
     # sanity check
-    [[ -d "$DOTFILES_USER_HIST_DIR" ]] || return $RC_NO_ERROR
+    [[ -d "$DOTFILES_USER_HIST_DIR" ]] || return $RC_SKIPPED
 
     # link state history -> user history
     local _app_name="$1"
@@ -554,7 +554,7 @@ function setup_dotfiles_user_credentials() {
 #   - Environment Variable
 #     - RC_SUCCESS
 #     - RC_ERROR
-#     - RC_NO_ERROR
+#     - RC_SKIPPED
 #
 # ------------------------------------------------------------------------------
 
@@ -572,7 +572,7 @@ function create_validated_symlink() {
 
     # validate
     if [[ ! -e "$_source_path" ]]; then
-        return $RC_NO_ERROR
+        return $RC_SKIPPED
     elif [[ $(realpath "$_source_path") != $(realpath "$_link_path") ]]; then
         return $RC_ERROR
     fi
