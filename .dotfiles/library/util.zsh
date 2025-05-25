@@ -19,6 +19,22 @@
 #     - DOTFILES_SYS_ARCHT
 #     - DOTFILES_APP_ASC_ARR
 #     - DOTFILES_PLUGIN_ASC_ARR
+#     - DOTFILES_XDG_CONFIG_DIR
+#     - DOTFILES_XDG_STATE_DIR
+#     - DOTFILES_DOT_CONFIG_DIR
+#     - DOTFILES_USER_CONFIG_DIR
+#     - DOTFILES_USER_SECRET_DIR
+#     - DOTFILES_USER_HIST_DIR
+#     - B_RED
+#     - B_YELLOW
+#     - B_GREEN
+#     - COLOR_OFF
+#
+#   - Return Codes
+#     - RC_SUCCESS
+#     - RC_ERROR
+#     - RC_NO_ERROR
+#     - RC_UNSUPPORTED
 #
 # ------------------------------------------------------------------------------
 
@@ -31,16 +47,23 @@
 #   - Environment Variable
 #     - DOTFILES_SYS_NAME
 #     - DOTFILES_SYS_ARCHT
-#     - DOTFILES_APP_ASC_ARR
+#     - RC_SUCCESS
+#     - RC_ERROR
+#     - RC_UNSUPPORTED
 #
 #   - Function
 #     - dotfiles_logging
+#     - command_exists
+#     - is_app_installed
+#     - log_app_installation
 #
 #   - App
-#     - brew
+#     - brew (mac)
+#     - apt-get (linux)
 #     - curl
 #     - grep
-#     - jq
+#     - cut
+#     - echo
 #
 # ------------------------------------------------------------------------------
 
@@ -269,6 +292,9 @@ function log_app_installation() {
 # Array
 #
 # - Dependency
+#   - Environment Variable
+#     - RC_ERROR
+#
 #   - Function
 #     - dotfiles_logging
 #
@@ -330,6 +356,9 @@ function update_associative_array_from_array() {
 # Command
 #
 # - Dependency
+#   - Environment Variable
+#     - RC_ERROR
+#
 #   - Function
 #     - dotfiles_logging
 #
@@ -347,7 +376,12 @@ function command_exists() {
 
 
 # ------------------------------------------------------------------------------
+#
 # Directory
+#
+# - Dependency
+#   - None
+#
 # ------------------------------------------------------------------------------
 
 
@@ -363,9 +397,23 @@ function ensure_directory() {
 # Dotfiles
 #
 # - Dependency
+#   - Environment Variable
+#     - DOTFILES_APP_ASC_ARR
+#     - DOTFILES_PLUGIN_ASC_ARR
+#     - DOTFILES_XDG_CONFIG_DIR
+#     - DOTFILES_XDG_STATE_DIR
+#     - DOTFILES_DOT_CONFIG_DIR
+#     - DOTFILES_USER_CONFIG_DIR
+#     - DOTFILES_USER_SECRET_DIR
+#     - DOTFILES_USER_HIST_DIR
+#     - RC_SUCCESS
+#     - RC_ERROR
+#     - RC_NO_ERROR
+#
 #   - Functions
 #     - dotfiles_logging
 #     - ensure_directory
+#     - create_validated_symlink
 #
 # ------------------------------------------------------------------------------
 
@@ -497,7 +545,15 @@ function setup_dotfiles_user_credentials() {
 
 
 # ------------------------------------------------------------------------------
+#
 # Link
+#
+# - Dependency
+#   - Environment Variable
+#     - RC_SUCCESS
+#     - RC_ERROR
+#     - RC_NO_ERROR
+#
 # ------------------------------------------------------------------------------
 
 
@@ -527,11 +583,12 @@ function create_validated_symlink() {
 #
 # Logging
 #
-# - Environment Variable
-#   - B_RED
-#   - B_YELLOW
-#   - B_GREEN
-#   - COLOR_OFF
+# - Dependency
+#   - Environment Variable
+#     - B_RED
+#     - B_YELLOW
+#     - B_GREEN
+#     - COLOR_OFF
 #
 # ------------------------------------------------------------------------------
 
@@ -616,7 +673,12 @@ function prepend_dir_to_path() {
 
 
 # ------------------------------------------------------------------------------
+#
 # Strings
+#
+# - Dependency
+#   - None
+#
 # ------------------------------------------------------------------------------
 
 
@@ -631,7 +693,6 @@ function join_by { local IFS="$1"; shift; echo "$*"; }
 #   - Environment Variable
 #     - DOTFILES_SYS_NAME
 #     - DOTFILES_SYS_ARCHT
-#     - DOTFILES_APP_ASC_ARR
 #
 # ------------------------------------------------------------------------------
 
