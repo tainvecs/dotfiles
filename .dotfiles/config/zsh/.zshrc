@@ -218,6 +218,18 @@ fi
 
 
 # ------------------------------------------------------------------------------
+# Misc
+# ------------------------------------------------------------------------------
+
+
+# zsh history -> user history
+if [[ -d $DOTFILES_USER_HIST_DIR ]]; then
+    local _zsh_history_link="$DOTFILES_USER_HIST_DIR/zsh.history"
+    [[ -e $_zsh_history_link ]] || ln -s $HISTFILE $_zsh_history_link
+fi
+
+
+# ------------------------------------------------------------------------------
 #
 # Profile End
 #
