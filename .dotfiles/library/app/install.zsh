@@ -757,6 +757,8 @@ function _dotfiles_install_python() {
     local _python_app_name
     if [[ $DOTFILES_SYS_NAME == "linux" ]]; then
         install_apps "python3 python3-pip python3-dev build-essential"
+    elif [[ $DOTFILES_SYS_NAME == "mac" ]]; then
+        install_apps "python3"
     fi
 
     # upgrade pip
