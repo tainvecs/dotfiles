@@ -12,6 +12,7 @@
 # Dependencies:
 #   - Environment Variable File
 #     - .dotfiles/env/misc.env
+#
 #   - Environment Variables
 #     - DOTFILES_SYS_NAME
 #     - DOTFILES_SYS_ARCHT
@@ -22,6 +23,7 @@
 #     - DOTFILES_USER_CONFIG_DIR
 #     - DOTFILES_USER_SECRET_DIR
 #     - DOTFILES_USER_HIST_DIR
+#
 #   - Library:
 #     - $DOTFILES_DOT_LIB_DIR/util.zsh
 #

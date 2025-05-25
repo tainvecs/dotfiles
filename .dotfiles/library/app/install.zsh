@@ -1,20 +1,27 @@
 #!/bin/zsh
 
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 #
 # Utility Functions for App Installation
 #
 #
-# Version: 0.0.3
-# Last Modified: 2025-05-21
+# Version: 0.0.4
+# Last Modified: 2025-05-25
 #
 # - Dependency
 #   - Environment Variable File
 #     - .dotfiles/env/misc.env
+#
 #   - Environment Variable
 #     - DOTFILES_SYS_NAME
 #     - DOTFILES_SYS_ARCHT
+#     - DOTFILES_XDG_CONFIG_DIR
+#     - RC_SUCCESS
+#     - RC_ERROR
+#     - RC_UNSUPPORTED
+#     - RC_DEPENDENCY_MISSING
+#
 #   - Library
 #     - $DOTFILES_DOT_LIB_DIR/util.zsh
 #
@@ -83,10 +90,10 @@ function _dotfiles_install_autoenv() {
     fi
 
     # install or update
-    local _autoenv_home="$DOTFILES_XDG_CONFIG_DIR/autoenv"
-    [[ -d $_autoenv_home ]] || mkdir -p $_autoenv_home
+    local _autoenv_home_dir="$DOTFILES_XDG_CONFIG_DIR/autoenv"
+    ensure_directory "$_autoenv_home_dir"
 
-    local _autoenv_git_dir="$_autoenv_home/autoenv.git"
+    local _autoenv_git_dir="$_autoenv_home_dir/autoenv.git"
     if [[ ! -d $_autoenv_git_dir ]]; then
         log_app_installation "autoenv" "install"
         git clone https://github.com/hyperupcall/autoenv.git $_autoenv_git_dir
@@ -95,7 +102,7 @@ function _dotfiles_install_autoenv() {
         git -C $_autoenv_git_dir pull
     fi
 
-    if [[ $? -eq 0 ]]; then
+    if [[ $? -eq $RC_SUCCESS ]]; then
         log_app_installation "autoenv" "success"
     else
         log_app_installation "autoenv" "fail"
@@ -134,38 +141,38 @@ function _dotfiles_install_aws() {
     elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
 
         # home
-        local _aws_home="$DOTFILES_XDG_CONFIG_DIR/aws"
-        [[ -d $_aws_home ]] || mkdir -p $_aws_home
+        local _aws_home_dir="$DOTFILES_XDG_CONFIG_DIR/aws"
+        ensure_directory "$_aws_home_dir"
 
         # download installer
-        [[ -d "$_aws_home/aws" ]] && rm -rf "$_aws_home/aws"
-        [[ -f "$_aws_home/awscliv2.zip" ]] && rm -f "$_aws_home/awscliv2.zip"
+        [[ -d "$_aws_home_dir/aws" ]] && rm -rf "$_aws_home_dir/aws"
+        [[ -f "$_aws_home_dir/awscliv2.zip" ]] && rm -f "$_aws_home_dir/awscliv2.zip"
 
         if [[ $DOTFILES_SYS_ARCHT == "arm64" ]]; then
-            curl -fL "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "$_aws_home/awscliv2.zip" || {
+            curl -fL "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "$_aws_home_dir/awscliv2.zip" || {
                 log_app_installation "aws" "fail"
-                rm -f "$_aws_home/awscliv2.zip"
+                rm -f "$_aws_home_dir/awscliv2.zip"
                 return $RC_ERROR
             }
         elif [[ $DOTFILES_SYS_ARCHT == "amd64" ]]; then
-            curl -fL "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "$_aws_home/awscliv2.zip" || {
+            curl -fL "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "$_aws_home_dir/awscliv2.zip" || {
                 log_app_installation "aws" "fail"
-                rm -f "$_aws_home/awscliv2.zip"
+                rm -f "$_aws_home_dir/awscliv2.zip"
                 return $RC_ERROR
             }
         fi
-        unzip "$_aws_home/awscliv2.zip" -d $_aws_home && rm -f "$_aws_home/awscliv2.zip"
+        unzip "$_aws_home_dir/awscliv2.zip" -d $_aws_home_dir && rm -f "$_aws_home_dir/awscliv2.zip"
 
         # install or update
         if ! command_exists "aws"; then
             log_app_installation "aws" "install"
-            sudo "$_aws_home/aws/install"
+            sudo "$_aws_home_dir/aws/install"
         else
             log_app_installation "aws" "update"
-            sudo "$_aws_home/aws/install" --update
+            sudo "$_aws_home_dir/aws/install" --update
         fi
 
-        if [[ $? -eq 0 ]]; then
+        if [[ $? -eq $RC_SUCCESS ]]; then
             log_app_installation "aws" "success"
         else
             log_app_installation "aws" "fail"
@@ -210,7 +217,7 @@ function _dotfiles_install_docker() {
         return $RC_UNSUPPORTED
     fi
     if ! is_supported_system_archt; then
-        log_app_installation "autoenv" "sys-archt-not-supported"
+        log_app_installation "docker" "sys-archt-not-supported"
         return $RC_UNSUPPORTED
     fi
     if ! command_exists "curl"; then
@@ -293,8 +300,8 @@ function _dotfiles_install_elasticsearch() {
     fi
 
     # home
-    local _es_home="$DOTFILES_XDG_CONFIG_DIR/es"
-    [[ -d $_es_home ]] || mkdir -p $_es_home
+    local _es_home_dir="$DOTFILES_XDG_CONFIG_DIR/es"
+    ensure_directory "$_es_home_dir"
 
     # get version
     local _es_sys_name
@@ -313,11 +320,11 @@ function _dotfiles_install_elasticsearch() {
     local _es_zip_file_name="elasticsearch-$_es_version-$_es_sys_name-$_es_sys_archt.tar.gz"
 
     # clean up, download, verify, extract and install
-    [[ -d "$_es_home/es" ]] && rm -rf "$_es_home/es"
+    [[ -d "$_es_home_dir/es" ]] && rm -rf "$_es_home_dir/es"
 
     curl -O "https://artifacts.elastic.co/downloads/elasticsearch/$_es_zip_file_name"
     curl "https://artifacts.elastic.co/downloads/elasticsearch/$_es_zip_file_name.sha512" | shasum -a 512 -c -
-    mkdir "$_es_home/es" && tar -xzf "$_es_zip_file_name" -C "$_es_home/es" --strip-components 1
+    mkdir "$_es_home_dir/es" && tar -xzf "$_es_zip_file_name" -C "$_es_home_dir/es" --strip-components 1
     rm -f "$_es_zip_file_name"
 }
 
@@ -371,16 +378,16 @@ function _dotfiles_install_gcp() {
     # install
     log_app_installation "gcp" "install"
 
-    local _gcp_home="$DOTFILES_XDG_CONFIG_DIR/gcp"
-    [[ -d $_gcp_home ]] || mkdir -p $_gcp_home
+    local _gcp_home_dir="$DOTFILES_XDG_CONFIG_DIR/gcp"
+    ensure_directory "$_gcp_home_dir"
 
-    curl -fL https://sdk.cloud.google.com > "$_gcp_home/install.sh"
-    if bash "$_gcp_home/install.sh" --disable-prompts --install-dir=$_gcp_home; then
+    curl -fL https://sdk.cloud.google.com > "$_gcp_home_dir/install.sh"
+    if bash "$_gcp_home_dir/install.sh" --disable-prompts --install-dir=$_gcp_home_dir; then
         log_app_installation "gcp" "success"
-        rm -f "$_gcp_home/install.sh"
+        rm -f "$_gcp_home_dir/install.sh"
     else
         log_app_installation "gcp" "fail"
-        rm -f "$_gcp_home/install.sh"
+        rm -f "$_gcp_home_dir/install.sh"
         return $RC_ERROR
     fi
 }
@@ -492,9 +499,9 @@ function _dotfiles_install_keyd() {
     fi
 
     # install or update
-    local _keyd_home="$DOTFILES_XDG_CONFIG_DIR/keyd"
-    [[ -d $_keyd_home ]] || mkdir -p $_keyd_home
-    local _keyd_git_dir="$_keyd_home/keyd.git"
+    local _keyd_home_dir="$DOTFILES_XDG_CONFIG_DIR/keyd"
+    ensure_directory "$_keyd_home_dir"
+    local _keyd_git_dir="$_keyd_home_dir/keyd.git"
 
     if command_exists "keyd" || is_app_installed "keyd"; then
 
@@ -535,7 +542,7 @@ function _dotfiles_install_keyd() {
         fi
     fi
 
-    if [[ $? -eq 0 ]]; then
+    if [[ $? -eq $RC_SUCCESS ]]; then
         log_app_installation "keyd" "success"
     else
         log_app_installation "keyd" "fail"
@@ -666,10 +673,10 @@ function _dotfiles_install_nvtop() {
     # install
     log_app_installation "nvtop" "install"
 
-    local _nvtop_home="$DOTFILES_XDG_CONFIG_DIR/nvtop"
-    [[ -d $_nvtop_home ]] || mkdir -p $_nvtop_home
+    local _nvtop_home_dir="$DOTFILES_XDG_CONFIG_DIR/nvtop"
+    ensure_directory "$_nvtop_home_dir"
 
-    local _nvtop_git_dir="$_nvtop_home/nvtop.git"
+    local _nvtop_git_dir="$_nvtop_home_dir/nvtop.git"
     if [[ ! -d $_nvtop_git_dir ]]; then
 
         git clone https://github.com/Syllo/nvtop.git $_nvtop_git_dir
@@ -717,7 +724,7 @@ function _dotfiles_install_nvitop() {
         pip install --upgrade nvitop
     fi
 
-    if [[ $? -eq 0 ]]; then
+    if [[ $? -eq $RC_SUCCESS ]]; then
         log_app_installation "nvitop" "success"
     else
         log_app_installation "nvitop" "fail"
@@ -762,7 +769,7 @@ function _dotfiles_install_python() {
     fi
 
     # upgrade pip
-    sudo pip3 install --upgrade pip
+    python3 -m pip install --upgrade pip
 }
 
 
@@ -787,12 +794,12 @@ function _dotfiles_install_pyenv() {
     elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
 
         # home directory
-        local _pyenv_home="$DOTFILES_XDG_CONFIG_DIR/pyenv"
-        [[ -d $_pyenv_home ]] || mkdir -p $_pyenv_home
+        local _pyenv_home_dir="$DOTFILES_XDG_CONFIG_DIR/pyenv"
+        ensure_directory "$_pyenv_home_dir"
 
         # pyenv home
-        local _pyenv_git_dir="$_pyenv_home/pyenv.git"
-        local _pyenv_venv_git_dir="$_pyenv_home/pyenv.git/plugins/pyenv-virtualenv"
+        local _pyenv_git_dir="$_pyenv_home_dir/pyenv.git"
+        local _pyenv_venv_git_dir="$_pyenv_git_dir/plugins/pyenv-virtualenv"
 
         # install or update
         if ! command_exists "pyenv" && ! is_app_installed "pyenv"; then
@@ -806,7 +813,7 @@ function _dotfiles_install_pyenv() {
 
             # install with git
             [[ -d $_pyenv_git_dir ]] && rm -rf $_pyenv_git_dir
-            [[ -d $_pyenv_venv_git_dir ]] || rm -rf $_pyenv_venv_git_dir
+            [[ -d $_pyenv_venv_git_dir ]] && rm -rf $_pyenv_venv_git_dir
 
             git clone https://github.com/pyenv/pyenv.git $_pyenv_git_dir || {
                 log_app_installation "pyenv" "fail"
@@ -928,12 +935,12 @@ function _dotfiles_install_volta() {
     # install
     log_app_installation "volta" "install"
 
-    local _volta_home="$DOTFILES_XDG_CONFIG_DIR/volta"
-    [[ -d $_volta_home ]] || mkdir -p $_volta_home
-    export VOLTA_HOME=$_volta_home
+    local _volta_home_dir="$DOTFILES_XDG_CONFIG_DIR/volta"
+    ensure_directory "$_volta_home_dir"
+    export VOLTA_HOME=$_volta_home_dir
 
-    local _volta_npm_home_dir="$_volta_home/npm"
-    [[ -d $_volta_npm_home_dir ]] || mkdir -p $_volta_npm_home_dir
+    local _volta_npm_home_dir="$_volta_home_dir/npm"
+    ensure_directory "$_volta_npm_home_dir"
     local _volta_npm_config_path="$_volta_npm_home_dir/.npmrc"
     export NPM_CONFIG_USERCONFIG=$_volta_npm_config_path
 
