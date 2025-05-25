@@ -573,7 +573,7 @@ function create_validated_symlink() {
     # validate
     if [[ ! -e "$_source_path" ]]; then
         return $RC_SKIPPED
-    elif [[ $(realpath "$_source_path") != $(realpath "$_link_path") ]]; then
+    elif [[ ! "$_source_path" -ef "$_link_path" ]]; then
         return $RC_ERROR
     fi
 
