@@ -6,8 +6,8 @@
 # Utility Functions
 #
 #
-# Version: 0.0.8
-# Last Modified: 2025-05-18
+# Version: 0.0.9
+# Last Modified: 2025-05-24
 #
 # - Dependency
 #   - Environment Variable File
@@ -79,6 +79,36 @@ function log_app_installation() {
             echo "Usage: log_app_installation <app_name> <status>"
             echo -n '  <status> should be one of: "install", "skip", "fail", "success",'
             echo '"sys-name-not-supported", "sys-name-not-supported", "dependency-missing"' ;;
+    esac
+}
+
+
+# Print app initialization message
+# $1: package name
+# $2: function code ("fail", "success", "sys-name-not-supported", "sys-archt-not-supported")
+function log_app_initialization() {
+
+    local app_name=$1
+    local status=$2
+
+    case $status in
+
+        "fail")
+            dotfiles_logging "Failed to initialization \"$app_name\"." "error" ;;
+
+        "success")
+            dotfiles_logging "Successfully initialized \"$app_name\"." "info" ;;
+
+        "sys-name-not-supported")
+            dotfiles_logging "\"$app_name\" not initialized. \"$app_name\" is not supported for '$DOTFILES_SYS_NAME'." "warn" ;;
+
+        "sys-archt-not-supported")
+            dotfiles_logging "\"$app_name\" not initialized. \"$app_name\" is not supported for '$DOTFILES_SYS_ARCHT'." "warn" ;;
+
+        *)
+            echo "log_app_initialization: Invalid status code \"$status\""
+            echo "Usage: log_app_initialization <app_name> <status>"
+            echo '  <status> should be one of: "fail", "success", "sys-name-not-supported", "sys-archt-not-supported".' ;;
     esac
 }
 
