@@ -6,8 +6,8 @@
 # Utility Functions for App Configuration Setup and Initialization
 #
 #
-# Version: 0.0.2
-# Last Modified: 2025-05-25
+# Version: 0.0.3
+# Last Modified: 2025-05-31
 #
 # Dependencies:
 #   - Environment Variable File
@@ -156,7 +156,7 @@ function _dotfiles_init_clojure() {
 
     # path
     if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
-        append_dir_to_path "/Applications/clojure"
+        append_dir_to_path "PATH" "/Applications/clojure"
     fi
 }
 
@@ -242,7 +242,7 @@ function _dotfiles_init_es(){
     export ES_HOME=$_es_home_dir
 
     # path
-    append_dir_to_path "$_es_home_dir/bin"
+    append_dir_to_path "PATH" "$_es_home_dir/bin"
 
     # java
     if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
@@ -297,7 +297,7 @@ function _dotfiles_init_emacs() {
     setup_dotfiles_history_link "emacs" "history" "emacs.history"
 
     # path
-    append_dir_to_path "$_emacs_home_dir/bin"
+    append_dir_to_path "PATH" "$_emacs_home_dir/bin"
 }
 
 
@@ -375,7 +375,7 @@ function _dotfiles_init_go() {
     # path
     local _golib_bin_dir="$GOLIB/bin"
     ensure_directory "$_golib_bin_dir"
-    append_dir_to_path "$_golib_bin_dir"
+    append_dir_to_path "PATH" "$_golib_bin_dir"
 }
 
 
@@ -500,7 +500,7 @@ function _dotfiles_init_openvpn() {
 
     # mac, path
     if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
-        append_dir_to_path "$BREW_HOME/opt/openvpn/sbin"
+        append_dir_to_path "PATH" "$BREW_HOME/opt/openvpn/sbin"
     fi
 }
 
@@ -580,7 +580,7 @@ function _dotfiles_init_python() {
 
         # path
         local _pyenv_bin_dir="$PYENV_ROOT/bin"
-        prepend_dir_to_path "$_pyenv_bin_dir"
+        prepend_dir_to_path "PATH" "$_pyenv_bin_dir"
 
         # shims
         local _pyenv_shims_dir="$PYENV_ROOT/shims"
@@ -780,7 +780,7 @@ function _dotfiles_init_volta() {
     export VOLTA_HOME=$_volta_home_dir
 
     # path
-    append_dir_to_path "$_volta_home_dir/bin"
+    append_dir_to_path "PATH" "$_volta_home_dir/bin"
 
     # npm user config
     local _volta_npm_home_dir="$_volta_home_dir/npm"

@@ -3,25 +3,28 @@
 # Dotfiles App Configuration
 #
 #
-# Version: 0.0.4
-# Last Modified: 2025-05-12
+# Version: 0.0.5
+# Last Modified: 2025-05-31
 #
 # - Dependency
 #   - Environment Variable
 #     - DOTFILES_APP_ARR
-#     - DOTFILES_PLUGIN_ARR
 #     - DOTFILES_USER_APP_ARR
 #     - DOTFILES_USER_PLUGIN_ARR
+#     - DOTFILES_PLUGIN_ARR
 #   - Library
 #     - $DOTFILES_DOT_LIB_DIR/util.zsh
 #
 # - Environment Variable
-#   - ZSH_PROF
-#   - DOTFILES_SYS_NAME
-#   - DOTFILES_SYS_ARCHT
 #   - DOTFILES_APP_ASC_ARR
+#   - DOTFILES_SYS_ARCHT
+#   - DOTFILES_SYS_NAME
 #   - DOTFILES_PLUGIN_ASC_ARR
+#   - DOTFILES_USER_MAN_DIR
+#   - DOTFILES_XDG_MAN_DIR
 #   - ZINIT
+#   - ZINIT_HOME
+#   - ZSH_PROF
 #
 # ------------------------------------------------------------------------------
 
@@ -121,6 +124,7 @@ fi
 #
 # - Environment Variables
 #   - ZINIT
+#   - ZINIT_HOME
 #
 # ------------------------------------------------------------------------------
 
@@ -130,12 +134,13 @@ declare -A ZINIT
 
 ZINIT[HOME_DIR]="$ZDOTDIR/zinit"
 ZINIT[BIN_DIR]="${ZINIT[HOME_DIR]}/zinit.git"
-ZINIT[MAN_DIR]=${MANPATH:-"/usr/share/man"}
+ZINIT[MAN_DIR]="$DOTFILES_XDG_MAN_DIR"
 ZINIT[COMPINIT_OPTS]=-C  # to suppress warnings
 ZINIT[COMPLETIONS_DIR]="$DOTFILES_ZSH_COMP_DIR"
 ZINIT[ZCOMPDUMP_PATH]="$DOTFILES_ZSH_COMPDUMP_PATH"
 
 export ZINIT
+export ZINIT_HOME=${ZINIT[HOME_DIR]}
 
 # source zinit binary
 if [[ ! -f "${ZINIT[BIN_DIR]}/zinit.zsh" ]]; then
@@ -221,6 +226,11 @@ fi
 # Misc
 # ------------------------------------------------------------------------------
 
+
+# manual directory
+ensure_directory $DOTFILES_XDG_MAN_DIR
+append_dir_to_path "MANPATH" $DOTFILES_XDG_MAN_DIR
+append_dir_to_path "MANPATH" $DOTFILES_USER_MAN_DIR
 
 # zsh history -> user history
 if [[ -d $DOTFILES_USER_HIST_DIR ]]; then

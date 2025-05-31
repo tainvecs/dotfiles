@@ -6,8 +6,8 @@
 # Utility Functions
 #
 #
-# Version: 0.0.10
-# Last Modified: 2025-05-25
+# Version: 0.0.11
+# Last Modified: 2025-05-31
 #
 # - Dependency
 #   - Environment Variable File
@@ -648,29 +648,95 @@ function dotfiles_logging() {
 
 
 # Add directory to the end of PATH if not already present
-# $1: directory path
+# $1: path variable, $2: directory path
 function append_dir_to_path() {
 
-    local _dir_path="$1"
+    # Check if both arguments are provided
+    if [[ $# -ne 2 ]]; then
+        dotfiles_logging "Error: append_dir_to_path requires two arguments: \$1 path_variable and \$2 directory_path" "error"
+        return RC_ERROR
+    fi
 
-    if [[ -d "$_dir_path" ]]; then
-        [[ ":$PATH:" != *":$_dir_path:"* ]] && export PATH="$PATH:$_dir_path"
-    else
-        dotfiles_logging "Directory $_dir_path missing. Skip from adding it to PATH. " "warn"
+    local _path_var="$1"
+    local _dir_path="$2"
+
+    # Check if the directory exists
+    if [[ ! -d "$_dir_path" ]]; then
+        dotfiles_logging "Directory $_dir_path missing. Skip from adding it to $_path_var." "warn"
+        return RC_SKIPPED
+    fi
+
+    # append dir to path
+    if [[ ":${(P)_path_var}:" != *":$_dir_path:"* ]]; then
+        export $_path_var="${(P)_path_var}:$_dir_path"
     fi
 }
 
 # Add directory to beginning of PATH if not already present
-# $1: directory path
+# $1: path variable, $2: directory path
 function prepend_dir_to_path() {
 
-    local _dir_path="$1"
-
-    if [[ -d "$_dir_path" ]]; then
-        [[ ":$PATH:" != *":$_dir_path:"* ]] && export PATH="$_dir_path:$PATH"
-    else
-        dotfiles_logging "Directory $_dir_path missing. Skip from adding it to PATH. " "warn"
+    # Check if both arguments are provided
+    if [[ $# -ne 2 ]]; then
+        dotfiles_logging "Error: prepend_dir_to_path requires two arguments: \$1 path_variable and \$2 directory_path" "error"
+        return RC_ERROR
     fi
+
+    local _path_var="$1"
+    local _dir_path="$2"
+
+    # Check if the directory exists
+    if [[ ! -d "$_dir_path" ]]; then
+        dotfiles_logging "Directory $_dir_path missing. Skip from adding it to $_path_var." "warn"
+        return RC_SKIPPED
+    fi
+
+    # append dir to path
+    if [[ ":${(P)_path_var}:" != *":$_dir_path:"* ]]; then
+        export $_path_var="$_dir_path:${(P)_path_var}"
+    fi
+}
+
+
+
+# ------------------------------------------------------------------------------
+#
+# Plugin
+#
+# - Dependency
+#   - App
+#     - zinit
+#
+# ------------------------------------------------------------------------------
+
+
+# Print app initialization message
+# $1: package name
+# $2: function code ("fail", "success", "sys-name-not-supported", "sys-archt-not-supported")
+function log_plugin_installation() {
+
+    local _plugin_name=$1
+    local _status=$2
+
+    case $_status in
+
+        "sys-name-not-supported")
+            dotfiles_logging "\"$_app_name\" not installed. \"$_app_name\" is not supported for '$DOTFILES_SYS_NAME'." "warn" ;;
+
+        "sys-archt-not-supported")
+            dotfiles_logging "\"$_plugin_name\" not initialized. \"$_plugin_name\" is not supported for '$DOTFILES_SYS_ARCHT'." "warn" ;;
+
+        *)
+            dotfiles_logging "log_plugin_initialization: Invalid status code \"$_status\"" "error"
+
+            echo "Usage: log_plugin_initialization <app_name> <status>"
+            echo '  <status> should be one of: "sys-archt-not-supported".' ;;
+    esac
+}
+
+
+function is_plugin_installed() {
+    [[ " ${zsh_loaded_plugins[@]} " =~ " $1 " ]]
 }
 
 
