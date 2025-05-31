@@ -17,7 +17,7 @@ set directory=$VIM_HOME/.swp//
 " ------------------------------------------------------------------------------
 
 
-" VIM_CONFIG_LOCAL_PATH: $DOTFILES_XDG_CONFIG_DIR/vim/.local.vimrc
+" VIM_CONFIG_LOCAL_PATH: $DOTFILES_LOCAL_CONFIG_DIR/vim/.local.vimrc
 if filereadable(expand("$VIM_CONFIG_LOCAL_PATH"))
     source $VIM_CONFIG_LOCAL_PATH
 endif

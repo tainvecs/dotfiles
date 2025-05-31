@@ -19,9 +19,9 @@
 (setq default-directory               user-emacs-directory)
 
 ;; user directories
-(defconst user-cache-directory        (or (expand-file-name "emacs/" (getenv "XDG_CACHE_HOME"))
+(defconst user-cache-directory        (or (expand-file-name "emacs/" (getenv "DOTFILES_LOCAL_CACHE_DIR"))
                                           user-emacs-directory))
-(defconst user-state-directory        (or (expand-file-name "emacs/" (getenv "XDG_STATE_HOME"))
+(defconst user-state-directory        (or (expand-file-name "emacs/" (getenv "DOTFILES_LOCAL_STATE_DIR"))
                                           user-emacs-directory))
 
 (defconst user-auto-save-directory    (expand-file-name "auto-save-list/" user-cache-directory))

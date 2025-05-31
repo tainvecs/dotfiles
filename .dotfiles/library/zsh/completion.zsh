@@ -59,7 +59,7 @@ fi
 
 # gcp
 if command_exists "gcloud"; then
-    local _gcp_cmp_script_path="$DOTFILES_XDG_CONFIG_DIR/gcp/google-cloud-sdk/completion.zsh.inc"
+    local _gcp_cmp_script_path="$DOTFILES_LOCAL_CONFIG_DIR/gcp/google-cloud-sdk/completion.zsh.inc"
     if [[ -f $_gcp_cmp_script_path ]]; then
         local _gcp_cmp_link="$DOTFILES_ZSH_COMP_DIR/gcp.zsh.inc"
         [[ -L $_gcp_cmp_link || -f $_gcp_cmp_link ]] || ln -s $_gcp_cmp_script_path $_gcp_cmp_link

@@ -6,7 +6,7 @@
 # Utility Functions
 #
 #
-# Version: 0.0.11
+# Version: 0.0.12
 # Last Modified: 2025-05-31
 #
 # - Dependency
@@ -19,8 +19,8 @@
 #     - DOTFILES_SYS_ARCHT
 #     - DOTFILES_APP_ASC_ARR
 #     - DOTFILES_PLUGIN_ASC_ARR
-#     - DOTFILES_XDG_CONFIG_DIR
-#     - DOTFILES_XDG_STATE_DIR
+#     - DOTFILES_LOCAL_CONFIG_DIR
+#     - DOTFILES_LOCAL_STATE_DIR
 #     - DOTFILES_DOT_CONFIG_DIR
 #     - DOTFILES_USER_CONFIG_DIR
 #     - DOTFILES_USER_SECRET_DIR
@@ -402,8 +402,8 @@ function ensure_directory() {
 #   - Environment Variable
 #     - DOTFILES_APP_ASC_ARR
 #     - DOTFILES_PLUGIN_ASC_ARR
-#     - DOTFILES_XDG_CONFIG_DIR
-#     - DOTFILES_XDG_STATE_DIR
+#     - DOTFILES_LOCAL_CONFIG_DIR
+#     - DOTFILES_LOCAL_STATE_DIR
 #     - DOTFILES_DOT_CONFIG_DIR
 #     - DOTFILES_USER_CONFIG_DIR
 #     - DOTFILES_USER_SECRET_DIR
@@ -448,7 +448,7 @@ function is_dotfiles_managed_plugin() {
 function setup_dotfiles_app_home() {
 
     local _app_name="$1"
-    local _app_home_dir="$DOTFILES_XDG_CONFIG_DIR/$_app_name"
+    local _app_home_dir="$DOTFILES_LOCAL_CONFIG_DIR/$_app_name"
 
     ensure_directory "$_app_home_dir"
 
@@ -483,7 +483,7 @@ function setup_dotfiles_config() {
 
 # Setup history symlink to user history directory
 # $1: app name
-# $2: history filename in XDG_STATE
+# $2: history filename in DOTFILES_LOCAL_STATE_DIR
 # $3: history filename in user directory (optional, defaults to "$app_name.history")
 function setup_dotfiles_history_link() {
 
@@ -495,7 +495,7 @@ function setup_dotfiles_history_link() {
     local _state_history_file="$2"
     local _user_history_file="${3:-$_app_name.history}"
 
-    local _history_path="$DOTFILES_XDG_STATE_DIR/$_app_name/$_state_history_file"
+    local _history_path="$DOTFILES_LOCAL_STATE_DIR/$_app_name/$_state_history_file"
     local _history_link="$DOTFILES_USER_HIST_DIR/$_user_history_file"
 
     [[ -e "$_history_link" ]] || ln -s "$_history_path" "$_history_link"
@@ -736,7 +736,7 @@ function log_plugin_installation() {
 
 
 function is_plugin_installed() {
-    [[ " ${zsh_loaded_plugins[@]} " =~ " $1 " ]]
+    [[ " ${ZINIT_REGISTERED_PLUGINS[@]} " =~ " $1 " ]]
 }
 
 

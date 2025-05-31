@@ -21,7 +21,7 @@
 #   - DOTFILES_SYS_NAME
 #   - DOTFILES_PLUGIN_ASC_ARR
 #   - DOTFILES_USER_MAN_DIR
-#   - DOTFILES_XDG_MAN_DIR
+#   - DOTFILES_LOCAL_MAN_DIR
 #   - ZINIT
 #   - ZINIT_HOME
 #   - ZSH_PROF
@@ -93,6 +93,7 @@ export DOTFILES_SYS_ARCHT=$(get_system_architecture)
 # Homebrew
 #
 # - Environment Variables
+#   - BREW_HOME
 #   - HOMEBREW_PREFIX
 #   - HOMEBREW_CELLAR
 #   - HOMEBREW_REPOSITORY
@@ -129,18 +130,21 @@ fi
 # ------------------------------------------------------------------------------
 
 
+# zinit home
+export ZINIT_HOME="$ZDOTDIR/zinit"
+
 # set zinit variables
 declare -A ZINIT
 
-ZINIT[HOME_DIR]="$ZDOTDIR/zinit"
+ZINIT[HOME_DIR]="$ZINIT_HOME"
 ZINIT[BIN_DIR]="${ZINIT[HOME_DIR]}/zinit.git"
-ZINIT[MAN_DIR]="$DOTFILES_XDG_MAN_DIR"
+ZINIT[PLUGINS_DIR]="${ZINIT[HOME_DIR]}/plugins"
+ZINIT[MAN_DIR]="$DOTFILES_LOCAL_MAN_DIR"
 ZINIT[COMPINIT_OPTS]=-C  # to suppress warnings
 ZINIT[COMPLETIONS_DIR]="$DOTFILES_ZSH_COMP_DIR"
 ZINIT[ZCOMPDUMP_PATH]="$DOTFILES_ZSH_COMPDUMP_PATH"
 
 export ZINIT
-export ZINIT_HOME=${ZINIT[HOME_DIR]}
 
 # source zinit binary
 if [[ ! -f "${ZINIT[BIN_DIR]}/zinit.zsh" ]]; then
@@ -228,8 +232,8 @@ fi
 
 
 # manual directory
-ensure_directory $DOTFILES_XDG_MAN_DIR
-append_dir_to_path "MANPATH" $DOTFILES_XDG_MAN_DIR
+ensure_directory $DOTFILES_LOCAL_MAN_DIR
+append_dir_to_path "MANPATH" $DOTFILES_LOCAL_MAN_DIR
 append_dir_to_path "MANPATH" $DOTFILES_USER_MAN_DIR
 
 # zsh history -> user history

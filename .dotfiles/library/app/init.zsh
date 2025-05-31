@@ -6,8 +6,8 @@
 # Utility Functions for App Configuration Setup and Initialization
 #
 #
-# Version: 0.0.3
-# Last Modified: 2025-05-31
+# Version: 0.0.4
+# Last Modified: 2025-06-01
 #
 # Dependencies:
 #   - Environment Variable File
@@ -17,9 +17,9 @@
 #     - DOTFILES_SYS_NAME
 #     - DOTFILES_SYS_ARCHT
 #     - BREW_HOME
-#     - DOTFILES_XDG_CONFIG_DIR
-#     - DOTFILES_XDG_CACHE_DIR
-#     - DOTFILES_XDG_STATE_DIR
+#     - DOTFILES_LOCAL_CONFIG_DIR
+#     - DOTFILES_LOCAL_CACHE_DIR
+#     - DOTFILES_LOCAL_STATE_DIR
 #     - DOTFILES_USER_CONFIG_DIR
 #     - DOTFILES_USER_SECRET_DIR
 #     - DOTFILES_USER_HIST_DIR
@@ -53,7 +53,7 @@ function _dotfiles_init_autoenv() {
     if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
         _autoenv_script_path="$BREW_HOME/opt/autoenv/activate.sh"
     elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
-        _autoenv_script_path="$DOTFILES_XDG_CONFIG_DIR/autoenv/autoenv.git/activate.sh"
+        _autoenv_script_path="$DOTFILES_LOCAL_CONFIG_DIR/autoenv/autoenv.git/activate.sh"
     fi
 
     # sanity check
@@ -150,7 +150,7 @@ function _dotfiles_init_clojure() {
     export CLJ_CONFIG=$_clj_home_dir
 
     # .m2 cache
-    local _m2_dir="$DOTFILES_XDG_CACHE_DIR/maven/repository"
+    local _m2_dir="$DOTFILES_LOCAL_CACHE_DIR/maven/repository"
     ensure_directory "$_m2_dir"
     alias clojure="clojure -Sdeps '{:mvn/local-repo \"$_m2_dir\"}' "
 
@@ -232,7 +232,7 @@ function _dotfiles_init_docker() {
 function _dotfiles_init_es(){
 
     # sanity check
-    local _es_home_dir="$DOTFILES_XDG_CONFIG_DIR/es/es"
+    local _es_home_dir="$DOTFILES_LOCAL_CONFIG_DIR/es/es"
     if [[ ! -d "$_es_home_dir" ]]; then
         log_app_initialization "es" "fail"
         return $RC_ERROR
@@ -263,7 +263,7 @@ function _dotfiles_init_es(){
 #   - EMACS_HOME
 #
 # - PATH
-#   - $DOTFILES_XDG_CONFIG_DIR/emacs/bin
+#   - $DOTFILES_LOCAL_CONFIG_DIR/emacs/bin
 #
 # ------------------------------------------------------------------------------
 
@@ -474,7 +474,7 @@ function _dotfiles_init_kube() {
     fi
 
     # cache
-    local _kube_cache_dir="$DOTFILES_XDG_CACHE_DIR/kube"
+    local _kube_cache_dir="$DOTFILES_LOCAL_CACHE_DIR/kube"
     ensure_directory "$_kube_cache_dir"
     alias kubectl="kubectl --cache-dir $_kube_cache_dir "
 }
@@ -812,7 +812,7 @@ function _dotfiles_init_wget() {
     fi
 
     # HSTS file configuration
-    local _wget_state_dir="$DOTFILES_XDG_STATE_DIR/wget"
+    local _wget_state_dir="$DOTFILES_LOCAL_STATE_DIR/wget"
     ensure_directory "$_wget_state_dir"
     local _wget_hsts_file_path="$_wget_state_dir/.wget-hsts"
     alias wget="wget --hsts-file $_wget_hsts_file_path "

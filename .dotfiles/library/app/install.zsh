@@ -6,8 +6,8 @@
 # Utility Functions for App Installation
 #
 #
-# Version: 0.0.4
-# Last Modified: 2025-05-25
+# Version: 0.0.5
+# Last Modified: 2025-06-01
 #
 # - Dependency
 #   - Environment Variable File
@@ -16,7 +16,7 @@
 #   - Environment Variable
 #     - DOTFILES_SYS_NAME
 #     - DOTFILES_SYS_ARCHT
-#     - DOTFILES_XDG_CONFIG_DIR
+#     - DOTFILES_LOCAL_CONFIG_DIR
 #     - RC_SUCCESS
 #     - RC_ERROR
 #     - RC_UNSUPPORTED
@@ -90,7 +90,7 @@ function _dotfiles_install_autoenv() {
     fi
 
     # install or update
-    local _autoenv_home_dir="$DOTFILES_XDG_CONFIG_DIR/autoenv"
+    local _autoenv_home_dir="$DOTFILES_LOCAL_CONFIG_DIR/autoenv"
     ensure_directory "$_autoenv_home_dir"
 
     local _autoenv_git_dir="$_autoenv_home_dir/autoenv.git"
@@ -141,7 +141,7 @@ function _dotfiles_install_aws() {
     elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
 
         # home
-        local _aws_home_dir="$DOTFILES_XDG_CONFIG_DIR/aws"
+        local _aws_home_dir="$DOTFILES_LOCAL_CONFIG_DIR/aws"
         ensure_directory "$_aws_home_dir"
 
         # download installer
@@ -300,7 +300,7 @@ function _dotfiles_install_elasticsearch() {
     fi
 
     # home
-    local _es_home_dir="$DOTFILES_XDG_CONFIG_DIR/es"
+    local _es_home_dir="$DOTFILES_LOCAL_CONFIG_DIR/es"
     ensure_directory "$_es_home_dir"
 
     # get version
@@ -378,7 +378,7 @@ function _dotfiles_install_gcp() {
     # install
     log_app_installation "gcp" "install"
 
-    local _gcp_home_dir="$DOTFILES_XDG_CONFIG_DIR/gcp"
+    local _gcp_home_dir="$DOTFILES_LOCAL_CONFIG_DIR/gcp"
     ensure_directory "$_gcp_home_dir"
 
     curl -fL https://sdk.cloud.google.com > "$_gcp_home_dir/install.sh"
@@ -499,7 +499,7 @@ function _dotfiles_install_keyd() {
     fi
 
     # install or update
-    local _keyd_home_dir="$DOTFILES_XDG_CONFIG_DIR/keyd"
+    local _keyd_home_dir="$DOTFILES_LOCAL_CONFIG_DIR/keyd"
     ensure_directory "$_keyd_home_dir"
     local _keyd_git_dir="$_keyd_home_dir/keyd.git"
 
@@ -673,7 +673,7 @@ function _dotfiles_install_nvtop() {
     # install
     log_app_installation "nvtop" "install"
 
-    local _nvtop_home_dir="$DOTFILES_XDG_CONFIG_DIR/nvtop"
+    local _nvtop_home_dir="$DOTFILES_LOCAL_CONFIG_DIR/nvtop"
     ensure_directory "$_nvtop_home_dir"
 
     local _nvtop_git_dir="$_nvtop_home_dir/nvtop.git"
@@ -794,7 +794,7 @@ function _dotfiles_install_pyenv() {
     elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
 
         # home directory
-        local _pyenv_home_dir="$DOTFILES_XDG_CONFIG_DIR/pyenv"
+        local _pyenv_home_dir="$DOTFILES_LOCAL_CONFIG_DIR/pyenv"
         ensure_directory "$_pyenv_home_dir"
 
         # pyenv home
@@ -935,7 +935,7 @@ function _dotfiles_install_volta() {
     # install
     log_app_installation "volta" "install"
 
-    local _volta_home_dir="$DOTFILES_XDG_CONFIG_DIR/volta"
+    local _volta_home_dir="$DOTFILES_LOCAL_CONFIG_DIR/volta"
     ensure_directory "$_volta_home_dir"
     export VOLTA_HOME=$_volta_home_dir
 
