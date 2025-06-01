@@ -3,25 +3,29 @@
 # Dotfiles App Configuration
 #
 #
-# Version: 0.0.5
-# Last Modified: 2025-05-31
+# Version: 0.0.6
+# Last Modified: 2025-06-01
 #
 # - Dependency
-#   - Environment Variable
+#   - Environment Variables
 #     - DOTFILES_APP_ARR
-#     - DOTFILES_USER_APP_ARR
-#     - DOTFILES_USER_PLUGIN_ARR
+#     - DOTFILES_LOCAL_BIN_DIR
+#     - DOTFILES_LOCAL_MAN_DIR
 #     - DOTFILES_PLUGIN_ARR
+#     - DOTFILES_USER_APP_ARR
+#     - DOTFILES_USER_HIST_DIR
+#     - DOTFILES_USER_MAN_DIR
+#     - DOTFILES_USER_PLUGIN_ARR
+#     - HISTFILE
 #   - Library
 #     - $DOTFILES_DOT_LIB_DIR/util.zsh
 #
-# - Environment Variable
+# - Environment Variables
 #   - DOTFILES_APP_ASC_ARR
 #   - DOTFILES_SYS_ARCHT
 #   - DOTFILES_SYS_NAME
 #   - DOTFILES_PLUGIN_ASC_ARR
-#   - DOTFILES_USER_MAN_DIR
-#   - DOTFILES_LOCAL_MAN_DIR
+#   - RC_ERROR
 #   - ZINIT
 #   - ZINIT_HOME
 #   - ZSH_PROF
@@ -62,16 +66,25 @@ fi
 
 if [[ -z "$DOTFILES_DOT_LIB_DIR" ]]; then
     echo "error: DOTFILES_DOT_LIB_DIR is not set." >&2
-    return 1
+    return $RC_ERROR
 elif [[ ! -f "$DOTFILES_DOT_LIB_DIR/util.zsh" ]]; then
     echo "error: $DOTFILES_DOT_LIB_DIR/util.zsh is not found." >&2
-    return 1
+    return $RC_ERROR
 fi
 
 
 # ------------------------------------------------------------------------------
-#
 # Library
+# ------------------------------------------------------------------------------
+
+
+# load utils
+source "$DOTFILES_DOT_LIB_DIR/util.zsh"
+
+
+# ------------------------------------------------------------------------------
+#
+# Environment Variables
 #
 # - Environment Variables
 #   - DOTFILES_SYS_NAME
@@ -80,12 +93,37 @@ fi
 # ------------------------------------------------------------------------------
 
 
-# load utils
-source "$DOTFILES_DOT_LIB_DIR/util.zsh"
-
-# sys env
+# system name and architecture
 export DOTFILES_SYS_NAME=$(get_system_name)
 export DOTFILES_SYS_ARCHT=$(get_system_architecture)
+
+
+# ------------------------------------------------------------------------------
+# Local
+# ------------------------------------------------------------------------------
+
+
+# ensure local binary
+ensure_directory $DOTFILES_LOCAL_BIN_DIR
+
+# ensure local man
+ensure_directory "$DOTFILES_LOCAL_MAN_DIR/man1"
+
+
+# ------------------------------------------------------------------------------
+# User: completions, history and manual
+# ------------------------------------------------------------------------------
+
+
+# add user completion if exist
+append_dir_to_path "FPATH" $DOTFILES_USER_COMP_DIR
+
+# zsh history -> user history
+setup_dotfiles_history_link "zsh" $HISTFILE "$DOTFILES_USER_HIST_DIR/zsh.history"
+
+# add user manual if exist
+append_dir_to_path "MANPATH" $DOTFILES_USER_MAN_DIR
+
 
 
 # ------------------------------------------------------------------------------
@@ -223,23 +261,6 @@ if command_exists zinit; then
           atload'[[ -f $_cmp_script_path ]] && source $_cmp_script_path || \
                  dotfiles_logging "Completion script $_cmp_script_path not found." "warn"'
     zinit light zsh-users/zsh-completions
-fi
-
-
-# ------------------------------------------------------------------------------
-# Misc
-# ------------------------------------------------------------------------------
-
-
-# manual directory
-ensure_directory $DOTFILES_LOCAL_MAN_DIR
-append_dir_to_path "MANPATH" $DOTFILES_LOCAL_MAN_DIR
-append_dir_to_path "MANPATH" $DOTFILES_USER_MAN_DIR
-
-# zsh history -> user history
-if [[ -d $DOTFILES_USER_HIST_DIR ]]; then
-    local _zsh_history_link="$DOTFILES_USER_HIST_DIR/zsh.history"
-    [[ -e $_zsh_history_link ]] || ln -s $HISTFILE $_zsh_history_link
 fi
 
 
