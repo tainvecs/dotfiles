@@ -43,17 +43,17 @@ if command_exists "gcloud"; then
     link_dotfiles_local_completion_to_dot "gcp/google-cloud-sdk" "completion.zsh.inc" "gcp.zsh.inc"
 fi
 
-# # kube
-# if command_exists "kubectl"; then
-#     local _kube_cmp_path="$DOTFILES_ZSH_COMP_DIR/_kubectl"
-#     [[ -f $_kube_cmp_path ]] || kubectl completion zsh > $_kube_cmp_path
-# fi
+# kubectl
+if command_exists "kubectl"; then
+    local _kube_cmp_path="$DOTFILES_ZSH_COMP_DIR/_kubectl"
+    [[ -f $_kube_cmp_path ]] || kubectl completion zsh > $_kube_cmp_path
+fi
 
-# # volta
-# if command_exists "volta"; then
-#     local _volta_cmp_path="$DOTFILES_ZSH_COMP_DIR/_volta"
-#     [[ -f $_volta_cmp_path ]] || volta completions --output $_volta_cmp_path
-# fi
+# volta
+if command_exists "volta"; then
+    local _volta_cmp_path="$DOTFILES_ZSH_COMP_DIR/_volta"
+    [[ -f $_volta_cmp_path ]] || volta completions --output $_volta_cmp_path
+fi
 
 
 # ------------------------------------------------------------------------------

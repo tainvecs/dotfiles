@@ -405,14 +405,14 @@ function dotfiles_install_docker() {
     [[ -f $_docker_cmp_path ]] || docker completion zsh > $_docker_cmp_path
 
     # docker compose completion
-    local _docker_comp_name="_docker-compose"
-    local _docker_comp_id="https://raw.githubusercontent.com/docker/compose/1.29.2/contrib/completion/zsh/_docker-compose"
+    local _docker_comp_cmp_name="_docker-compose"
+    local _docker_comp_cmp_id="https://raw.githubusercontent.com/docker/compose/1.29.2/contrib/completion/zsh/_docker-compose"
 
-    if ! { is_dotfiles_package_installed "$_docker_comp_name" "zinit-snippet" "$_docker_comp_id" }; then
-        zinit ice lucid as"completion" id-as"$_docker_comp_name"
-        install_dotfiles_packages "$_docker_comp_name" "zinit-snippet" "$_docker_comp_id"
+    if ! { is_dotfiles_package_installed "$_docker_comp_cmp_name" "zinit-snippet" "$_docker_comp_cmp_id" }; then
+        zinit ice lucid as"completion" id-as"$_docker_comp_cmp_name"
+        install_dotfiles_packages "$_docker_comp_cmp_name" "zinit-snippet" "$_docker_comp_cmp_id"
     else
-        install_dotfiles_packages --upgrade "$_docker_comp_name" "zinit-snippet" "$_docker_comp_name"
+        install_dotfiles_packages --upgrade "$_docker_comp_cmp_name" "zinit-snippet" "$_docker_comp_cmp_name"
     fi
 }
 
@@ -1113,6 +1113,10 @@ function dotfiles_install_kubectl() {
             install_dotfiles_packages --upgrade "$_package_name" "package-manager" "$_package_id"
         fi
     fi
+
+    # completion
+    local _cmp_path="$DOTFILES_ZSH_COMP_DIR/_$_package_name"
+    [[ -f $_cmp_path ]] || kubectl completion zsh > $_cmp_path
 }
 
 
@@ -1576,6 +1580,10 @@ function dotfiles_install_volta() {
         log_dotfiles_package_installation "$_package_name" "fail"
         return $RC_ERROR
     fi
+
+    # completion
+    local _cmp_path="$DOTFILES_ZSH_COMP_DIR/_$_package_name"
+    [[ -f $_cmp_path ]] || volta completions --output $_cmp_path
 }
 
 

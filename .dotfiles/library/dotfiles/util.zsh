@@ -42,6 +42,8 @@ function link_dotfiles_local_completion_to_dot() {
     local _local_cmp_script_path="$DOTFILES_LOCAL_CONFIG_DIR/$1/$2"
     local _dot_cmp_link="$DOTFILES_ZSH_COMP_DIR/$3"
 
+    ensure_directory "$DOTFILES_ZSH_COMP_DIR"
+
     return $(create_validated_symlink "$_local_cmp_script_path" "$_dot_cmp_link")
 }
 
@@ -143,7 +145,7 @@ function link_dotfiles_local_history_to_user() {
     local _history_path="$DOTFILES_LOCAL_STATE_DIR/$_package_name/$_state_history_file"
     local _history_link="$DOTFILES_USER_HIST_DIR/$_user_history_file"
 
-    [[ -e "$_history_link" ]] || ln -s "$_history_path" "$_history_link"
+    return $(create_validated_symlink "$_history_path" "$_history_link")
 }
 
 
