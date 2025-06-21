@@ -6,7 +6,7 @@
 # Utility Functions for Package Installation
 #
 #
-# Version: 0.0.1
+# Version: 0.0.2
 # Last Modified: 2025-06-21
 #
 # - Dependency
@@ -188,12 +188,17 @@ function dotfiles_install_aws() {
         elif [[ $DOTFILES_SYS_ARCHT == "amd64" ]]; then
             _bin_archt="x86_64"
         fi
-        curl -fL "https://awscli.amazonaws.com/awscli-exe-linux-$_bin_archt.zip" -o "$_home_dir/awscliv2.zip" || {
-                log_dotfiles_package_installation "$_package_name" "fail"
-                rm -f "$_home_dir/awscliv2.zip"
-                return $RC_ERROR
+
+        {
+            curl -fL "https://awscli.amazonaws.com/awscli-exe-linux-$_bin_archt.zip" \
+                 -o "$_home_dir/awscliv2.zip" && \
+            unzip "$_home_dir/awscliv2.zip" -d $_home_dir && \
+            rm -f "$_home_dir/awscliv2.zip"
+        } || {
+            log_dotfiles_package_installation "$_package_name" "fail"
+            rm -rf "$_home_dir/aws" "$_home_dir/awscliv2.zip"
+            return $RC_ERROR
         }
-        unzip "$_home_dir/awscliv2.zip" -d $_home_dir && rm -f "$_home_dir/awscliv2.zip"
 
         # install or upgrade
         if ! command_exists "$_package_name"; then
@@ -757,6 +762,11 @@ function dotfiles_install_forgit() {
     local _package_name="forgit"
     local _package_id="wfxr/forgit"
 
+    # sanity check
+    if ! command_exists "fzf"; then
+        log_dotfiles_package_installation "$_package_name" "dependency-missing"
+    fi
+
     if ! { is_dotfiles_package_installed "$_package_name" "zinit-plugin" "$_package_id" }; then
         zinit ice lucid id-as"$_package_name"
         install_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_id"
@@ -1018,7 +1028,7 @@ function dotfiles_install_jdk() {
     fi
 
     # install or upgrade
-    if ! command_exists "$_package_name"; then
+    if ! command_exists "java"; then
         install_dotfiles_packages "$_package_name" "package-manager" "$_package_id"
     else
         install_dotfiles_packages --upgrade "$_package_name" "package-manager" "$_package_id"
@@ -1053,6 +1063,7 @@ function dotfiles_install_keyd() {
         if [[ $? != $RC_SUCCESS ]]; then
             sudo systemctl enable "$_package_name" && sudo systemctl start "$_package_name"
         fi
+
     else
         install_dotfiles_packages --upgrade "$_package_name" "git-repo-make-install" "$_package_id"
     fi
@@ -1157,7 +1168,7 @@ function dotfiles_install_nvitop() {
     if ! command_exists "$_package_name"; then
         install_dotfiles_packages "$_package_name" "pip" "$_package_id"
     else
-        install_dotfiles_packages "--upgrade" "$_package_name" "pip" "$_package_id"
+        install_dotfiles_packages --upgrade "$_package_name" "pip" "$_package_id"
     fi
 }
 
@@ -1346,6 +1357,9 @@ function dotfiles_install_pyenv() {
         log_dotfiles_package_installation "$_package_name" "sys-name-not-supported"
         return $RC_UNSUPPORTED
     fi
+    if ! command_exists "python"; then
+        log_dotfiles_package_installation "$_package_name" "dependency-missing"
+    fi
 
     # install or update
     if ! { is_dotfiles_package_installed "$_package_name" "package-manager" "$_package_id" }; then
@@ -1482,7 +1496,7 @@ function dotfiles_install_universalarchive() {
     local _comp_id="OMZ::plugins/universalarchive/_universalarchive"
 
     # binary
-    if ! { is_dotfiles_package_installed "$_package_name" "$_package_id" "zinit-snippet" }; then
+    if ! { is_dotfiles_package_installed "$_package_name" "zinit-snippet" "$_package_id" }; then
         zinit ice lucid id-as"$_package_name"
         install_dotfiles_packages "$_package_name" "zinit-snippet" "$_package_id"
     else
@@ -1610,7 +1624,7 @@ function dotfiles_install_watch() {
 
     # sanity check
     if [[ $DOTFILES_SYS_NAME != "mac" ]]; then
-        log_app_installation "$_package_name" "sys-name-not-supported"
+        log_dotfiles_package_installation "$_package_name" "sys-name-not-supported"
         return $RC_UNSUPPORTED
     fi
 
@@ -1695,10 +1709,12 @@ function dotfiles_install_zsh-completions() {
     local _package_name="zsh-completions"
     local _package_id="zsh-users/zsh-completions"
 
+    local _dot_lib_zsh_cmp_path="$DOTFILES_DOT_LIB_DIR/zsh/completion.zsh"
+
     if ! { is_dotfiles_package_installed "$_package_name" "zinit-plugin" "$_package_id" }; then
         zinit ice lucid id-as"$_package_name" blockf \
               atload'[[ -f $_dot_lib_zsh_cmp_path ]] && source $_dot_lib_zsh_cmp_path || \
-                     dotfiles_logging "Completion script $_dot_lib_zsh_cmp_path not found." "warn"'
+                     log_message "Completion script $_dot_lib_zsh_cmp_path not found." "error"'
         install_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_id"
     else
         install_dotfiles_packages --upgrade "$_package_name" "zinit-plugin" "$_package_name"
