@@ -3,32 +3,35 @@
 # Dotfiles App Configuration
 #
 #
-# Version: 0.0.6
-# Last Modified: 2025-06-01
+# Version: 0.0.7
+# Last Modified: 2025-06-21
 #
 # - Dependency
+#   - Environment Variable Files
+#     - DOTFILES_DOT_ENV_DIR/dotfiles.env
+#     - DOTFILES_DOT_ENV_DIR/return_code.env
+#
 #   - Environment Variables
-#     - DOTFILES_APP_ARR
-#     - DOTFILES_LOCAL_BIN_DIR
-#     - DOTFILES_LOCAL_MAN_DIR
-#     - DOTFILES_PLUGIN_ARR
-#     - DOTFILES_USER_APP_ARR
-#     - DOTFILES_USER_HIST_DIR
-#     - DOTFILES_USER_MAN_DIR
-#     - DOTFILES_USER_PLUGIN_ARR
-#     - HISTFILE
+#     - DOTFILES_PACKAGE_ARR
+#     - ZSH_PROF
+#
 #   - Library
-#     - $DOTFILES_DOT_LIB_DIR/util.zsh
+#     - DOTFILES_DOT_LIB_DIR/util.zsh
+#     - DOTFILES_DOT_LIB_DIR/dotfiles/util.zsh
+#     - DOTFILES_DOT_LIB_DIR/package/init.zsh
+#     - DOTFILES_DOT_LIB_DIR/package/install.zsh
 #
 # - Environment Variables
-#   - DOTFILES_APP_ASC_ARR
+#   - BREW_HOME
+#   - DOTFILES_PACKAGE_ASC_ARR
 #   - DOTFILES_SYS_ARCHT
 #   - DOTFILES_SYS_NAME
-#   - DOTFILES_PLUGIN_ASC_ARR
-#   - RC_ERROR
+#   - HOMEBREW_CELLAR
+#   - HOMEBREW_PREFIX
+#   - HOMEBREW_REPOSITORY
 #   - ZINIT
 #   - ZINIT_HOME
-#   - ZSH_PROF
+#   - ZINIT_PLUGIN_DIR
 #
 # ------------------------------------------------------------------------------
 
@@ -52,23 +55,12 @@ fi
 
 
 # ------------------------------------------------------------------------------
-#
 # Sanity Check
-#
-# - Dependency
-#   - Environment Variable
-#     - DOTFILES_DOT_LIB_DIR
-#   - Library
-#     - $DOTFILES_DOT_LIB_DIR/util.zsh
-#
 # ------------------------------------------------------------------------------
 
 
 if [[ -z "$DOTFILES_DOT_LIB_DIR" ]]; then
     echo "error: DOTFILES_DOT_LIB_DIR is not set." >&2
-    return $RC_ERROR
-elif [[ ! -f "$DOTFILES_DOT_LIB_DIR/util.zsh" ]]; then
-    echo "error: $DOTFILES_DOT_LIB_DIR/util.zsh is not found." >&2
     return $RC_ERROR
 fi
 
@@ -78,8 +70,24 @@ fi
 # ------------------------------------------------------------------------------
 
 
-# load utils
-source "$DOTFILES_DOT_LIB_DIR/util.zsh"
+local _dot_lib_util_path="$DOTFILES_DOT_LIB_DIR/util.zsh"
+
+if [[ ! -f "$_dot_lib_util_path" ]]; then
+    echo "error: $_dot_lib_util_path is not found." >&2
+    return $RC_DEPENDENCY_MISSING
+else
+    source "$DOTFILES_DOT_LIB_DIR/util.zsh"
+fi
+
+
+local _dot_lib_dotfiles_util_path="$DOTFILES_DOT_LIB_DIR/dotfiles/util.zsh"
+
+if [[ ! -f "$_dot_lib_dotfiles_util_path" ]]; then
+    echo "error: $_dot_lib_dotfiles_util_path is not found." >&2
+    return $RC_DEPENDENCY_MISSING
+else
+    source "$DOTFILES_DOT_LIB_DIR/dotfiles/util.zsh"
+fi
 
 
 # ------------------------------------------------------------------------------
@@ -99,7 +107,7 @@ export DOTFILES_SYS_ARCHT=$(get_system_architecture)
 
 
 # ------------------------------------------------------------------------------
-# Local
+# Local: binary and manual
 # ------------------------------------------------------------------------------
 
 
@@ -116,13 +124,13 @@ ensure_directory "$DOTFILES_LOCAL_MAN_DIR/man1"
 
 
 # add user completion if exist
-append_dir_to_path "FPATH" $DOTFILES_USER_COMP_DIR
+prepend_dir_to_path "FPATH" $DOTFILES_USER_COMP_DIR
 
-# zsh history -> user history
-setup_dotfiles_history_link "zsh" $HISTFILE "$DOTFILES_USER_HIST_DIR/zsh.history"
+# user zsh history -> local zsh history
+dotfiles_user_link_local_history "zsh" $HISTFILE "$DOTFILES_USER_HIST_DIR/zsh.history"
 
 # add user manual if exist
-append_dir_to_path "MANPATH" $DOTFILES_USER_MAN_DIR
+prepend_dir_to_path "MANPATH" $DOTFILES_USER_MAN_DIR
 
 
 
@@ -132,8 +140,8 @@ append_dir_to_path "MANPATH" $DOTFILES_USER_MAN_DIR
 #
 # - Environment Variables
 #   - BREW_HOME
-#   - HOMEBREW_PREFIX
 #   - HOMEBREW_CELLAR
+#   - HOMEBREW_PREFIX
 #   - HOMEBREW_REPOSITORY
 #
 # ------------------------------------------------------------------------------
@@ -147,7 +155,7 @@ if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
     elif [[ -d "/usr/local/Homebrew" ]]; then
         export BREW_HOME="/usr/local"
     else
-        dotfiles_logging "Homebrew not found in standard locations." "error"
+        log_message "Homebrew not found in standard locations." "error"
     fi
 
     # set fpath, PATH, MANPATH and INFOPATH
@@ -164,19 +172,23 @@ fi
 # - Environment Variables
 #   - ZINIT
 #   - ZINIT_HOME
+#   - ZINIT_PLUGIN_DIR
 #
 # ------------------------------------------------------------------------------
 
 
 # zinit home
 export ZINIT_HOME="$ZDOTDIR/zinit"
+export ZINIT_PLUGIN_DIR="$ZINIT_HOME/plugin"
+export ZINIT_SNIPPET_DIR="$ZINIT_HOME/snippet"
 
 # set zinit variables
 declare -A ZINIT
 
 ZINIT[HOME_DIR]="$ZINIT_HOME"
 ZINIT[BIN_DIR]="${ZINIT[HOME_DIR]}/zinit.git"
-ZINIT[PLUGINS_DIR]="${ZINIT[HOME_DIR]}/plugins"
+ZINIT[PLUGINS_DIR]="$ZINIT_PLUGIN_DIR"
+ZINIT[SNIPPETS_DIR]="$ZINIT_SNIPPET_DIR"
 ZINIT[MAN_DIR]="$DOTFILES_LOCAL_MAN_DIR"
 ZINIT[COMPINIT_OPTS]=-C  # to suppress warnings
 ZINIT[COMPLETIONS_DIR]="$DOTFILES_ZSH_COMP_DIR"
@@ -186,7 +198,7 @@ export ZINIT
 
 # source zinit binary
 if [[ ! -f "${ZINIT[BIN_DIR]}/zinit.zsh" ]]; then
-    dotfiles_logging "Zinit binary at ${ZINIT[BIN_DIR]}/zinit.zsh not found." "error"
+    log_message "Zinit binary at ${ZINIT[BIN_DIR]}/zinit.zsh not found." "error"
 else
     source "${ZINIT[BIN_DIR]}/zinit.zsh"
 fi
@@ -194,51 +206,34 @@ fi
 
 # ------------------------------------------------------------------------------
 #
-# Apps
+# Packages
 #
 # - Environment Variables
-#   - DOTFILES_APP_ASC_ARR
+#   - DOTFILES_PACKAGE_ASC_ARR
 #
 # ------------------------------------------------------------------------------
 
 
-# dotfiles app associative array
-unset DOTFILES_APP_ASC_ARR
-typeset -A DOTFILES_APP_ASC_ARR
-update_associative_array_from_array "DOTFILES_APP_ASC_ARR" "DOTFILES_USER_APP_ARR" "DOTFILES_APP_ARR"
-
-# set up app configs
+# dependency checking
 if [[ $DOTFILES_SYS_NAME == "mac" ]] && { ! command_exists brew }; then
-    dotfiles_logging "Brew is not available. App config will not be set." "error"
-elif [[ ${#DOTFILES_APP_ASC_ARR[@]} -eq 0 ]]; then
-    dotfiles_logging "DOTFILES_APP_ASC_ARR is empty. No app config will be set." "warn"
-else
-    :  # TODO: Add app-specific setup here if needed
+    log_message "Brew is not available. Some of the dotfiles packages will not be initialized." "error"
+    return $RC_DEPENDENCY_MISSING
 fi
 
-
-# ------------------------------------------------------------------------------
-#
-# Plugins
-#
-# - Environment Variables
-#   - DOTFILES_PLUGIN_ASC_ARR
-#
-# ------------------------------------------------------------------------------
-
-
-# dotfiles plugin associative array
-unset DOTFILES_PLUGIN_ASC_ARR
-typeset -A DOTFILES_PLUGIN_ASC_ARR
-update_associative_array_from_array "DOTFILES_PLUGIN_ASC_ARR" "DOTFILES_USER_PLUGIN_ARR" "DOTFILES_PLUGIN_ARR"
-
-# set up plugin configs
 if ! command_exists zinit; then
-    dotfiles_logging "Zinit is not available. Plugin will not be loaded." "error"
-elif [[ ${#DOTFILES_PLUGIN_ASC_ARR[@]} -eq 0 ]]; then
-    dotfiles_logging "DOTFILES_PLUGIN_ASC_ARR is empty. No plugin will be loaded." "warn"
+    log_message "Zinit is not available. Some of the dotfiles packages will not be initialized." "error"
+    return $RC_DEPENDENCY_MISSING
+fi
+
+# dotfiles package associative array
+unset DOTFILES_PACKAGE_ASC_ARR
+typeset -A DOTFILES_PACKAGE_ASC_ARR
+update_associative_package_from_array "DOTFILES_PACKAGE_ASC_ARR" "DOTFILES_USER_PACKAGE_ARR" "DOTFILES_PACKAGE_ARR"
+
+if [[ ${#DOTFILES_PACKAGE_ASC_ARR[@]} -eq 0 ]]; then
+    log_message "DOTFILES_PACKAGE_ASC_ARR is empty. No package will be initialized." "warn"
 else
-    :  # TODO: Add plugin-specific setup here if needed
+    :  # TODO: Add package-specific setup here if needed
 fi
 
 
@@ -252,15 +247,9 @@ fi
 # ------------------------------------------------------------------------------
 
 
-# zsh completions
-if command_exists zinit; then
-
-    local _cmp_script_path="$DOTFILES_DOT_LIB_DIR/zsh/completion.zsh"
-
-    zinit ice wait"0c" lucid blockf \
-          atload'[[ -f $_cmp_script_path ]] && source $_cmp_script_path || \
-                 dotfiles_logging "Completion script $_cmp_script_path not found." "warn"'
-    zinit light zsh-users/zsh-completions
+# trigger zsh completions
+if is_dotfiles_managed_package "zsh-completions"; then
+    dotfiles_init_zsh-completions
 fi
 
 

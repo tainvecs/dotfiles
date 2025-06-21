@@ -6,24 +6,23 @@
 # Zsh Completion: Load and Trigger Completion with Zinit
 #
 #
-# Version: 0.0.2
-# Last Modified: 2025-05-22
+# Version: 0.0.3
+# Last Modified: 2025-06-21
 #
 # - Dependency
 #   - Tool
 #     - Zinit
+#
 #   - Environment Variables
 #     - DOTFILES_ZSH_COMP_DIR
+#
 #   - Library
 #     - $DOTFILES_DOT_LIB_DIR/util.zsh
+#     - $DOTFILES_DOT_LIB_DIR/dotfiles/util.zsh
 #
 # - Managed Apps and Plugins
-#   - docker
-#   - docker compose
-#   - forgit
 #   - gcp
-#   - kube
-#   - volta
+#   - zoxide
 #
 # ------------------------------------------------------------------------------
 
@@ -33,51 +32,28 @@
 # ------------------------------------------------------------------------------
 
 
-# docker and docker compose
+# docker
 if command_exists "docker"; then
-
-    # docker
     local _docker_cmp_path="$DOTFILES_ZSH_COMP_DIR/_docker"
     [[ -f $_docker_cmp_path ]] || docker completion zsh > $_docker_cmp_path
-
-    # docker compose
-    local _docker_comp_cmp_path="$DOTFILES_ZSH_COMP_DIR/_docker-compose"
-    if [[ ! -f $_docker_comp_cmp_path ]]; then
-        curl -sfLo $_docker_comp_cmp_path \
-             "https://raw.githubusercontent.com/docker/compose/1.29.2/contrib/completion/zsh/_docker-compose"
-    fi
-fi
-
-# forgit
-if is_dotfiles_managed_plugin "forgit"; then
-    local _forgit_cmp_path="$DOTFILES_ZSH_COMP_DIR/_forgit"
-    if [[ ! -f $_forgit_cmp_path ]]; then
-        curl -sfLo $_forgit_cmp_path \
-             "https://raw.githubusercontent.com/wfxr/forgit/main/completions/_git-forgit"
-    fi
 fi
 
 # gcp
 if command_exists "gcloud"; then
-    local _gcp_cmp_script_path="$DOTFILES_LOCAL_CONFIG_DIR/gcp/google-cloud-sdk/completion.zsh.inc"
-    if [[ -f $_gcp_cmp_script_path ]]; then
-        local _gcp_cmp_link="$DOTFILES_ZSH_COMP_DIR/gcp.zsh.inc"
-        [[ -L $_gcp_cmp_link || -f $_gcp_cmp_link ]] || ln -s $_gcp_cmp_script_path $_gcp_cmp_link
-    fi
+    link_dotfiles_local_completion_to_dot "gcp/google-cloud-sdk" "completion.zsh.inc" "gcp.zsh.inc"
 fi
 
-# kube
-if command_exists "kubectl"; then
-    local _kube_cmp_path="$DOTFILES_ZSH_COMP_DIR/_kubectl"
-    [[ -f $_kube_cmp_path ]] || kubectl completion zsh > $_kube_cmp_path
-fi
+# # kube
+# if command_exists "kubectl"; then
+#     local _kube_cmp_path="$DOTFILES_ZSH_COMP_DIR/_kubectl"
+#     [[ -f $_kube_cmp_path ]] || kubectl completion zsh > $_kube_cmp_path
+# fi
 
-
-# volta
-if command_exists "volta"; then
-    local _volta_cmp_path="$DOTFILES_ZSH_COMP_DIR/_volta"
-    [[ -f $_volta_cmp_path ]] || volta completions --output $_volta_cmp_path
-fi
+# # volta
+# if command_exists "volta"; then
+#     local _volta_cmp_path="$DOTFILES_ZSH_COMP_DIR/_volta"
+#     [[ -f $_volta_cmp_path ]] || volta completions --output $_volta_cmp_path
+# fi
 
 
 # ------------------------------------------------------------------------------
@@ -92,6 +68,12 @@ zpcdreplay
 # ------------------------------------------------------------------------------
 # Source Completion Scripts
 # ------------------------------------------------------------------------------
+
+
+# zoxide
+if command_exists "zoxide"; then
+    eval "$(zoxide init zsh)"
+fi
 
 
 # 'gcp.zsh.inc'
