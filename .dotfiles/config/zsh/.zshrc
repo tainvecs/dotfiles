@@ -3,7 +3,7 @@
 # Dotfiles App Configuration
 #
 #
-# Version: 0.0.7
+# Version: 0.0.8
 # Last Modified: 2025-06-21
 #
 # - Dependency
@@ -104,6 +104,16 @@ fi
 # system name and architecture
 export DOTFILES_SYS_NAME=$(get_system_name)
 export DOTFILES_SYS_ARCHT=$(get_system_architecture)
+
+# sanity check
+if ! is_supported_system_name; then
+    log_dotfiles_package_initialization "$_package_name" "sys-name-not-supported"
+    return $RC_UNSUPPORTED
+fi
+if ! is_supported_system_archt; then
+    log_dotfiles_package_initialization "$_package_name" "sys-archt-not-supported"
+    return $RC_UNSUPPORTED
+fi
 
 
 # ------------------------------------------------------------------------------
