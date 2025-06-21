@@ -21,7 +21,10 @@
 #     - $DOTFILES_DOT_LIB_DIR/dotfiles/util.zsh
 #
 # - Managed Apps and Plugins
+#   - docker
 #   - gcp
+#   - kubectl
+#   - volta
 #   - zoxide
 #
 # ------------------------------------------------------------------------------
