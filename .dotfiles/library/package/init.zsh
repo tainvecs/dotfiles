@@ -6,7 +6,7 @@
 # Utility Functions for Package Configuration Setup and Initialization
 #
 #
-# Version: 0.0.1
+# Version: 0.0.2
 # Last Modified: 2025-06-21
 #
 # Dependencies:
