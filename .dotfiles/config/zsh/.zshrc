@@ -112,14 +112,14 @@ export DOTFILES_SYS_ARCHT=$(get_system_architecture)
 
 
 # ensure local binary
-ensure_directory $DOTFILES_LOCAL_BIN_DIR
+ensure_directory "$DOTFILES_LOCAL_BIN_DIR"
 
 # ensure local man
 ensure_directory "$DOTFILES_LOCAL_MAN_DIR/man1"
 
 
 # ------------------------------------------------------------------------------
-# User: completions, history and manual
+# User: completions, history, manual and secret
 # ------------------------------------------------------------------------------
 
 
@@ -132,6 +132,10 @@ dotfiles_user_link_local_history "zsh" $HISTFILE "$DOTFILES_USER_HIST_DIR/zsh.hi
 # add user manual if exist
 prepend_dir_to_path "MANPATH" $DOTFILES_USER_MAN_DIR
 
+# check user secret directory permission
+if [[ -d "$DOTFILES_USER_SECRET_DIR" ]] && [[ $(get_permission "$DOTFILES_USER_SECRET_DIR") != "700" ]]; then
+    chmod 700 "$DOTFILES_USER_SECRET_DIR"
+fi
 
 
 # ------------------------------------------------------------------------------

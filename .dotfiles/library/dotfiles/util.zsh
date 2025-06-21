@@ -6,7 +6,7 @@
 # Dotfiles Utility Functions
 #
 #
-# Version: 0.0.1
+# Version: 0.0.2
 # Last Modified: 2025-06-21
 #
 # - Dependency
@@ -665,6 +665,30 @@ function log_dotfiles_package_installation() {
             _usage_message+="skip, success, sys-name-not-supported, sys-archt-not-supported, up-to-date, upgrade."
             log_message "$_usage_message" "info" ;;
     esac
+}
+
+
+# ------------------------------------------------------------------------------
+#
+# Permission
+#
+# - Dependency
+#   - Environment Variables
+#     - DOTFILES_SYS_NAME
+#
+# ------------------------------------------------------------------------------
+
+
+function get_permission() {
+
+    local perms
+    if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
+        perms=$(stat -f %Mp%Lp "$1")
+    else
+        perms=$(stat -c %a "$1")
+    fi
+
+    echo "${perms#0}"
 }
 
 
