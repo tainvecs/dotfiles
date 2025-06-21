@@ -485,7 +485,7 @@ function dotfiles_init_fd() {
 
     # sanity check
     if ! command_exists "$_package_name"; then
-        log_doftfiles_package_initialization "$_package_name" "fail"
+        log_dotfiles_package_initialization "$_package_name" "fail"
         return $RC_ERROR
     fi
 
@@ -559,7 +559,7 @@ function dotfiles_init_fzf() {
 
     # sanity check
     if ! command_exists "$_package_name"; then
-        log_doftfiles_package_initialization "$_package_name" "fail"
+        log_dotfiles_package_initialization "$_package_name" "fail"
         return $RC_ERROR
     fi
 
@@ -574,7 +574,7 @@ function dotfiles_init_fzf() {
 
     # sanity check
     if ! { is_dotfiles_package_installed "$_package_plugin_name" "zinit-plugin" "$_package_plugin_name" }; then
-        log_doftfiles_package_initialization "$_package_plugin_name" "fail"
+        log_dotfiles_package_initialization "$_package_plugin_name" "fail"
         return $RC_ERROR
     fi
 
@@ -603,7 +603,7 @@ function dotfiles_init_gcp() {
 
     # sanity check
     if ! command_exists "gcloud"; then
-        log_dotfiles_package_installation "$_package_name" "fail"
+        log_dotfiles_package_initialization "$_package_name" "fail"
         return $RC_ERROR
     fi
 
@@ -684,7 +684,7 @@ function dotfiles_init_go() {
 
     # home
     local _home_dir="$DOTFILES_LOCAL_SHARE_DIR/$_package_name"
-    ensure_directory=$_home_dir
+    ensure_directory $_home_dir
 
     # env
     export GOLIB="$_home_dir/golib"
@@ -759,7 +759,7 @@ function dotfiles_init_hyperfine() {
 # ------------------------------------------------------------------------------
 
 
-function _dotfiles_init_keyd() {
+function dotfiles_init_keyd() {
 
     local _package_name="keyd"
 
@@ -934,7 +934,7 @@ function dotfiles_init_powerlevel10k() {
 # ------------------------------------------------------------------------------
 
 
-function _dotfiles_init_python() {
+function dotfiles_init_python() {
 
     local _package_name="python"
     local _package_plugin_name="pyenv"
@@ -1041,7 +1041,7 @@ function dotfiles_init_ripgrep() {
 
     # batgrep
     # dependency: bat-extras
-    if ! command_exists "batgrep"; then
+    if command_exists "batgrep"; then
         alias rgb="batgrep -p --hidden --no-follow --glob '!.git' "
     fi
 
