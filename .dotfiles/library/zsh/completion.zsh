@@ -6,7 +6,7 @@
 # Zsh Completion: Load and Trigger Completion with Zinit
 #
 #
-# Version: 0.0.3
+# Version: 0.0.4
 # Last Modified: 2025-06-21
 #
 # - Dependency
