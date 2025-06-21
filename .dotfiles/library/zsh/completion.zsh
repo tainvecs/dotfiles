@@ -32,10 +32,15 @@
 # ------------------------------------------------------------------------------
 
 
+ensure_directory "$DOTFILES_ZSH_COMP_DIR"
+
+
 # docker
 if command_exists "docker"; then
-    local _docker_cmp_path="$DOTFILES_ZSH_COMP_DIR/_docker"
-    [[ -f $_docker_cmp_path ]] || docker completion zsh > $_docker_cmp_path
+    local _cmp_path="$DOTFILES_ZSH_COMP_DIR/_docker"
+    if [[ ! -f $_cmp_path ]]; then
+        docker completion zsh > $_cmp_path || log_message "Failed to generate docker completion $_cmp_path" "error"
+    fi
 fi
 
 # gcp
@@ -45,14 +50,18 @@ fi
 
 # kubectl
 if command_exists "kubectl"; then
-    local _kube_cmp_path="$DOTFILES_ZSH_COMP_DIR/_kubectl"
-    [[ -f $_kube_cmp_path ]] || kubectl completion zsh > $_kube_cmp_path
+    local _cmp_path="$DOTFILES_ZSH_COMP_DIR/_kubectl"
+    if [[ ! -f $_cmp_path ]]; then
+        kubectl completion zsh > $_cmp_path || log_message "Failed to generate kubectl completion $_cmp_path" "error"
+    fi
 fi
 
 # volta
 if command_exists "volta"; then
-    local _volta_cmp_path="$DOTFILES_ZSH_COMP_DIR/_volta"
-    [[ -f $_volta_cmp_path ]] || volta completions --output $_volta_cmp_path
+    local _cmp_path="$DOTFILES_ZSH_COMP_DIR/_volta"
+    if [[ ! -f $_cmp_path ]]; then
+        volta completions --output $_cmp_path || log_message "Failed to generate volta completion $_cmp_path" "error"
+    fi
 fi
 
 
@@ -72,12 +81,12 @@ zpcdreplay
 
 # zoxide
 if command_exists "zoxide"; then
-    eval "$(zoxide init zsh)"
+    eval "$(zoxide init zsh)" || log_message "Failed to evaluate zoxide completion" "error"
 fi
 
 
 # 'gcp.zsh.inc'
-local _gcp_cmp_link="$DOTFILES_ZSH_COMP_DIR/gcp.zsh.inc"
-if command_exists "gcloud" && [[ -f $_gcp_cmp_link ]]; then
-    source $_gcp_cmp_link
+local _cmp_link="$DOTFILES_ZSH_COMP_DIR/gcp.zsh.inc"
+if command_exists "gcloud" && [[ -f $_cmp_link ]]; then
+    source $_cmp_link || log_message "Failed to source gcp completion $_cmp_link" "error"
 fi

@@ -402,7 +402,9 @@ function dotfiles_install_docker() {
 
     # docker completion
     local _docker_cmp_path="$DOTFILES_ZSH_COMP_DIR/_docker"
-    [[ -f $_docker_cmp_path ]] || docker completion zsh > $_docker_cmp_path
+    if [[ ! -f $_docker_cmp_path ]]; then
+        docker completion zsh > $_docker_cmp_path || log_message "Failed to generate docker completion $_docker_cmp_path" "error"
+    fi
 
     # docker compose completion
     local _docker_comp_cmp_name="_docker-compose"
@@ -1116,7 +1118,9 @@ function dotfiles_install_kubectl() {
 
     # completion
     local _cmp_path="$DOTFILES_ZSH_COMP_DIR/_$_package_name"
-    [[ -f $_cmp_path ]] || kubectl completion zsh > $_cmp_path
+    if [[ ! -f $_cmp_path ]]; then
+        kubectl completion zsh > $_cmp_path || log_message "Failed to generate kubectl completion $_cmp_path" "error"
+    fi
 }
 
 
@@ -1583,7 +1587,9 @@ function dotfiles_install_volta() {
 
     # completion
     local _cmp_path="$DOTFILES_ZSH_COMP_DIR/_$_package_name"
-    [[ -f $_cmp_path ]] || volta completions --output $_cmp_path
+    if [[ ! -f $_cmp_path ]]; then
+        volta completions --output $_cmp_path || log_message "Failed to generate $_package_name completion" "error"
+    fi
 }
 
 
