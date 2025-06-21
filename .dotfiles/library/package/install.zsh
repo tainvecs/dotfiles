@@ -1259,6 +1259,10 @@ function dotfiles_install_powerlevel10k() {
               atpull'%atclone'
         install_dotfiles_packages "$_package_media_name" "zinit-plugin" "romkatv/powerlevel10k-media"
 
+        # update font cache
+        if [[ $DOTFILES_SYS_NAME == "linux" ]]; then
+            fc-cache -fv
+        fi
     else
         install_dotfiles_packages --upgrade "$_package_media_name" "zinit-plugin" "$_package_media_name"
     fi
