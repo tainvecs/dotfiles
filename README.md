@@ -1,76 +1,84 @@
+# Packages
+
+| Name                      | Mac Installation | Ubuntu Installation | User Config                     | User Secret     | Default Enabled |
+|:--------------------------|:----------------:|:-------------------:|:-------------------------------:|:---------------:|:---------------:|
+| 7z                        | ✅               | ✅                  |                                 |                 |                 |
+| alt-tab                   | ✅               |                     |                                 |                 |                 |
+| autoenv                   | ✅               | ✅                  |                                 |                 | ✅              |
+| aws                       | ✅               | ✅                  | aws/config                      | aws/credentials |                 |
+| bat                       | ✅               | ✅                  | bat/bat.conf                    |                 | ✅              |
+| delta                     | ✅               | ✅                  | delta/config                    |                 | ✅              |
+| docker                    | ✅               | ✅                  | docker/config.json, </br>docker/daemon.json |                 | ✅              |
+| docker-credential-helpers | ✅               | ✅                  |                                 |                 | ✅              |
+| duf                       | ✅               | ✅                  |                                 |                 | ✅              |
+| dust                      | ✅               | ✅                  |                                 |                 | ✅              |
+| emacs                     | ✅               | ✅                  | emacs/init.el                   |                 |                 |
+| extract                   | ✅               | ✅                  |                                 |                 | ✅              |
+| eza                       | ✅               | ✅                  |                                 |                 | ✅              |
+| fast-syntax-highlighting  | ✅               | ✅                  |                                 |                 | ✅              |
+| fd                        | ✅               | ✅                  |                                 |                 | ✅              |
+| forgit                    | ✅               | ✅                  |                                 |                 | ✅              |
+| fzf                       | ✅               | ✅                  |                                 |                 | ✅              |
+| gcp                       | ✅               | ✅                  | gcp/config_default              |                 |                 |
+| git                       |                  |                     | git/config                      |                 | ✅              |
+| go                        | ✅               | ✅                  |                                 |                 |                 |
+| htop                      | ✅               | ✅                  | htop/htoprc                     |                 | ✅              |
+| hyperfine                 | ✅               | ✅                  |                                 |                 |                 |
+| iterm                     | ✅               |                     |                                 |                 |                 |
+| jdk                       | ✅               | ✅                  |                                 |                 | ✅              |
+| keyd                      |                  | ✅                  | keyd/default.conf               |                 |                 |
+| kubectl                   | ✅               | ✅                  | kubectl/config                  | kubectl/config  |                 |
+| nvitop                    |                  | ✅                  |                                 |                 |                 |
+| peco                      | ✅               | ✅                  | peco/config.json                |                 |                 |
+| powerlevel10k             | ✅               | ✅                  | powerlevel10k/p10k.zsh          |                 | ✅              |
+| pyenv                     | ✅               | ✅                  |                                 |                 |                 |
+| python                    | ✅               | ✅                  | python/.pythonrc                |                 | ✅              |
+| ripgrep                   | ✅               | ✅                  | ripgrep/.ripgreprc              |                 | ✅              |
+| tmux                      | ✅               | ✅                  | tmux/.tmux.conf                 |                 |                 |
+| oh-my-tmux                | ✅               | ✅                  | tmux/.tmux.conf                 |                 |                 |
+| tree                      | ✅               | ✅                  |                                 |                 | ✅              |
+| universalarchive          | ✅               | ✅                  |                                 |                 | ✅              |
+| zoxide                    | ✅               | ✅                  |                                 |                 | ✅              |
+| zsh-autosuggestions       | ✅               | ✅                  | zsh-autosuggestions/config.zsh  |                 | ✅              |
+| zsh-completions           | ✅               | ✅                  |                                 |                 | ✅              |
+
+
 # Apps
 
-| App Name      | Mac Installation | Ubuntu Installation | User Config | User Secret | Default Enabled |
-|:--------------|:----------------:|:-------------------:|:-----------:|:-----------:|:---------------:|
-| 7z            | ✅               | ✅                  |             |             | ✅              |
-| alt-tab       | ✅               |                     |             |             |                 |
-| autoenv       | ✅               | ✅                  |             |             | ✅              |
-| aws           | ✅               | ✅                  | ✅          | ✅          |                 |
-| clojure       | ✅               | ✅                  |             |             |                 |
-| docker        | ✅               | ✅                  | ✅          |             | ✅              |
-| elasticsearch | ✅               | ✅                  |             |             |                 |
-| emacs         | ✅               | ✅                  | ✅          |             |                 |
-| gcp           | ✅               | ✅                  | ✅          |             |                 |
-| golang        | ✅               | ✅                  |             |             |                 |
-| htop          | ✅               | ✅                  | ✅          |             | ✅              |
-| iterm         | ✅               |                     |             |             |                 |
-| jdk           | ✅               | ✅                  |             |             | ✅              |
-| keyd          |                  | ✅                  | ✅          |             |                 |
-| kube          | ✅               | ✅                  | ✅          | ✅          |                 |
-| meilisearch   | ✅               | ✅                  |             |             |                 |
-| nvtop         | ✅               | ✅                  |             |             |                 |
-| nvitop        |                  | ✅                  |             |             |                 |
-| openvpn       | ✅               | ✅                  |             |             |                 |
-| python        | ✅               | ✅                  | ✅          |             | ✅              |
-| pyenv         | ✅               | ✅                  |             |             |                 |
-| ssh           |                  |                     | ✅          | ✅          | ✅              |
-| svn           | ✅               | ✅                  |             |             | ✅              |
-| tmux          | ✅               | ✅                  | ✅          |             | ✅              |
-| tree          | ✅               | ✅                  |             |             | ✅              |
-| vim           | ✅               | ✅                  | ✅          |             |                 |
-| volta         | ✅               | ✅                  | ✅          |             |                 |
-| vscode        | ✅               | ✅                  |             |             |                 |
-| watch         | ✅               |                     |             |             | ✅              |
+| App Name | Mac Installation | Ubuntu Installation | User Config | User Secret | Default Enabled |
+|:---------|:----------------:|:-------------------:|:-----------:|:-----------:|:---------------:|
+| ssh      |                  |                     | ✅          | ✅          | ✅              |
+| vim      | ✅               | ✅                  | ✅          |             |                 |
+| volta    | ✅               | ✅                  | ✅          |             |                 |
+| vscode   | ✅               | ✅                  |             |             |                 |
+| watch    | ✅               |                     |             |             | ✅              |
 
 
-# Plugins
+# Deprecated Packages
 
-| Plugin Name               | Mac | Ubuntu | Default Enabled |
-|:--------------------------|:---:|:------:|:---------------:|
-| bat                       | ✅  | ✅     | ✅              |
-| bat-extras                | ✅  | ✅     | ✅              |
-| bottom                    | ✅  | ✅     |                 |
-| copybuffer                | ✅  | ✅     |                 |
-| delta                     | ✅  | ✅     | ✅              |
-| docker-credential-helpers | ✅  | ✅     |                 |
-| duf                       | ✅  | ✅     | ✅              |
-| dust                      | ✅  | ✅     | ✅              |
-| exa                       | ✅  | ✅     | ✅              |
-| extract                   | ✅  | ✅     | ✅              |
-| fast-syntax-highlighting  | ✅  | ✅     | ✅              |
-| fd                        | ✅  | ✅     | ✅              |
-| forgit                    | ✅  | ✅     | ✅              |
-| fzf                       | ✅  | ✅     | ✅              |
-| hyperfine                 | ✅  | ✅     |                 |
-| lazydocker                | ✅  | ✅     |                 |
-| p10k                      | ✅  | ✅     | ✅              |
-| peco                      | ✅  | ✅     |                 |
-| ripgrep                   | ✅  | ✅     | ✅              |
-| universalarchive          | ✅  | ✅     | ✅              |
-| urltools                  | ✅  | ✅     |                 |
-| z                         | ✅  | ✅     | ✅              |
-| zsh-autosuggestions       | ✅  | ✅     | ✅              |
-| zsh-completions           | ✅  | ✅     | ✅              |
-| dotfiles-aws              | ✅  | ✅     |                 |
-| dotfiles-docker           | ✅  | ✅     |                 |
-| dotfiles-es               | ✅  | ✅     |                 |
-| dotfiles-fail2ban         | ✅  | ✅     |                 |
-| dotfiles-git              | ✅  | ✅     | ✅              |
-| dotfiles-info             | ✅  | ✅     |                 |
-| dotfiles-kube             | ✅  | ✅     |                 |
-| dotfiles-mac              | ✅  | ✅     |                 |
-| dotfiles-misc             | ✅  | ✅     | ✅              |
-| dotfiles-ms               | ✅  | ✅     |                 |
-| dotfiles-network          | ✅  | ✅     |                 |
-| dotfiles-update           | ✅  | ✅     | ✅              |
-| dotfiles-vim              | ✅  | ✅     |                 |
+| Name              |
+|:------------------|
+| bottom            |
+| clojure           |
+| copybuffer        |
+| elasticsearch     |
+| lazydocker        |
+| meilisearch       |
+| nvtop             |
+| openvpn           |
+| svn               |
+| urltools          |
+|                   |
+| dotfiles-aws      |
+| dotfiles-docker   |
+| dotfiles-es       |
+| dotfiles-fail2ban |
+| dotfiles-git      |
+| dotfiles-info     |
+| dotfiles-kube     |
+| dotfiles-mac      |
+| dotfiles-misc     |
+| dotfiles-ms       |
+| dotfiles-network  |
+| dotfiles-update   |
+| dotfiles-vim      |
