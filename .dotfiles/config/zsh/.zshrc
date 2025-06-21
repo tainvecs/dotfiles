@@ -76,7 +76,7 @@ if [[ ! -f "$_dot_lib_util_path" ]]; then
     echo "error: $_dot_lib_util_path is not found." >&2
     return $RC_DEPENDENCY_MISSING
 else
-    source "$DOTFILES_DOT_LIB_DIR/util.zsh"
+    source "$_dot_lib_util_path"
 fi
 
 
@@ -86,7 +86,17 @@ if [[ ! -f "$_dot_lib_dotfiles_util_path" ]]; then
     echo "error: $_dot_lib_dotfiles_util_path is not found." >&2
     return $RC_DEPENDENCY_MISSING
 else
-    source "$DOTFILES_DOT_LIB_DIR/dotfiles/util.zsh"
+    source "$_dot_lib_dotfiles_util_path"
+fi
+
+
+local _dot_lib_package_init_path="$DOTFILES_DOT_LIB_DIR/package/init.zsh"
+
+if [[ ! -f "$_dot_lib_package_init_path" ]]; then
+    echo "error: $_dot_lib_package_init_path is not found." >&2
+    return $RC_DEPENDENCY_MISSING
+else
+    source "$_dot_lib_package_init_path"
 fi
 
 
@@ -246,9 +256,28 @@ update_associative_package_from_array "DOTFILES_PACKAGE_ASC_ARR" "DOTFILES_USER_
 
 if [[ ${#DOTFILES_PACKAGE_ASC_ARR[@]} -eq 0 ]]; then
     log_message "DOTFILES_PACKAGE_ASC_ARR is empty. No package will be initialized." "warn"
-else
-    :  # TODO: Add package-specific setup here if needed
 fi
+
+# init dotfiles packages
+for _pkg in ${(k)DOTFILES_PACKAGE_ASC_ARR}; do
+
+    # double check and skip false
+    if ! is_dotfiles_managed_package "$_pkg"; then
+        continue
+    fi
+
+    # skip package without init function
+    local _init_func="dotfiles_init_${_pkg}"
+    if (( ! ${+functions[$_init_func]} )); then
+        continue
+    fi
+
+    # init package
+    $_init_func
+    if [[ $? -ne $RC_SUCCESS ]]; then
+        log_dotfiles_package_initialization "$_pkg" "fail"
+    fi
+done
 
 
 # ------------------------------------------------------------------------------
