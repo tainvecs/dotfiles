@@ -3,8 +3,8 @@
 # Dotfiles App Configuration
 #
 #
-# Version: 0.0.8
-# Last Modified: 2025-06-21
+# Version: 0.0.9
+# Last Modified: 2025-06-28
 #
 # - Dependency
 #   - Environment Variable Files
@@ -70,34 +70,19 @@ fi
 # ------------------------------------------------------------------------------
 
 
-local _dot_lib_util_path="$DOTFILES_DOT_LIB_DIR/util.zsh"
-
-if [[ ! -f "$_dot_lib_util_path" ]]; then
-    echo "error: $_dot_lib_util_path is not found." >&2
-    return $RC_DEPENDENCY_MISSING
-else
-    source "$_dot_lib_util_path"
-fi
-
-
-local _dot_lib_dotfiles_util_path="$DOTFILES_DOT_LIB_DIR/dotfiles/util.zsh"
-
-if [[ ! -f "$_dot_lib_dotfiles_util_path" ]]; then
-    echo "error: $_dot_lib_dotfiles_util_path is not found." >&2
-    return $RC_DEPENDENCY_MISSING
-else
-    source "$_dot_lib_dotfiles_util_path"
-fi
-
-
-local _dot_lib_package_init_path="$DOTFILES_DOT_LIB_DIR/package/init.zsh"
-
-if [[ ! -f "$_dot_lib_package_init_path" ]]; then
-    echo "error: $_dot_lib_package_init_path is not found." >&2
-    return $RC_DEPENDENCY_MISSING
-else
-    source "$_dot_lib_package_init_path"
-fi
+local scripts=(
+    "util.zsh"
+    "dotfiles/util.zsh"
+    "package/init.zsh"
+)
+for _script in $scripts; do
+    local path="$DOTFILES_DOT_LIB_DIR/$_script"
+    if [[ ! -f "$path" ]]; then
+        echo "error: $path is not found." >&2
+        return $RC_DEPENDENCY_MISSING
+    fi
+    source "$path" || { echo "error: Failed to source $path" >&2; return $RC_ERROR; }
+done
 
 
 # ------------------------------------------------------------------------------
@@ -117,11 +102,11 @@ export DOTFILES_SYS_ARCHT=$(get_system_architecture)
 
 # sanity check
 if ! is_supported_system_name; then
-    log_dotfiles_package_initialization "$_package_name" "sys-name-not-supported"
+    log_message "Dotfiles is not supported on system name '$DOTFILES_SYS_NAME'." "error"
     return $RC_UNSUPPORTED
 fi
 if ! is_supported_system_archt; then
-    log_dotfiles_package_initialization "$_package_name" "sys-archt-not-supported"
+    log_message "Dotfiles is not supported on system architecture '$DOTFILES_SYS_ARCHT'." "error"
     return $RC_UNSUPPORTED
 fi
 
@@ -139,18 +124,12 @@ ensure_directory "$DOTFILES_LOCAL_MAN_DIR/man1"
 
 
 # ------------------------------------------------------------------------------
-# User: completions, history, manual and secret
+# User: history and secret
 # ------------------------------------------------------------------------------
 
 
-# add user completion if exist
-prepend_dir_to_path "FPATH" $DOTFILES_USER_COMP_DIR
-
 # user zsh history -> local zsh history
 dotfiles_user_link_local_history "zsh" $HISTFILE "$DOTFILES_USER_HIST_DIR/zsh.history"
-
-# add user manual if exist
-prepend_dir_to_path "MANPATH" $DOTFILES_USER_MAN_DIR
 
 # check user secret directory permission
 if [[ -d "$DOTFILES_USER_SECRET_DIR" ]] && [[ $(get_permission "$DOTFILES_USER_SECRET_DIR") != "700" ]]; then
@@ -160,77 +139,16 @@ fi
 
 # ------------------------------------------------------------------------------
 #
-# Homebrew
-#
-# - Environment Variables
-#   - BREW_HOME
-#   - HOMEBREW_CELLAR
-#   - HOMEBREW_PREFIX
-#   - HOMEBREW_REPOSITORY
-#
-# ------------------------------------------------------------------------------
-
-
-if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
-
-    # BREW_HOME
-    if [[ -d "/opt/homebrew" ]]; then
-        export BREW_HOME="/opt/homebrew"
-    elif [[ -d "/usr/local/Homebrew" ]]; then
-        export BREW_HOME="/usr/local"
-    else
-        log_message "Homebrew not found in standard locations." "error"
-    fi
-
-    # set fpath, PATH, MANPATH and INFOPATH
-    if [[ -n "$BREW_HOME" ]]; then
-        eval $("${BREW_HOME}/bin/brew" shellenv)
-    fi
-fi
-
-
-# ------------------------------------------------------------------------------
-#
-# Zinit
-#
-# - Environment Variables
-#   - ZINIT
-#   - ZINIT_HOME
-#   - ZINIT_PLUGIN_DIR
-#
-# ------------------------------------------------------------------------------
-
-
-# zinit home
-export ZINIT_HOME="$ZDOTDIR/zinit"
-export ZINIT_PLUGIN_DIR="$ZINIT_HOME/plugin"
-export ZINIT_SNIPPET_DIR="$ZINIT_HOME/snippet"
-
-# set zinit variables
-declare -A ZINIT
-
-ZINIT[HOME_DIR]="$ZINIT_HOME"
-ZINIT[BIN_DIR]="${ZINIT[HOME_DIR]}/zinit.git"
-ZINIT[PLUGINS_DIR]="$ZINIT_PLUGIN_DIR"
-ZINIT[SNIPPETS_DIR]="$ZINIT_SNIPPET_DIR"
-ZINIT[MAN_DIR]="$DOTFILES_LOCAL_MAN_DIR"
-ZINIT[COMPINIT_OPTS]=-C  # to suppress warnings
-ZINIT[COMPLETIONS_DIR]="$DOTFILES_ZSH_COMP_DIR"
-ZINIT[ZCOMPDUMP_PATH]="$DOTFILES_ZSH_COMPDUMP_PATH"
-
-export ZINIT
-
-# source zinit binary
-if [[ ! -f "${ZINIT[BIN_DIR]}/zinit.zsh" ]]; then
-    log_message "Zinit binary at ${ZINIT[BIN_DIR]}/zinit.zsh not found." "error"
-else
-    source "${ZINIT[BIN_DIR]}/zinit.zsh"
-fi
-
-
-# ------------------------------------------------------------------------------
-#
 # Packages
+#
+# - Dependencies
+#   - Environment Variables
+#     - DOTFILES_PACKAGE_ARR
+#     - DOTFILES_USER_PACKAGE_ARR
+#
+#   - Packages
+#     - Homebrew
+#     - Zinit
 #
 # - Environment Variables
 #   - DOTFILES_PACKAGE_ASC_ARR
@@ -238,46 +156,30 @@ fi
 # ------------------------------------------------------------------------------
 
 
-# dependency checking
-if [[ $DOTFILES_SYS_NAME == "mac" ]] && { ! command_exists brew }; then
-    log_message "Brew is not available. Some of the dotfiles packages will not be initialized." "error"
+# init homebrew and zinit, and check dependencies
+if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
+    if { ! dotfiles_init_homebrew } || { ! command_exists "brew" }; then
+        log_dotfiles_package_initialization "homebrew" "error"
+        return $RC_DEPENDENCY_MISSING
+    fi
+fi
+
+if { ! dotfiles_init_zinit } || { ! command_exists "zinit" }; then
+    log_dotfiles_package_initialization "zinit" "error"
     return $RC_DEPENDENCY_MISSING
 fi
 
-if ! command_exists zinit; then
-    log_message "Zinit is not available. Some of the dotfiles packages will not be initialized." "error"
-    return $RC_DEPENDENCY_MISSING
-fi
-
-# dotfiles package associative array
+# prepare dotfiles package associative array and
+# init all managed package in DOTFILES_PACKAGE_ASC_ARR
 unset DOTFILES_PACKAGE_ASC_ARR
 typeset -A DOTFILES_PACKAGE_ASC_ARR
-update_associative_package_from_array "DOTFILES_PACKAGE_ASC_ARR" "DOTFILES_USER_PACKAGE_ARR" "DOTFILES_PACKAGE_ARR"
+update_associative_array_from_array "DOTFILES_PACKAGE_ASC_ARR" "DOTFILES_USER_PACKAGE_ARR" "DOTFILES_PACKAGE_ARR"
 
 if [[ ${#DOTFILES_PACKAGE_ASC_ARR[@]} -eq 0 ]]; then
     log_message "DOTFILES_PACKAGE_ASC_ARR is empty. No package will be initialized." "warn"
+else
+    init_all_dotfiles_packages
 fi
-
-# init dotfiles packages
-for _pkg in ${(k)DOTFILES_PACKAGE_ASC_ARR}; do
-
-    # double check and skip false
-    if ! is_dotfiles_managed_package "$_pkg"; then
-        continue
-    fi
-
-    # skip package without init function
-    local _init_func="dotfiles_init_${_pkg}"
-    if (( ! ${+functions[$_init_func]} )); then
-        continue
-    fi
-
-    # init package
-    $_init_func
-    if [[ $? -ne $RC_SUCCESS ]]; then
-        log_dotfiles_package_initialization "$_pkg" "fail"
-    fi
-done
 
 
 # ------------------------------------------------------------------------------

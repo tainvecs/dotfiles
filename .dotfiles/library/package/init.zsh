@@ -6,8 +6,8 @@
 # Utility Functions for Package Configuration Setup and Initialization
 #
 #
-# Version: 0.0.2
-# Last Modified: 2025-06-21
+# Version: 0.0.3
+# Last Modified: 2025-06-28
 #
 # Dependencies:
 #   - Environment Variable File
@@ -133,7 +133,7 @@ function dotfiles_init_aws() {
 
 # ------------------------------------------------------------------------------
 #
-# bat
+# bat: cat clone with syntax highlighting
 #
 # - References
 #   - https://github.com/sharkdp/bat
@@ -148,7 +148,7 @@ function dotfiles_init_aws() {
 #   - bat --list-languages
 #   - bat --list-themes
 #
-# batextra
+# bat-extras: bash scripts that integrate bat with various command line tools
 #   - batgrep
 #   - batman
 #   - prettybat
@@ -227,10 +227,6 @@ function dotfiles_init_delta() {
 # - Environment Variables
 #   - DOCKER_CONFIG
 #   - DOCKER_DEFAULT_PLATFORM
-#
-# - Dependencies
-#   - curl
-#   - gpg
 #
 # docker compose: a tool for defining and running multi-container applications
 #
@@ -695,6 +691,50 @@ function dotfiles_init_go() {
     local _bin_dir="$GOLIB/bin"
     ensure_directory "$_bin_dir"
     append_dir_to_path "PATH" "$_bin_dir"
+}
+
+
+# ------------------------------------------------------------------------------
+#
+# homebrew: package manager (macOS only)
+#
+# - Reference
+#   - https://brew.sh/
+#
+# - Environment Variables
+#   - BREW_HOME
+#   - HOMEBREW_CELLAR
+#   - HOMEBREW_PREFIX
+#   - HOMEBREW_REPOSITORY
+#
+# ------------------------------------------------------------------------------
+
+
+function dotfiles_init_homebrew() {
+
+    local _package_name="homebrew"
+
+    # sanity check
+    if ! command_exists "brew"; then
+        log_dotfiles_package_initialization "$_package_name" "fail"
+        return $RC_ERROR
+    fi
+
+    # BREW_HOME
+    if [[ -d "/opt/homebrew" ]]; then
+        export BREW_HOME="/opt/homebrew"
+    elif [[ -d "/usr/local/Homebrew" ]]; then
+        export BREW_HOME="/usr/local"
+    else
+        log_message "Homebrew not found in standard locations." "error"
+        log_dotfiles_package_initialization "$_package_name" "fail"
+        return $RC_DEPENDENCY_MISSING
+    fi
+
+    # set fpath, PATH, MANPATH and INFOPATH
+    if [[ -n "$BREW_HOME" ]]; then
+        eval $("${BREW_HOME}/bin/brew" shellenv)
+    fi
 }
 
 
@@ -1298,6 +1338,56 @@ function dotfiles_init_wget() {
     ensure_directory "$_state_dir"
     local _hsts_file_path="$_state_dir/.wget-hsts"
     alias wget="wget --hsts-file $_hsts_file_path "
+}
+
+
+# ------------------------------------------------------------------------------
+#
+# zinit: zsh plugin manager
+#
+# - Reference
+#   - https://github.com/zdharma-continuum/zinit
+#
+# - Environment Variables
+#   - ZINIT
+#   - ZINIT_HOME
+#   - ZINIT_PLUGIN_DIR
+#   - ZINIT_SNIPPET_DIR
+#
+# ------------------------------------------------------------------------------
+
+
+function dotfiles_init_zinit() {
+
+    local _package_name="zinit"
+
+    # zinit home
+    export ZINIT_HOME="$DOTFILES_LOCAL_CONFIG_DIR/$_package_name"
+    export ZINIT_PLUGIN_DIR="$ZINIT_HOME/plugin"
+    export ZINIT_SNIPPET_DIR="$ZINIT_HOME/snippet"
+
+    # set zinit variables
+    declare -A ZINIT
+
+    ZINIT[HOME_DIR]="$ZINIT_HOME"
+    ZINIT[BIN_DIR]="${ZINIT[HOME_DIR]}/zinit.git"
+    ZINIT[PLUGINS_DIR]="$ZINIT_PLUGIN_DIR"
+    ZINIT[SNIPPETS_DIR]="$ZINIT_SNIPPET_DIR"
+    ZINIT[MAN_DIR]="$DOTFILES_LOCAL_MAN_DIR"
+    ZINIT[COMPINIT_OPTS]=-C  # to suppress warnings
+    ZINIT[COMPLETIONS_DIR]="$DOTFILES_ZSH_COMP_DIR"
+    ZINIT[ZCOMPDUMP_PATH]="$DOTFILES_ZSH_COMPDUMP_PATH"
+
+    export ZINIT
+
+    # source zinit binary
+    if [[ ! -f "${ZINIT[BIN_DIR]}/zinit.zsh" ]]; then
+        log_message "Zinit binary not found at ${ZINIT[BIN_DIR]}/zinit.zsh." "error"
+        log_dotfiles_package_initialization "$_package_name" "fail"
+        return $RC_ERROR
+    else
+        source "${ZINIT[BIN_DIR]}/zinit.zsh"
+    fi
 }
 
 

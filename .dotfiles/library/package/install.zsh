@@ -6,8 +6,8 @@
 # Utility Functions for Package Installation
 #
 #
-# Version: 0.0.2
-# Last Modified: 2025-06-21
+# Version: 0.0.3
+# Last Modified: 2025-06-28
 #
 # - Dependency
 #   - Environment Variable File
@@ -914,6 +914,35 @@ function dotfiles_install_go() {
 
 # ------------------------------------------------------------------------------
 #
+# homebrew: package manager (macOS only)
+#
+# - Reference
+#   - https://brew.sh/
+#
+# ------------------------------------------------------------------------------
+
+
+function dotfiles_install_homebrew() {
+
+    local _package_name="homebrew"
+
+    # sanity check
+    if [[ $DOTFILES_SYS_NAME != "mac" ]]; then
+        log_dotfiles_package_installation "$_package_name" "sys-name-not-supported"
+        return $RC_UNSUPPORTED
+    fi
+
+    # install or upgrade
+    if ! command_exists "brew"; then
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    else
+        brew update
+    fi
+}
+
+
+# ------------------------------------------------------------------------------
+#
 # htop: an interactive process viewer
 #
 # - References
@@ -1633,6 +1662,30 @@ function dotfiles_install_watch() {
         install_dotfiles_packages "$_package_name" "package-manager" "$_package_id"
     else
         install_dotfiles_packages --upgrade "$_package_name" "package-manager" "$_package_id"
+    fi
+}
+
+
+# ------------------------------------------------------------------------------
+#
+# zinit: zsh plugin manager
+#
+# - Reference
+#   - https://github.com/zdharma-continuum/zinit
+#
+# ------------------------------------------------------------------------------
+
+
+function dotfiles_install_zinit() {
+
+    local _package_name="zinit"
+    local _package_id="zdharma-continuum/zinit"
+
+    # install or upgrade
+    if ! { is_dotfiles_package_installed "$_package_name" "git-repo-pull" "$_package_id" }; then
+        install_dotfiles_packages "$_package_name" "git-repo-pull" "$_package_id"
+    else
+        install_dotfiles_packages --upgrade "$_package_name" "git-repo-pull" "$_package_id"
     fi
 }
 

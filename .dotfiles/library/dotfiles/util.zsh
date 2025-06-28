@@ -6,8 +6,8 @@
 # Dotfiles Utility Functions
 #
 #
-# Version: 0.0.2
-# Last Modified: 2025-06-21
+# Version: 0.0.3
+# Last Modified: 2025-06-28
 #
 # - Dependency
 #   - Environment Variable Files
@@ -156,7 +156,7 @@ function link_dotfiles_local_history_to_user() {
 # - Dependency
 #   - Apps
 #     - apt-get
-#     - brew
+#     - homebrew
 #     - git
 #     - zinit
 #
@@ -168,6 +168,74 @@ function link_dotfiles_local_history_to_user() {
 #
 # ------------------------------------------------------------------------------
 
+
+function init_all_dotfiles_packages() {
+
+    # init powerlevel10k before other dotfiles packages
+    if is_dotfiles_managed_package "powerlevel10k"; then
+        dotfiles_init_powerlevel10k
+    fi
+
+    # init dotfiles packages
+    for _pkg in ${(k)DOTFILES_PACKAGE_ASC_ARR}; do
+
+        # skip powerlevel10k
+        if [[ "$_pkg" == "powerlevel10k" ]]; then
+            continue
+        fi
+
+        # double check and skip false
+        if ! is_dotfiles_managed_package "$_pkg"; then
+            continue
+        fi
+
+        # skip package without init function
+        local _init_func="dotfiles_init_${_pkg}"
+        if (( ! ${+functions[$_init_func]} )); then
+            continue
+        fi
+
+        # init package
+        $_init_func
+        if [[ $? -ne $RC_SUCCESS ]]; then
+            log_dotfiles_package_initialization "$_pkg" "fail"
+        fi
+    done
+}
+
+function install_all_dotfiles_packages() {
+
+    # install python before other dotfiles packages
+    if is_dotfiles_managed_package "python"; then
+        dotfiles_install_python
+    fi
+
+    # install dotfiles packages
+    for _pkg in ${(k)DOTFILES_PACKAGE_ASC_ARR}; do
+
+        # skip python
+        if [[ "$_pkg" == "python" ]]; then
+            continue
+        fi
+
+        # double check and skip false
+        if ! is_dotfiles_managed_package "$_pkg"; then
+            continue
+        fi
+
+        # skip package without installation function
+        local _install_func="dotfiles_install_${_pkg}"
+        if (( ! ${+functions[$_init_func]} )); then
+            continue
+        fi
+
+        # installation package
+        $_install_func
+        if [[ $? -ne $RC_SUCCESS ]]; then
+            log_dotfiles_package_installation "$_pkg" "fail"
+        fi
+    done
+}
 
 # Usage: _install_dotfiles_package_with_package_manager
 #        <package_name> <package_management_type> <upgrade_bool> <package_id>
