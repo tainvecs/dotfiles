@@ -6,8 +6,8 @@
 # Utility Functions for Package Installation
 #
 #
-# Version: 0.0.3
-# Last Modified: 2025-06-28
+# Version: 0.0.4
+# Last Modified: 2025-06-29
 #
 # - Dependency
 #   - Environment Variable File
@@ -108,7 +108,7 @@ function dotfiles_install_alt-tab() {
 # ------------------------------------------------------------------------------
 
 
-function _dotfiles_install_autoenv() {
+function dotfiles_install_autoenv() {
 
     local _package_name="autoenv"
     local _package_id="hyperupcall/autoenv"
@@ -174,14 +174,12 @@ function dotfiles_install_aws() {
 
     elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
 
-        # home
-        local _home_dir="$DOTFILES_LOCAL_CONFIG_DIR/$_package_name"
-        ensure_directory "$_home_dir"
+        # tmp directory for installer
+        local _tmp_dir=$(mktemp -d)
+        local _bin_dir="$DOTFILES_LOCAL_BIN_DIR"
+        local _install_dir="$DOTFILES_LOCAL_SHARE_DIR/$_package_name"
 
-        # download installer
-        [[ -d "$_home_dir/aws" ]] && rm -rf "$_home_dir/aws"
-        [[ -f "$_home_dir/awscliv2.zip" ]] && rm -f "$_home_dir/awscliv2.zip"
-
+        # prepare installer
         local _bin_archt
         if [[ $DOTFILES_SYS_ARCHT == "arm64" ]]; then
             _bin_archt="aarch64"
@@ -191,28 +189,31 @@ function dotfiles_install_aws() {
 
         {
             curl -fL "https://awscli.amazonaws.com/awscli-exe-linux-$_bin_archt.zip" \
-                 -o "$_home_dir/awscliv2.zip" && \
-            unzip "$_home_dir/awscliv2.zip" -d $_home_dir && \
-            rm -f "$_home_dir/awscliv2.zip"
+                 -o "$_tmp_dir/awscliv2.zip" && \
+            unzip "$_tmp_dir/awscliv2.zip" -d "$_tmp_dir" && \
+            rm -f "$_tmp_dir/awscliv2.zip"
+
         } || {
             log_dotfiles_package_installation "$_package_name" "fail"
-            rm -rf "$_home_dir/aws" "$_home_dir/awscliv2.zip"
+            rm -rf "$_tmp_dir/aws" "$_tmp_dir/awscliv2.zip"
             return $RC_ERROR
         }
 
         # install or upgrade
         if ! command_exists "$_package_name"; then
             log_dotfiles_package_installation "$_package_name" "install"
-            sudo "$_home_dir/aws/install"
+            sudo "$_home_dir/aws/install" --bin-dir "$_bin_dir" --install-dir "$_install_dir"
         else
             log_dotfiles_package_installation "$_package_name" "upgrade"
-            sudo "$_home_dir/aws/install" --update
+            sudo "$_home_dir/aws/install" --bin-dir "$_bin_dir" --install-dir "$_install_dir" --update
         fi
 
         if [[ $? -eq $RC_SUCCESS ]]; then
             log_dotfiles_package_installation "$_package_name" "success"
+            rm -rf "$_tmp_dir/aws"
         else
             log_dotfiles_package_installation "$_package_name" "fail"
+            rm -rf "$_tmp_dir/aws" "$_install_dir"
             return $RC_ERROR
         fi
     fi
@@ -860,7 +861,7 @@ function dotfiles_install_gcp() {
     # install
     log_dotfiles_package_installation "$_package_name" "install"
 
-    local _home_dir="$DOTFILES_LOCAL_CONFIG_DIR/$_package_name"
+    local _home_dir="$DOTFILES_LOCAL_SHARE_DIR/$_package_name"
     ensure_directory "$_home_dir"
 
     curl -fL https://sdk.cloud.google.com > "$_home_dir/install.sh"
@@ -874,7 +875,7 @@ function dotfiles_install_gcp() {
     fi
 
     # completion
-    link_dotfiles_local_completion_to_dot "gcp/google-cloud-sdk" "completion.zsh.inc" "gcp.zsh.inc"
+    link_dotfiles_share_completion_to_local "$_package_name/google-cloud-sdk" "completion.zsh.inc" "gcp.zsh.inc"
 }
 
 
@@ -1349,9 +1350,6 @@ function dotfiles_install_python() {
     else
         install_dotfiles_packages --upgrade "$_package_name" "package-manager" "$_package_id"
     fi
-
-    # upgrade pip
-    python3 -m pip install --upgrade pip
 }
 
 
@@ -1533,7 +1531,7 @@ function dotfiles_install_universalarchive() {
     fi
 
     # completion
-    if ! { is_dotfiles_package_installed "$_comp_name" "$_comp_id" "zinit-snippet" }; then
+    if ! { is_dotfiles_package_installed "$_comp_name" "zinit-snippet" "$_comp_id" }; then
         zinit ice lucid as"completion" id-as"$_comp_name"
         install_dotfiles_packages "$_comp_name" "zinit-snippet" "$_comp_id"
     else
@@ -1583,7 +1581,6 @@ function dotfiles_install_vim() {
 #   - curl
 #
 # - Environment Variables
-#   - NPM_CONFIG_USERCONFIG
 #   - VOLTA_HOME
 #
 # ------------------------------------------------------------------------------
@@ -1605,14 +1602,9 @@ function dotfiles_install_volta() {
     fi
 
     # env
-    local _home_dir="$DOTFILES_LOCAL_CONFIG_DIR/volta"
+    local _home_dir="$DOTFILES_LOCAL_SHARE_DIR/$_package_name"
     ensure_directory "$_home_dir"
     export VOLTA_HOME=$_home_dir
-
-    local _npm_home_dir="$_home_dir/npm"
-    ensure_directory "$_npm_home_dir"
-    local _npm_config_path="$_npm_home_dir/.npmrc"
-    export NPM_CONFIG_USERCONFIG=$_npm_config_path
 
     # install or upgrade
     if ! command_exists "$_package_name"; then
@@ -1687,6 +1679,9 @@ function dotfiles_install_zinit() {
     else
         install_dotfiles_packages --upgrade "$_package_name" "git-repo-pull" "$_package_id"
     fi
+
+    # completion
+    local _=$(link_dotfiles_share_completion_to_local "$_package_name/zinit.git" "_zinit" "_$_package_name")
 }
 
 

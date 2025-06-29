@@ -3,8 +3,8 @@
 # Dotfiles App Configuration
 #
 #
-# Version: 0.0.9
-# Last Modified: 2025-06-28
+# Version: 0.0.10
+# Last Modified: 2025-06-29
 #
 # - Dependency
 #   - Environment Variable Files
@@ -55,75 +55,6 @@ fi
 
 
 # ------------------------------------------------------------------------------
-# Sanity Check
-# ------------------------------------------------------------------------------
-
-
-if [[ -z "$DOTFILES_DOT_LIB_DIR" ]]; then
-    echo "error: DOTFILES_DOT_LIB_DIR is not set." >&2
-    return $RC_ERROR
-fi
-
-
-# ------------------------------------------------------------------------------
-# Library
-# ------------------------------------------------------------------------------
-
-
-local scripts=(
-    "util.zsh"
-    "dotfiles/util.zsh"
-    "package/init.zsh"
-)
-for _script in $scripts; do
-    local path="$DOTFILES_DOT_LIB_DIR/$_script"
-    if [[ ! -f "$path" ]]; then
-        echo "error: $path is not found." >&2
-        return $RC_DEPENDENCY_MISSING
-    fi
-    source "$path" || { echo "error: Failed to source $path" >&2; return $RC_ERROR; }
-done
-
-
-# ------------------------------------------------------------------------------
-#
-# Environment Variables
-#
-# - Environment Variables
-#   - DOTFILES_SYS_NAME
-#   - DOTFILES_SYS_ARCHT
-#
-# ------------------------------------------------------------------------------
-
-
-# system name and architecture
-export DOTFILES_SYS_NAME=$(get_system_name)
-export DOTFILES_SYS_ARCHT=$(get_system_architecture)
-
-# sanity check
-if ! is_supported_system_name; then
-    log_message "Dotfiles is not supported on system name '$DOTFILES_SYS_NAME'." "error"
-    return $RC_UNSUPPORTED
-fi
-if ! is_supported_system_archt; then
-    log_message "Dotfiles is not supported on system architecture '$DOTFILES_SYS_ARCHT'." "error"
-    return $RC_UNSUPPORTED
-fi
-
-
-# ------------------------------------------------------------------------------
-# Local: binary and manual
-# ------------------------------------------------------------------------------
-
-
-# ensure local binary
-ensure_directory "$DOTFILES_LOCAL_BIN_DIR"
-
-# ensure local man
-ensure_directory "$DOTFILES_LOCAL_MAN_DIR/man1"
-
-
-# ------------------------------------------------------------------------------
 # User: history and secret
 # ------------------------------------------------------------------------------
 
@@ -139,7 +70,7 @@ fi
 
 # ------------------------------------------------------------------------------
 #
-# Packages
+# Init Packages
 #
 # - Dependencies
 #   - Environment Variables
@@ -163,18 +94,12 @@ if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
         return $RC_DEPENDENCY_MISSING
     fi
 fi
-
 if { ! dotfiles_init_zinit } || { ! command_exists "zinit" }; then
     log_dotfiles_package_initialization "zinit" "error"
     return $RC_DEPENDENCY_MISSING
 fi
 
-# prepare dotfiles package associative array and
 # init all managed package in DOTFILES_PACKAGE_ASC_ARR
-unset DOTFILES_PACKAGE_ASC_ARR
-typeset -A DOTFILES_PACKAGE_ASC_ARR
-update_associative_array_from_array "DOTFILES_PACKAGE_ASC_ARR" "DOTFILES_USER_PACKAGE_ARR" "DOTFILES_PACKAGE_ARR"
-
 if [[ ${#DOTFILES_PACKAGE_ASC_ARR[@]} -eq 0 ]]; then
     log_message "DOTFILES_PACKAGE_ASC_ARR is empty. No package will be initialized." "warn"
 else
@@ -184,7 +109,7 @@ fi
 
 # ------------------------------------------------------------------------------
 #
-# Completion
+# Zsh Completion
 #
 # - Dependency
 #   - Zinit

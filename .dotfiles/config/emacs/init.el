@@ -19,6 +19,8 @@
 (setq default-directory               user-emacs-directory)
 
 ;; user directories
+(defconst user-config-directory       (or (expand-file-name "emacs/" (getenv "DOTFILES_LOCAL_CONFIG_DIR"))
+                                          user-emacs-directory))
 (defconst user-cache-directory        (or (expand-file-name "emacs/" (getenv "DOTFILES_LOCAL_CACHE_DIR"))
                                           user-emacs-directory))
 (defconst user-state-directory        (or (expand-file-name "emacs/" (getenv "DOTFILES_LOCAL_STATE_DIR"))
@@ -45,12 +47,12 @@
 (setq package-user-dir                user-package-directory)
 
 ;; customized config
-(setq custom-file                     (expand-file-name "custom.el" user-emacs-directory))
+(setq custom-file                     (expand-file-name "custom.el" user-config-directory))
 (when (file-exists-p custom-file)
   (load custom-file))
 
 ;; dotfiles user config
-(defconst init-local-path             (expand-file-name "init.local.el" user-emacs-directory))
+(defconst init-local-path             (expand-file-name "init.local.el" user-config-directory))
 (when (file-exists-p init-local-path)
   (load-file init-local-path))
 

@@ -6,8 +6,8 @@
 # Dotfiles Utility Functions
 #
 #
-# Version: 0.0.3
-# Last Modified: 2025-06-28
+# Version: 0.0.4
+# Last Modified: 2025-06-29
 #
 # - Dependency
 #   - Environment Variable Files
@@ -28,27 +28,6 @@
 
 
 # ------------------------------------------------------------------------------
-# Dot
-# ------------------------------------------------------------------------------
-
-
-# Setup local share config with symlink
-# $1: local completion directory path
-# $2: local completion filename
-# $3: dot completion filename
-# Returns: dot completion link path via echo if successful, exits on failure
-function link_dotfiles_local_completion_to_dot() {
-
-    local _local_cmp_script_path="$DOTFILES_LOCAL_CONFIG_DIR/$1/$2"
-    local _dot_cmp_link="$DOTFILES_ZSH_COMP_DIR/$3"
-
-    ensure_directory "$DOTFILES_ZSH_COMP_DIR"
-
-    return $(create_validated_symlink "$_local_cmp_script_path" "$_dot_cmp_link")
-}
-
-
-# ------------------------------------------------------------------------------
 # Local
 # ------------------------------------------------------------------------------
 
@@ -62,12 +41,20 @@ function link_dotfiles_local_completion_to_dot() {
 function link_dotfiles_dot_config_to_local() {
 
     # local package dot config link -> dot config file
-    local _dot_config_path="$DOTFILES_DOT_CONFIG_DIR/$1/$2"
-    local _local_dot_config_link="$DOTFILES_LOCAL_CONFIG_DIR/$3/$4"
+    local _source_path="$DOTFILES_DOT_CONFIG_DIR/$1/$2"
+    local _link_path="$DOTFILES_LOCAL_CONFIG_DIR/$3/$4"
 
     ensure_directory "$DOTFILES_LOCAL_CONFIG_DIR/$3"
 
-    return $(create_validated_symlink "$_dot_config_path" "$_local_dot_config_link")
+    create_validated_symlink "$_source_path" "$_link_path"
+    local _rc=$?
+    if [[ $_rc == $RC_SKIPPED ]]; then
+        log_message "Skipped linking config from $_source_path to $_link_path." "warn"
+    elif [[ $_rc != $RC_SUCCESS ]]; then
+        log_message "Failed to link from $_source_path to $_link_path" "error"
+    fi
+
+    return $_rc
 }
 
 # Setup user config with symlink
@@ -79,12 +66,20 @@ function link_dotfiles_dot_config_to_local() {
 function link_dotfiles_user_config_to_local() {
 
     # local package user config link -> user config file
-    local _user_config_path="$DOTFILES_USER_CONFIG_DIR/$1/$2"
-    local _local_user_config_link="$DOTFILES_LOCAL_CONFIG_DIR/$3/$4"
+    local _source_path="$DOTFILES_USER_CONFIG_DIR/$1/$2"
+    local _link_path="$DOTFILES_LOCAL_CONFIG_DIR/$3/$4"
 
     ensure_directory "$DOTFILES_LOCAL_CONFIG_DIR/$3"
 
-    return $(create_validated_symlink "$_user_config_path" "$_local_user_config_link")
+    create_validated_symlink "$_source_path" "$_link_path"
+    local _rc=$?
+    if [[ $_rc == $RC_SKIPPED ]]; then
+        :
+    elif [[ $_rc != $RC_SUCCESS ]]; then
+        log_message "Failed to link from $_source_path to $_link_path" "error"
+    fi
+
+    return $_rc
 }
 
 # Setup user credentials with symlink
@@ -96,14 +91,21 @@ function link_dotfiles_user_config_to_local() {
 function link_dotfiles_user_credential_to_local() {
 
     # local package user credential link -> user credential file
-    local _user_creds_path="$DOTFILES_USER_SECRET_DIR/$1/$2"
-    local _local_user_creds_link="$DOTFILES_LOCAL_CONFIG_DIR/$3/$4"
+    local _source_path="$DOTFILES_USER_SECRET_DIR/$1/$2"
+    local _link_path="$DOTFILES_LOCAL_CONFIG_DIR/$3/$4"
 
     ensure_directory "$DOTFILES_LOCAL_CONFIG_DIR/$3"
 
-    return $(create_validated_symlink "$_user_creds_path" "$_local_user_creds_link")
-}
+    create_validated_symlink "$_source_path" "$_link_path"
+    local _rc=$?
+    if [[ $_rc == $RC_SKIPPED ]]; then
+        :
+    elif [[ $_rc != $RC_SUCCESS ]]; then
+        log_message "Failed to link from $_source_path to $_link_path" "error"
+    fi
 
+    return $_rc
+}
 
 # Setup local share config with symlink
 # $1: package name
@@ -114,12 +116,43 @@ function link_dotfiles_user_credential_to_local() {
 function link_dotfiles_share_config_to_local() {
 
     # local package share config link -> share config file
-    local _share_config_path="$DOTFILES_LOCAL_SHARE_DIR/$1/$2"
-    local _local_share_config_link="$DOTFILES_LOCAL_CONFIG_DIR/$3/$4"
+    local _source_path="$DOTFILES_LOCAL_SHARE_DIR/$1/$2"
+    local _link_path="$DOTFILES_LOCAL_CONFIG_DIR/$3/$4"
 
     ensure_directory "$DOTFILES_LOCAL_CONFIG_DIR/$3"
 
-    return $(create_validated_symlink "$_share_config_path" "$_local_share_config_link")
+    create_validated_symlink "$_source_path" "$_link_path"
+    local _rc=$?
+    if [[ $_rc == $RC_SKIPPED ]]; then
+        log_message "Skipped linking config from $_source_path to $_link_path." "warn"
+    elif [[ $_rc != $RC_SUCCESS ]]; then
+        log_message "Failed to link from $_source_path to $_link_path" "error"
+    fi
+
+    return $_rc
+}
+
+# Setup local share completion with symlink
+# $1: share completion directory
+# $2: share completion filename
+# $3: local completion filename
+# Returns: dot completion link path via echo if successful, exits on failure
+function link_dotfiles_share_completion_to_local() {
+
+    local _source_path="$DOTFILES_LOCAL_SHARE_DIR/$1/$2"
+    local _link_path="$DOTFILES_ZSH_COMP_DIR/$3"
+
+    ensure_directory "$DOTFILES_ZSH_COMP_DIR"
+
+    create_validated_symlink "$_source_path" "$_link_path"
+    local _rc=$?
+    if [[ $_rc == $RC_SKIPPED ]]; then
+        log_message "Skipped linking completion from $_source_path to $_link_path." "warn"
+    elif [[ $_rc -ne $RC_SUCCESS ]]; then
+        log_message "Failed to link from $_source_path to $_link_path" "error"
+    fi
+
+    return $_rc
 }
 
 
@@ -142,10 +175,18 @@ function link_dotfiles_local_history_to_user() {
     local _state_history_file="$2"
     local _user_history_file="${3:-$_package_name.history}"
 
-    local _history_path="$DOTFILES_LOCAL_STATE_DIR/$_package_name/$_state_history_file"
-    local _history_link="$DOTFILES_USER_HIST_DIR/$_user_history_file"
+    local _source_path="$DOTFILES_LOCAL_STATE_DIR/$_package_name/$_state_history_file"
+    local _link_path="$DOTFILES_USER_HIST_DIR/$_user_history_file"
 
-    return $(create_validated_symlink "$_history_path" "$_history_link")
+    create_validated_symlink "$_source_path" "$_link_path"
+    local _rc=$?
+    if [[ $_rc == $RC_SKIPPED ]]; then
+        :
+    elif [[ $_rc != $RC_SUCCESS ]]; then
+        log_message "Failed to link from $_source_path to $_link_path" "error"
+    fi
+
+    return $_rc
 }
 
 
@@ -205,6 +246,8 @@ function init_all_dotfiles_packages() {
 
 function install_all_dotfiles_packages() {
 
+    local -a skipped_packages=("python" "git" "ssh")
+
     # install python before other dotfiles packages
     if is_dotfiles_managed_package "python"; then
         dotfiles_install_python
@@ -214,7 +257,7 @@ function install_all_dotfiles_packages() {
     for _pkg in ${(k)DOTFILES_PACKAGE_ASC_ARR}; do
 
         # skip python
-        if [[ "$_pkg" == "python" ]]; then
+        if [[ " ${skipped_packages[@]} " =~ " $_pkg " ]]; then
             continue
         fi
 
@@ -225,7 +268,8 @@ function install_all_dotfiles_packages() {
 
         # skip package without installation function
         local _install_func="dotfiles_install_${_pkg}"
-        if (( ! ${+functions[$_init_func]} )); then
+        if [[ ! -v "functions[${_install_func}]" ]]; then
+            log_dotfiles_package_installation "$_pkg" "skip"
             continue
         fi
 
@@ -324,7 +368,7 @@ function _install_dotfiles_package_with_git_repo() {
     local _package_git_url="https://github.com/$_package_id.git"
 
     # install or upgrade
-    local _package_home_dir="$DOTFILES_LOCAL_CONFIG_DIR/$_package_name"
+    local _package_home_dir="$DOTFILES_LOCAL_SHARE_DIR/$_package_name"
     local _package_git_dir="$_package_home_dir/$_package_name.git"
     ensure_directory "$_package_home_dir"
 
@@ -593,7 +637,7 @@ function is_dotfiles_package_installed() {
     case $_package_manage_type in
 
         "git-repo-pull" | "git-repo-make-install")
-            [[ -d "$DOTFILES_LOCAL_CONFIG_DIR/$_package_name/$_package_name.git" ]] ;;
+            [[ -d "$DOTFILES_LOCAL_SHARE_DIR/$_package_name/$_package_name.git" ]] ;;
 
         "package-manager")
             if [[ "$DOTFILES_SYS_NAME" == "linux" ]]; then
@@ -620,7 +664,6 @@ function is_dotfiles_package_installed() {
                 log_message "Failed to parse package id $_package_id for package $_package_name." "error"
                 return $RC_INVALID_ARGS
             fi
-
             [[ -d "$ZINIT_PLUGIN_DIR/$_git_repo_name---$_git_repo_path" ]] && return $RC_SUCCESS
             [[ -d "$ZINIT_SNIPPET_DIR/$_git_repo_name--$_git_repo_path" ]] && return $RC_SUCCESS
 

@@ -6,8 +6,8 @@
 # Zsh Completion: Load and Trigger Completion with Zinit
 #
 #
-# Version: 0.0.4
-# Last Modified: 2025-06-21
+# Version: 0.0.5
+# Last Modified: 2025-06-29
 #
 # - Dependency
 #   - Tool
@@ -25,6 +25,7 @@
 #   - gcp
 #   - kubectl
 #   - volta
+#   - zinit
 #   - zoxide
 #
 # ------------------------------------------------------------------------------
@@ -48,7 +49,7 @@ fi
 
 # gcp
 if command_exists "gcloud"; then
-    link_dotfiles_local_completion_to_dot "gcp/google-cloud-sdk" "completion.zsh.inc" "gcp.zsh.inc"
+    link_dotfiles_share_completion_to_local "gcp/google-cloud-sdk" "completion.zsh.inc" "gcp.zsh.inc"
 fi
 
 # kubectl
@@ -65,6 +66,11 @@ if command_exists "volta"; then
     if [[ ! -f $_cmp_path ]]; then
         volta completions --output $_cmp_path || log_message "Failed to generate volta completion $_cmp_path" "error"
     fi
+fi
+
+# zinit
+if command_exists "zinit"; then
+    link_dotfiles_share_completion_to_local "zinit/zinit.git" "_zinit" "_zinit"
 fi
 
 

@@ -6,8 +6,8 @@
 # Utility Functions
 #
 #
-# Version: 0.0.13
-# Last Modified: 2025-06-21
+# Version: 0.0.14
+# Last Modified: 2025-06-29
 #
 # - Dependency
 #   - Environment Variable Files
@@ -166,19 +166,13 @@ function create_validated_symlink() {
     local _link_path="$2"
 
     # sanity check
-    if [[ ! -e "$_source_path" ]]; then
-        # log_message "Skipped linking dot config from $_source_path to $_link_path." "warn"
-        return $RC_SKIPPED
-    fi
+    [[ -e "$_source_path" ]] || return $RC_SKIPPED
 
     # create symlink
     [[ -e "$_link_path" ]] || ln -sf "$_source_path" "$_link_path"
 
     # validate
-    if [[ ! "$_source_path" -ef "$_link_path" ]]; then
-        log_message "Failed to link from $_source_path to $_link_path." "error"
-        return $RC_ERROR
-    fi
+    [[ "$_source_path" -ef "$_link_path" ]] || return $RC_ERROR
 
     echo "$_link_path"
     return $RC_SUCCESS

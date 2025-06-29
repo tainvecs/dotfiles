@@ -6,8 +6,8 @@
 # Utility Functions for Package Configuration Setup and Initialization
 #
 #
-# Version: 0.0.3
-# Last Modified: 2025-06-28
+# Version: 0.0.4
+# Last Modified: 2025-06-29
 #
 # Dependencies:
 #   - Environment Variable File
@@ -55,7 +55,7 @@ function dotfiles_init_autoenv() {
     if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
         _init_script_path="$BREW_HOME/opt/$_package_name/activate.sh"
     elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
-        _init_script_path="$DOTFILES_LOCAL_CONFIG_DIR/$_package_name/$_package_name.git/activate.sh"
+        _init_script_path="$DOTFILES_LOCAL_SHARE_DIR/$_package_name/$_package_name.git/activate.sh"
     fi
 
     # sanity check
@@ -343,9 +343,6 @@ function dotfiles_init_dust() {
 # - Environment Variables
 #   - EMACS_HOME
 #
-# - PATH
-#   - $DOTFILES_LOCAL_CONFIG_DIR/emacs/bin
-#
 # ------------------------------------------------------------------------------
 
 
@@ -359,7 +356,7 @@ function dotfiles_init_emacs() {
         return $RC_ERROR
     fi
 
-    # dotfiles config
+    # dot config
     local _config_link=$(link_dotfiles_dot_config_to_local "$_package_name" "init.el" "$_package_name" "init.el")
     if [[ $? -ne $RC_SUCCESS ]]; then
         log_message "Failed to setup dotfiles emacs init.el." "error"
@@ -374,10 +371,8 @@ function dotfiles_init_emacs() {
     # user history
     link_dotfiles_local_history_to_user "$_package_name" "history" "emacs.history"
 
-    # home and path
-    local _home_dir="$DOTFILES_LOCAL_CONFIG_DIR/$_package_name"
-    export EMACS_HOME=$_home_dir
-    append_dir_to_path "PATH" "$_home_dir/bin"
+    # home
+    export EMACS_HOME="$DOTFILES_LOCAL_SHARE_DIR/$_package_name"
 }
 
 
@@ -402,7 +397,7 @@ function dotfiles_init_extract() {
     fi
 
     zinit ice wait"2" lucid
-    zinit light "$_package_name"
+    zinit snippet "$_package_name"
 
     alias x="extract "
 }
@@ -714,12 +709,6 @@ function dotfiles_init_homebrew() {
 
     local _package_name="homebrew"
 
-    # sanity check
-    if ! command_exists "brew"; then
-        log_dotfiles_package_initialization "$_package_name" "fail"
-        return $RC_ERROR
-    fi
-
     # BREW_HOME
     if [[ -d "/opt/homebrew" ]]; then
         export BREW_HOME="/opt/homebrew"
@@ -971,6 +960,10 @@ function dotfiles_init_powerlevel10k() {
 # - Environment Variables
 #   - PYENV_ROOT
 #
+# - Path
+#   - $DOTFILES_LOCAL_SHARE_DIR/python/pyenv/bin (macOS)
+#   - $DOTFILES_LOCAL_SHARE_DIR/python/pyenv/pyenv.git/bin (linux)
+#
 # ------------------------------------------------------------------------------
 
 
@@ -986,7 +979,7 @@ function dotfiles_init_python() {
     fi
 
     # ----- python
-    local _package_home_dir="$DOTFILES_LOCAL_CONFIG_DIR/$_package_name"
+    local _package_home_dir="$DOTFILES_LOCAL_SHARE_DIR/$_package_name"
     ensure_directory "$_package_home_dir"
 
     # user config
@@ -1015,7 +1008,7 @@ function dotfiles_init_python() {
 
     if command_exists "$_package_plugin_name" || [[ -d $_package_plugin_git_dir ]]; then
 
-        # git dir for linux and home for macos
+        # git dir for linux and home for macOS
         if [[ -d $_package_plugin_git_dir ]]; then
             export PYENV_ROOT="$_package_plugin_git_dir"
         else
@@ -1204,7 +1197,7 @@ function dotfiles_init_universalarchive() {
     fi
 
     zinit ice wait"2" lucid
-    zinit light "$_package_name"
+    zinit snippet "$_package_name"
 
     alias a="ua "
 }
@@ -1218,7 +1211,6 @@ function dotfiles_init_universalarchive() {
 #   - https://www.vim.org/docs.php
 #
 # - Environment Variables
-#   - VIM_HOME
 #   - VIM_LOCAL_CONFIG_PATH
 #   - VIMINIT
 #
@@ -1234,11 +1226,6 @@ function dotfiles_init_vim() {
         log_dotfiles_package_initialization "$_package_name" "fail"
         return $RC_ERROR
     fi
-
-    # home
-    local _home_dir="$DOTFILES_LOCAL_CONFIG_DIR/$_package_name"
-    ensure_directory "$_home_dir"
-    export VIM_HOME=$_home_dir
 
     # dot config
     local _dot_config_link=$(link_dotfiles_dot_config_to_local "$_package_name" ".vimrc" "$_package_name" ".vimrc")
@@ -1289,7 +1276,7 @@ function dotfiles_init_volta() {
     local _package_name="volta"
 
     # home
-    local _home_dir="$DOTFILES_LOCAL_CONFIG_DIR/$_package_name"
+    local _home_dir="$DOTFILES_LOCAL_SHARE_DIR/$_package_name"
     export VOLTA_HOME=$_home_dir
 
     # sanity check
@@ -1301,14 +1288,17 @@ function dotfiles_init_volta() {
     # path
     append_dir_to_path "PATH" "$_home_dir/bin"
 
-    # npm user config
-    local _npm_home_dir="$_home_dir/npm"
-    ensure_directory "$_npm_home_dir"
+    # config
+    local _config_dir="$DOTFILES_LOCAL_CONFIG_DIR/$_package_name"
+    local _npm_config_dir="$_config_dir/npm"
+    ensure_directory "$_npm_config_dir"
 
     # user config
-    local _user_config_link=$(link_dotfiles_user_config_to_local "$_package_name" ".npmrc" "$_package_name" "volta.user.npmrc")
+    local _user_config_link=$(link_dotfiles_user_config_to_local "$_package_name" ".npmrc" "$_package_name/npm" "volta.user.npmrc")
     if [[ $? == $RC_SUCCESS ]]; then
         export NPM_CONFIG_USERCONFIG="$_user_config_link"
+    else
+        export NPM_CONFIG_USERCONFIG="$_npm_config_dir/volta.npmrc"
     fi
 }
 
@@ -1362,12 +1352,12 @@ function dotfiles_init_zinit() {
     local _package_name="zinit"
 
     # zinit home
-    export ZINIT_HOME="$DOTFILES_LOCAL_CONFIG_DIR/$_package_name"
+    export ZINIT_HOME="$DOTFILES_LOCAL_SHARE_DIR/$_package_name"
     export ZINIT_PLUGIN_DIR="$ZINIT_HOME/plugin"
     export ZINIT_SNIPPET_DIR="$ZINIT_HOME/snippet"
 
     # set zinit variables
-    declare -A ZINIT
+    declare -gA ZINIT
 
     ZINIT[HOME_DIR]="$ZINIT_HOME"
     ZINIT[BIN_DIR]="${ZINIT[HOME_DIR]}/zinit.git"
@@ -1379,6 +1369,10 @@ function dotfiles_init_zinit() {
     ZINIT[ZCOMPDUMP_PATH]="$DOTFILES_ZSH_COMPDUMP_PATH"
 
     export ZINIT
+
+    # directories
+    ensure_directory "$ZINIT_SNIPPET_DIR"
+    ensure_directory "$ZINIT_PLUGIN_DIR"
 
     # source zinit binary
     if [[ ! -f "${ZINIT[BIN_DIR]}/zinit.zsh" ]]; then
