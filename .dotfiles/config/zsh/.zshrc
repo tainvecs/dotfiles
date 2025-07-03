@@ -3,8 +3,8 @@
 # Dotfiles App Configuration
 #
 #
-# Version: 0.0.10
-# Last Modified: 2025-06-29
+# Version: 0.0.11
+# Last Modified: 2025-07-03
 #
 # - Dependency
 #   - Environment Variable Files
@@ -60,7 +60,7 @@ fi
 
 
 # user zsh history -> local zsh history
-dotfiles_user_link_local_history "zsh" $HISTFILE "$DOTFILES_USER_HIST_DIR/zsh.history"
+link_dotfiles_local_history_to_user "zsh" $HISTFILE "$DOTFILES_USER_HIST_DIR/zsh.history"
 
 # check user secret directory permission
 if [[ -d "$DOTFILES_USER_SECRET_DIR" ]] && [[ $(get_permission "$DOTFILES_USER_SECRET_DIR") != "700" ]]; then

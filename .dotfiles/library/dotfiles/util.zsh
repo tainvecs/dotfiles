@@ -6,8 +6,8 @@
 # Dotfiles Utility Functions
 #
 #
-# Version: 0.0.4
-# Last Modified: 2025-06-29
+# Version: 0.0.5
+# Last Modified: 2025-07-03
 #
 # - Dependency
 #   - Environment Variable Files
@@ -275,9 +275,6 @@ function install_all_dotfiles_packages() {
 
         # installation package
         $_install_func
-        if [[ $? -ne $RC_SUCCESS ]]; then
-            log_dotfiles_package_installation "$_pkg" "fail"
-        fi
     done
 }
 
@@ -347,7 +344,7 @@ function _install_dotfiles_package_with_zinit() {
         fi
 
     elif [[ "$_upgrade_bool" == "true" ]]; then
-        zinit update "$_package_id" || return $RC_ERROR
+        zinit update "$_package_id"
     else
         return $RC_SKIPPED
     fi
@@ -666,6 +663,9 @@ function is_dotfiles_package_installed() {
             fi
             [[ -d "$ZINIT_PLUGIN_DIR/$_git_repo_name---$_git_repo_path" ]] && return $RC_SUCCESS
             [[ -d "$ZINIT_SNIPPET_DIR/$_git_repo_name--$_git_repo_path" ]] && return $RC_SUCCESS
+
+            [[ -d "$ZINIT_PLUGIN_DIR/$_git_repo_name/$_git_repo_path" ]] && return $RC_SUCCESS
+            [[ -d "$ZINIT_SNIPPET_DIR/$_git_repo_name/$_git_repo_path" ]] && return $RC_SUCCESS
 
             return $RC_NOT_FOUND ;;
 

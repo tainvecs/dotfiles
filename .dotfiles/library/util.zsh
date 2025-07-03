@@ -6,8 +6,8 @@
 # Utility Functions
 #
 #
-# Version: 0.0.14
-# Last Modified: 2025-06-29
+# Version: 0.0.15
+# Last Modified: 2025-07-03
 #
 # - Dependency
 #   - Environment Variable Files
@@ -169,7 +169,7 @@ function create_validated_symlink() {
     [[ -e "$_source_path" ]] || return $RC_SKIPPED
 
     # create symlink
-    [[ -e "$_link_path" ]] || ln -sf "$_source_path" "$_link_path"
+    [[ "$_source_path" -ef "$_link_path" ]] || ln -sf "$_source_path" "$_link_path"
 
     # validate
     [[ "$_source_path" -ef "$_link_path" ]] || return $RC_ERROR

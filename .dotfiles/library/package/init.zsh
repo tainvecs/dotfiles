@@ -6,8 +6,8 @@
 # Utility Functions for Package Configuration Setup and Initialization
 #
 #
-# Version: 0.0.4
-# Last Modified: 2025-06-29
+# Version: 0.0.5
+# Last Modified: 2025-07-03
 #
 # Dependencies:
 #   - Environment Variable File
@@ -633,18 +633,18 @@ function dotfiles_init_git() {
     if command_exists "delta"; then
 
         # themes.gitconfig
-        link_dotfiles_share_config_to_local "delta" "themes.gitconfig" "$_package_name" "themes.gitconfig"
+        _=$(link_dotfiles_share_config_to_local "delta" "themes.gitconfig" "$_package_name" "themes.gitconfig")
 
         # delta.gitconfig
-        link_dotfiles_user_config_to_local "delta" "config" "$_package_name" "delta.gitconfig"
+        _=$(link_dotfiles_user_config_to_local "delta" "config" "$_package_name" "delta.gitconfig")
         if [[ $? != $RC_SUCCESS ]]; then
-            link_dotfiles_dot_config_to_local "delta" "config" "$_package_name" "delta.gitconfig"
+            _=$(link_dotfiles_dot_config_to_local "delta" "config" "$_package_name" "delta.gitconfig")
         fi
     fi
 
     # git
-    link_dotfiles_dot_config_to_local "$_package_name" "config" "$_package_name" "config"
-    link_dotfiles_user_config_to_local "$_package_name" "config" "$_package_name" "user.gitconfig"
+    _=$(link_dotfiles_user_config_to_local "$_package_name" "config" "$_package_name" "user.gitconfig")
+    _=$(link_dotfiles_dot_config_to_local "$_package_name" "config" "$_package_name" "config")
 }
 
 
@@ -989,7 +989,7 @@ function dotfiles_init_python() {
     fi
 
     # app name, local history, user history
-    dotfiles_user_link_local_history "$_package_name" ".python_history" "$_package_name.history"
+    link_dotfiles_local_history_to_user "$_package_name" ".python_history" "$_package_name.history"
 
     # nltk data directory
     local _nltk_data_dir="$DOTFILES_LOCAL_SHARE_DIR/$_package_name/nltk_data"

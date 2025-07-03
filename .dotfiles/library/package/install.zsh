@@ -6,8 +6,8 @@
 # Utility Functions for Package Installation
 #
 #
-# Version: 0.0.4
-# Last Modified: 2025-06-29
+# Version: 0.0.5
+# Last Modified: 2025-07-03
 #
 # - Dependency
 #   - Environment Variable File
@@ -322,11 +322,19 @@ function dotfiles_install_delta() {
     # completion and theme config
     if ! { is_dotfiles_package_installed "$_package_res_name" "zinit-plugin" "$_package_res_id" }; then
 
+        local _sed_command
+        if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
+            _sed_command='sed -i "" -e "s/syntax-theme = Vibrant Sunburst/# syntax-theme = Vibrant Sunburst/g"'
+        elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then \
+            _sed_command='sed -i "s/syntax-theme = Vibrant Sunburst/# syntax-theme = Vibrant Sunburst/g"'
+        fi
+
         zinit ice lucid as"null" id-as"$_package_res_name" \
               atclone'ln -sf $(realpath ./etc/completion/completion.zsh) $DOTFILES_ZSH_COMP_DIR/_delta;      # completion
                       delta --help > delta.1;                                                                # manual
                       ln -sf $(realpath delta.1) $DOTFILES_LOCAL_MAN_DIR/man1/delta.1;
-                      mkdir -p $DOTFILES_LOCAL_SHARE_DIR/delta;                                              # theme config
+                      '"$_sed_command"' ./themes.gitconfig;                                                  # theme config
+                      mkdir -p $DOTFILES_LOCAL_SHARE_DIR/delta;
                       ln -sf $(realpath ./themes.gitconfig) $DOTFILES_LOCAL_SHARE_DIR/delta/themes.gitconfig;' \
               atpull'%atclone'
         install_dotfiles_packages "$_package_res_name" "zinit-plugin" "$_package_res_id"
@@ -1681,7 +1689,7 @@ function dotfiles_install_zinit() {
     fi
 
     # completion
-    local _=$(link_dotfiles_share_completion_to_local "$_package_name/zinit.git" "_zinit" "_$_package_name")
+    _=$(link_dotfiles_share_completion_to_local "$_package_name/zinit.git" "_zinit" "_$_package_name")
 }
 
 
