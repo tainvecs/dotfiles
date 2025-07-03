@@ -3,7 +3,7 @@
 # Dotfiles App Configuration
 #
 #
-# Version: 0.0.11
+# Version: 0.0.12
 # Last Modified: 2025-07-03
 #
 # - Dependency
@@ -37,6 +37,22 @@
 
 
 # ------------------------------------------------------------------------------
+# Sanity Check
+# ------------------------------------------------------------------------------
+
+
+if [[ ! -n "$DOTFILES_ROOT_DIR" ]]; then
+    echo "Error: environment variable DOTFILES_ROOT_DIR is not set." >&2
+    return 1
+fi
+
+if [[ ! -n "$DOTFILES_ENV_SOURCED" ]]; then
+    echo "Error: DOTFILES_DOT_ENV_DIR/dotfiles.env not sourced" >&2
+    return 1
+fi
+
+
+# ------------------------------------------------------------------------------
 #
 # Profile Start
 #
@@ -55,12 +71,25 @@ fi
 
 
 # ------------------------------------------------------------------------------
+# Source Dotfiles Init Script
+# ------------------------------------------------------------------------------
+
+
+_dotfiles_dot_lib_dot_init_path="$DOTFILES_DOT_LIB_DIR/dotfiles/init.zsh"
+if [[ ! -f "$_dotfiles_dot_lib_dot_init_path" ]]; then
+    echo "Error: dotfiles init.zsh not found at $_dotfiles_dot_lib_dot_init_path" >&2
+    return 1
+fi
+source "$_dotfiles_dot_lib_dot_init_path"
+
+
+# ------------------------------------------------------------------------------
 # User: history and secret
 # ------------------------------------------------------------------------------
 
 
 # user zsh history -> local zsh history
-link_dotfiles_local_history_to_user "zsh" $HISTFILE "$DOTFILES_USER_HIST_DIR/zsh.history"
+_=$(link_dotfiles_local_history_to_user "zsh" "history")
 
 # check user secret directory permission
 if [[ -d "$DOTFILES_USER_SECRET_DIR" ]] && [[ $(get_permission "$DOTFILES_USER_SECRET_DIR") != "700" ]]; then

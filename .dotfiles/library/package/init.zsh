@@ -6,7 +6,7 @@
 # Utility Functions for Package Configuration Setup and Initialization
 #
 #
-# Version: 0.0.5
+# Version: 0.0.6
 # Last Modified: 2025-07-03
 #
 # Dependencies:
@@ -369,7 +369,7 @@ function dotfiles_init_emacs() {
     link_dotfiles_user_config_to_local "$_package_name" "init.el" "$_package_name" "init.local.el"
 
     # user history
-    link_dotfiles_local_history_to_user "$_package_name" "history" "emacs.history"
+    link_dotfiles_local_history_to_user "$_package_name" "history"
 
     # home
     export EMACS_HOME="$DOTFILES_LOCAL_SHARE_DIR/$_package_name"
@@ -989,7 +989,7 @@ function dotfiles_init_python() {
     fi
 
     # app name, local history, user history
-    link_dotfiles_local_history_to_user "$_package_name" ".python_history" "$_package_name.history"
+    link_dotfiles_local_history_to_user "$_package_name" ".python_history"
 
     # nltk data directory
     local _nltk_data_dir="$DOTFILES_LOCAL_SHARE_DIR/$_package_name/nltk_data"

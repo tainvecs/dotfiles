@@ -3,80 +3,24 @@
 # Dotfiles Initialization Script
 #
 #
-# Version: 0.0.2
+# Version: 0.0.3
 # Last Modified: 2025-07-03
 #
 # ------------------------------------------------------------------------------
 
 
 # ------------------------------------------------------------------------------
-# Ensure Zsh
+# Sanity Check
 # ------------------------------------------------------------------------------
 
 
-# Ensure we're running in zsh
-[[ -n "$ZSH_VERSION" ]] || { echo "This script requires zsh" >&2; exit 1; }
-
-
-# ------------------------------------------------------------------------------
-#
-# Dotfiles Initialization Script
-#
-#
-# Version: 0.0.1
-# Last Modified: 2025-06-29
-#
-# ------------------------------------------------------------------------------
-
-
-# ------------------------------------------------------------------------------
-# Ensure Zsh
-# ------------------------------------------------------------------------------
-
-
-# Ensure we're running in zsh
-[[ -n "$ZSH_VERSION" ]] || { echo "This script requires zsh" >&2; exit 1; }
-
-
-# ------------------------------------------------------------------------------
-# DOTFILES_ROOT_DIR
-# ------------------------------------------------------------------------------
-
-
-# determine DOTFILES_ROOT_DIR is not set
-# %x expands to script name,
-# :A resolves symlinks,
-# :h:h:h:h goes up 4 directories to find the root
 if [[ ! -n "$DOTFILES_ROOT_DIR" ]]; then
-
-    # check if the current script path is available
-    # if true, set DOTFILES_ROOT_DIR based on script location
-    if [[ -z "${(%):-%x}" ]]; then
-        echo "Error: Unable to determine '.dotfiles/library/dotfiles/init.zsh' location" >&2
-        return 1
-    else
-        export DOTFILES_ROOT_DIR="${${(%):-%x}:A:h:h:h:h}"
-    fi
+    echo "Error: environment variable DOTFILES_ROOT_DIR is not set." >&2
 fi
 
-# sanity check
-if [[ ! -d "$DOTFILES_ROOT_DIR" ]]; then
-    echo "Error: No environment directory found at '$DOTFILES_DOT_ENV_DIR'." >&2
-    return $RC_ERROR
+if [[ ! -n "$DOTFILES_ENV_SOURCED" ]]; then
+    echo "Error: DOTFILES_DOT_ENV_DIR/dotfiles.env not sourced" >&2
 fi
-
-
-# ------------------------------------------------------------------------------
-# DOTFILES_DOT_ROOT_DIR, DOTFILES_DOT_ENV_DIR
-# ------------------------------------------------------------------------------
-
-
-[[ -n "$DOTFILES_DOT_ROOT_DIR" ]] || {
-    export DOTFILES_DOT_ROOT_DIR="$DOTFILES_ROOT_DIR/.dotfiles"
-}
-[[ -n "$DOTFILES_DOT_ENV_DIR" ]] || {
-    export DOTFILES_DOT_ENV_DIR="$DOTFILES_DOT_ROOT_DIR/env"
-}
 
 
 # ------------------------------------------------------------------------------
@@ -90,8 +34,9 @@ if [[ ! -d "$DOTFILES_DOT_ENV_DIR" ]]; then
     return $RC_ERROR
 fi
 
-# load all .env files in DOTFILES_DOT_ENV_DIR
+# load all .env files in DOTFILES_DOT_ENV_DIR except dotfiles.env
 for _env_file in $DOTFILES_DOT_ENV_DIR/*.env(.N); do
+    [[ "$_env_file" == "$DOTFILES_DOT_ENV_DIR/dotfiles.env" ]] && continue
     source "$_env_file" || echo "Error: Failed to source '$_env_file'" >&2
 done
 
@@ -168,7 +113,7 @@ update_associative_array_from_array "DOTFILES_PACKAGE_ASC_ARR" "DOTFILES_USER_PA
 
 
 # ------------------------------------------------------------------------------
-# Local: binary, completion and manual
+# Local: binary, completion, history and manual
 # ------------------------------------------------------------------------------
 
 
@@ -177,6 +122,10 @@ ensure_directory "$DOTFILES_LOCAL_BIN_DIR"
 
 # ensure local completion
 ensure_directory "$DOTFILES_ZSH_COMP_DIR"
+
+# history
+ensure_directory "$DOTFILES_LOCAL_STATE_DIR/zsh"
+export HISTFILE="$DOTFILES_ZSH_HISTFILE_PATH"
 
 # ensure local man
 ensure_directory "$DOTFILES_LOCAL_MAN_DIR/man1"

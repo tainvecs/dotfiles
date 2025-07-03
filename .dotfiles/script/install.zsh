@@ -6,10 +6,19 @@
 # Dotfiles Installation Script
 #
 #
-# Version: 0.0.1
-# Last Modified: 2025-06-29
+# Version: 0.0.2
+# Last Modified: 2025-07-03
 #
 # ------------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------------------
+# Ensure Zsh
+# ------------------------------------------------------------------------------
+
+
+# Ensure we're running in zsh
+[[ -n "$ZSH_VERSION" ]] || { echo "This script requires zsh" >&2; exit 1; }
 
 
 # ------------------------------------------------------------------------------
@@ -21,11 +30,34 @@ export DOTFILES_ROOT_DIR="${${DOTFILES_ROOT_DIR:-$HOME/dotfiles}:A}"
 
 
 # ------------------------------------------------------------------------------
+# DOTFILES_DOT_ROOT_DIR, DOTFILES_DOT_ENV_DIR, DOTFILES_DOT_LIB_DIR
+# ------------------------------------------------------------------------------
+
+
+[[ -n "$DOTFILES_DOT_ROOT_DIR" ]] || {
+    export DOTFILES_DOT_ROOT_DIR="$DOTFILES_ROOT_DIR/.dotfiles"
+}
+
+[[ -n "$DOTFILES_DOT_ENV_DIR" ]] || {
+    export DOTFILES_DOT_ENV_DIR="$DOTFILES_DOT_ROOT_DIR/env"
+}
+
+[[ -n "$DOTFILES_DOT_LIB_DIR" ]] || {
+    export DOTFILES_DOT_LIB_DIR="$DOTFILES_DOT_ROOT_DIR/library"
+}
+
+
+# ------------------------------------------------------------------------------
 #
 # Install dotfiles
 #
 # - clone dotfiles to DOTFILES_ROOT_DIR
 # - update ~/.zshenv
+#   - export DOTFILES_ROOT_DIR
+#   - source $DOTFILES_DOT_ENV_DIR/dotfiles.env
+# - source $DOTFILES_DOT_ENV_DIR/dotfiles.env
+# - source $DOTFILES_DOT_LIB_DIR/dotfiles/init.zsh
+# - link dotfiles .zshrc
 #
 # ------------------------------------------------------------------------------
 
@@ -44,16 +76,24 @@ if ! grep -Fx "export DOTFILES_ROOT_DIR=$DOTFILES_ROOT_DIR" ~/.zshenv > /dev/nul
     echo "export DOTFILES_ROOT_DIR=$DOTFILES_ROOT_DIR" >> ~/.zshenv
 fi
 
-# check if ~/.zshenv already sources the init.zsh file, and append and source if not
-_dotfiles_init_script_path="$DOTFILES_ROOT_DIR/.dotfiles/library/dotfiles/init.zsh"
-if [[ ! -f "$_dotfiles_init_script_path" ]]; then
-    echo "Error: dotfiles init.zsh not found at $_dotfiles_init_script_path"
+# check if ~/.zshenv already source "$DOTFILES_DOT_ENV_DIR/dotfiles.env"
+_dotfiles_dot_env_dotfiles_env_path="$DOTFILES_DOT_ENV_DIR/dotfiles.env"
+if [[ ! -f "$_dotfiles_dot_env_dotfiles_env_path" ]]; then
+    echo "Error: dotfiles dotfiles.env not found at $_dotfiles_dot_env_dotfiles_env_path" >&2
     return 1
 fi
-if ! grep -Fx "source $_dotfiles_init_script_path" ~/.zshenv > /dev/null; then
-    echo "source $_dotfiles_init_script_path" >> ~/.zshenv
+if ! grep -Fx "source $_dotfiles_dot_env_dotfiles_env_path" ~/.zshenv > /dev/null; then
+    echo "source $_dotfiles_dot_env_dotfiles_env_path" >> ~/.zshenv
 fi
-source "$_dotfiles_init_script_path"
+source "$_dotfiles_dot_env_dotfiles_env_path"
+
+# sources the init.zsh file
+_dotfiles_dot_lib_dot_init_path="$DOTFILES_DOT_LIB_DIR/dotfiles/init.zsh"
+if [[ ! -f "$_dotfiles_dot_lib_dot_init_path" ]]; then
+    echo "Error: dotfiles init.zsh not found at $_dotfiles_dot_lib_dot_init_path" >&2
+    return 1
+fi
+source "$_dotfiles_dot_lib_dot_init_path"
 
 # link .zshrc from dotfiles config to local config directory
 _dotfiles_zshrc_path=$(link_dotfiles_dot_config_to_local "zsh" ".zshrc" "zsh" ".zshrc") || return $RC_ERROR

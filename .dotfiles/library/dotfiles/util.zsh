@@ -6,7 +6,7 @@
 # Dotfiles Utility Functions
 #
 #
-# Version: 0.0.5
+# Version: 0.0.6
 # Last Modified: 2025-07-03
 #
 # - Dependency
@@ -46,8 +46,9 @@ function link_dotfiles_dot_config_to_local() {
 
     ensure_directory "$DOTFILES_LOCAL_CONFIG_DIR/$3"
 
+    local _rc
     create_validated_symlink "$_source_path" "$_link_path"
-    local _rc=$?
+    _rc=$?
     if [[ $_rc == $RC_SKIPPED ]]; then
         log_message "Skipped linking config from $_source_path to $_link_path." "warn"
     elif [[ $_rc != $RC_SUCCESS ]]; then
@@ -71,8 +72,9 @@ function link_dotfiles_user_config_to_local() {
 
     ensure_directory "$DOTFILES_LOCAL_CONFIG_DIR/$3"
 
+    local _rc
     create_validated_symlink "$_source_path" "$_link_path"
-    local _rc=$?
+    _rc=$?
     if [[ $_rc == $RC_SKIPPED ]]; then
         :
     elif [[ $_rc != $RC_SUCCESS ]]; then
@@ -96,8 +98,9 @@ function link_dotfiles_user_credential_to_local() {
 
     ensure_directory "$DOTFILES_LOCAL_CONFIG_DIR/$3"
 
+    local _rc
     create_validated_symlink "$_source_path" "$_link_path"
-    local _rc=$?
+    _rc=$?
     if [[ $_rc == $RC_SKIPPED ]]; then
         :
     elif [[ $_rc != $RC_SUCCESS ]]; then
@@ -121,8 +124,9 @@ function link_dotfiles_share_config_to_local() {
 
     ensure_directory "$DOTFILES_LOCAL_CONFIG_DIR/$3"
 
+    local _rc
     create_validated_symlink "$_source_path" "$_link_path"
-    local _rc=$?
+    _rc=$?
     if [[ $_rc == $RC_SKIPPED ]]; then
         log_message "Skipped linking config from $_source_path to $_link_path." "warn"
     elif [[ $_rc != $RC_SUCCESS ]]; then
@@ -144,8 +148,9 @@ function link_dotfiles_share_completion_to_local() {
 
     ensure_directory "$DOTFILES_ZSH_COMP_DIR"
 
+    local _rc
     create_validated_symlink "$_source_path" "$_link_path"
-    local _rc=$?
+    _rc=$?
     if [[ $_rc == $RC_SKIPPED ]]; then
         log_message "Skipped linking completion from $_source_path to $_link_path." "warn"
     elif [[ $_rc -ne $RC_SUCCESS ]]; then
@@ -178,8 +183,9 @@ function link_dotfiles_local_history_to_user() {
     local _source_path="$DOTFILES_LOCAL_STATE_DIR/$_package_name/$_state_history_file"
     local _link_path="$DOTFILES_USER_HIST_DIR/$_user_history_file"
 
+    local _rc
     create_validated_symlink "$_source_path" "$_link_path"
-    local _rc=$?
+    _rc=$?
     if [[ $_rc == $RC_SKIPPED ]]; then
         :
     elif [[ $_rc != $RC_SUCCESS ]]; then
