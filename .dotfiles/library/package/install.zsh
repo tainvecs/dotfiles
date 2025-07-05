@@ -1415,7 +1415,7 @@ function dotfiles_install_pyenv() {
         fi
     else
         if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
-            install_dotfiles_packages "$_package_name" "package-manager" "$_package_id" "$_package_plugin_id"
+            install_dotfiles_packages "$_package_name" "package-manager" "$_package_id $_package_plugin_id"
         elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
             install_dotfiles_packages --upgrade "$_package_name" "git-repo-pull" "$_package_id"
             install_dotfiles_packages --upgrade "$_package_name" "git-repo-pull" "$_package_plugin_id"

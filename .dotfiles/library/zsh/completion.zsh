@@ -88,12 +88,6 @@ zpcdreplay
 # ------------------------------------------------------------------------------
 
 
-# zoxide
-if command_exists "zoxide"; then
-    eval "$(zoxide init zsh)" || log_message "Failed to evaluate zoxide completion" "error"
-fi
-
-
 # 'gcp.zsh.inc'
 local _cmp_link="$DOTFILES_ZSH_COMP_DIR/gcp.zsh.inc"
 if command_exists "gcloud" && [[ -f $_cmp_link ]]; then

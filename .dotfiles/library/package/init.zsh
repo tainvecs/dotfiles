@@ -269,7 +269,7 @@ function dotfiles_init_docker() {
     export DOCKER_DEFAULT_PLATFORM="linux/$DOTFILES_SYS_ARCHT"
 
     # user config
-    local _config_link=$(link_dotfiles_user_config_to_local "$_package_name" "config.json" "$_package_name" "config.json")
+    local _=$(link_dotfiles_user_config_to_local "$_package_name" "config.json" "$_package_name" "config.json")
     if [[ $? == $RC_SUCCESS ]]; then
         export DOCKER_CONFIG="$DOTFILES_LOCAL_CONFIG_DIR/$_package_name"
     fi
@@ -366,10 +366,10 @@ function dotfiles_init_emacs() {
     alias emacs="emacs -q --load \"$_config_link\" "
 
     # user config
-    link_dotfiles_user_config_to_local "$_package_name" "init.el" "$_package_name" "init.local.el"
+    _=$(link_dotfiles_user_config_to_local "$_package_name" "init.el" "$_package_name" "init.local.el")
 
     # user history
-    link_dotfiles_local_history_to_user "$_package_name" "history"
+    _=$(link_dotfiles_local_history_to_user "$_package_name" "history")
 
     # home
     export EMACS_HOME="$DOTFILES_LOCAL_SHARE_DIR/$_package_name"
@@ -602,7 +602,7 @@ function dotfiles_init_gcp() {
     alias gcp="gcloud compute "
 
     # user config
-    link_dotfiles_user_config_to_local "$_package_name" "config_default" "$_package_name" "configurations/config_default"
+    _=$(link_dotfiles_user_config_to_local "$_package_name" "config_default" "$_package_name" "configurations/config_default")
     export CLOUDSDK_CONFIG="$DOTFILES_LOCAL_CONFIG_DIR/$_package_name"
 }
 
@@ -749,7 +749,7 @@ function dotfiles_init_htop() {
     fi
 
     # user config
-    link_dotfiles_user_config_to_local "$_package_name" "htoprc" "$_package_name" "htoprc"
+    _=$(link_dotfiles_user_config_to_local "$_package_name" "htoprc" "$_package_name" "htoprc")
 }
 
 
@@ -804,7 +804,7 @@ function dotfiles_init_keyd() {
     fi
 
     # user config
-    link_dotfiles_user_config_to_local "$_package_name" "default.conf" "$_package_name" "default.conf"
+    _=$(link_dotfiles_user_config_to_local "$_package_name" "default.conf" "$_package_name" "default.conf")
 }
 
 
@@ -894,7 +894,7 @@ function dotfiles_init_peco() {
     fi
 
     # user config
-    link_dotfiles_user_config_to_local "$_package_name" "config.json" "$_package_name" "config.json"
+    _=$(link_dotfiles_user_config_to_local "$_package_name" "config.json" "$_package_name" "config.json")
 }
 
 
@@ -978,26 +978,37 @@ function dotfiles_init_python() {
     local _package_plugin_name="pyenv"
 
     # sanity check
-    if ! command_exists "$_package_name"; then
+    if { ! command_exists "$_package_name" && ! command_exists "python3" }; then
         log_dotfiles_package_initialization "$_package_name" "fail"
         return $RC_ERROR
     fi
 
     # ----- python
+    alias python="python3 "
+    alias pip="pip3 "
+
     local _package_home_dir="$DOTFILES_LOCAL_SHARE_DIR/$_package_name"
     ensure_directory "$_package_home_dir"
 
-    # user config
-    local _config_link=$(link_dotfiles_user_config_to_local "$_package_name" ".pythonrc" "$_package_name" ".pythonrc")
-    if [[ $? == $RC_SUCCESS ]]; then
-        export PYTHONSTARTUP=$_config_link
+    # dot config
+    local _dot_config_link=$(link_dotfiles_dot_config_to_local "$_package_name" ".pythonrc" "$_package_name" ".pythonrc")
+    if [[ $? -eq $RC_SUCCESS ]]; then
+        export PYTHONSTARTUP=$_dot_config_link
+    else
+        log_message "Failed to setup dotfiles $_package_name dot config" "error"
     fi
 
-    # app name, local history, user history
-    link_dotfiles_local_history_to_user "$_package_name" ".python_history"
+    # user config
+    local _=$(link_dotfiles_user_config_to_local "$_package_name" ".pythonrc" "$_package_name" "user.pythonrc")
+
+    # local history and user history
+    local _hist_file_dir="$DOTFILES_LOCAL_STATE_DIR/python"
+    ensure_directory "$_hist_file_dir"
+    export PYTHON_HISTORY="$_hist_file_dir/.python_history"
+    _=$(link_dotfiles_local_history_to_user "$_package_name" ".python_history")
 
     # nltk data directory
-    local _nltk_data_dir="$DOTFILES_LOCAL_SHARE_DIR/$_package_name/nltk_data"
+    local _nltk_data_dir="$_package_home_dir/nltk_data"
     ensure_directory "$_nltk_data_dir"
     export NLTK_DATA=$_nltk_data_dir
 
@@ -1021,8 +1032,10 @@ function dotfiles_init_python() {
         fi
 
         # path
-        local _package_plugin_bin_dir="$PYENV_ROOT/bin"
-        prepend_dir_to_path "PATH" "$_package_plugin_bin_dir"
+        if [[ $DOTFILES_SYS_NAME == "linux" ]]; then
+            local _package_plugin_bin_dir="$PYENV_ROOT/bin"
+            prepend_dir_to_path "PATH" "$_package_plugin_bin_dir"
+        fi
 
         # shims
         local _package_plugin_shims_dir="$PYENV_ROOT/shims"
@@ -1075,7 +1088,7 @@ function dotfiles_init_ripgrep() {
     fi
 
     # rg
-    alias rg="rg -p --hidden --no-follow --max-columns 255 --column --glob '!.git' "
+    alias rg="rg -p "
 
     # batgrep
     # dependency: bat-extras
@@ -1085,7 +1098,7 @@ function dotfiles_init_ripgrep() {
 
     # user config
     local _config_link=$(link_dotfiles_user_config_to_local "$_package_name" ".ripgreprc" "$_package_name" ".ripgreprc")
-    if [[ $? == $RC_SUCCESS ]]; then
+    if [[ $? -eq $RC_SUCCESS ]]; then
         export RIPGREP_CONFIG_PATH="$_config_link"
     fi
 }
@@ -1423,6 +1436,9 @@ function dotfiles_init_zoxide() {
     export _ZO_DATA_DIR="$_data_dir"
     export _ZO_ECHO=0
     export _ZO_RESOLVE_SYMLINKS=1
+
+    # init zoxide
+    eval "$(zoxide init zsh)"
 
     # use cd and z for directory jump
     # it will trigger the autoenv with cd
