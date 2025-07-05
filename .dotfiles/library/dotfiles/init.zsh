@@ -113,19 +113,29 @@ update_associative_array_from_array "DOTFILES_PACKAGE_ASC_ARR" "DOTFILES_USER_PA
 
 
 # ------------------------------------------------------------------------------
-# Local: binary, completion, history and manual
+# Local
 # ------------------------------------------------------------------------------
 
 
-# ensure local binary
+# binary
 ensure_directory "$DOTFILES_LOCAL_BIN_DIR"
 
-# ensure local completion
-ensure_directory "$DOTFILES_ZSH_COMP_DIR"
+# cache
+# - zsh
+ensure_directory "$DOTFILES_ZSH_CACHE_DIR"
 
-# history
+# config
+ensure_directory "$DOTFILES_LOCAL_CONFIG_DIR"
+
+# share
+# - completion
+# - man
+ensure_directory "$DOTFILES_ZSH_COMP_DIR"
+ensure_directory "$DOTFILES_LOCAL_MAN_DIR/man1"
+
+# state
+# - history
+# - session
 ensure_directory "$DOTFILES_LOCAL_STATE_DIR/zsh"
 export HISTFILE="$DOTFILES_ZSH_HISTFILE_PATH"
-
-# ensure local man
-ensure_directory "$DOTFILES_LOCAL_MAN_DIR/man1"
+ensure_directory "$SHELL_SESSION_DIR"

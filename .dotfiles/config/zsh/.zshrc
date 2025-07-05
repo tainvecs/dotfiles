@@ -149,6 +149,9 @@ fi
 # trigger zsh completions
 if is_dotfiles_managed_package "zsh-completions"; then
     dotfiles_init_zsh-completions
+else
+    zpcompinit
+    zpcdreplay
 fi
 
 

@@ -553,7 +553,6 @@ function install_dotfiles_packages() {
     local _upgrade_bool="${_parsed_args[1]}"
     local _package_name="${_parsed_args[2]}"
     local _package_type="${_parsed_args[3]}"
-    local _package_ids="${_parsed_args[@]:3}"
 
     # loop through package ids for installation
     if [[ "$_upgrade_bool" == "true" ]]; then
@@ -562,7 +561,7 @@ function install_dotfiles_packages() {
         log_dotfiles_package_installation "$_package_name" "install"
     fi
 
-    for _pkg_id in "$_package_ids"; do
+    for _pkg_id in "${_parsed_args[@]:3}"; do
 
         _install_dotfiles_package "$_package_name" "$_package_type" "$_upgrade_bool" "$_pkg_id"
         local _return_code=$?

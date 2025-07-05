@@ -695,7 +695,7 @@ function dotfiles_install_eza() {
 
 # ------------------------------------------------------------------------------
 #
-# fast-syntax-highlighting: feature-rich syntax highlighting for ZSH
+# fast-syntax-highlighting: feature-rich syntax highlighting for Zsh
 #
 # - References
 #   - https://github.com/zdharma-continuum/fast-syntax-highlighting
@@ -710,7 +710,10 @@ function dotfiles_install_fast-syntax-highlighting() {
 
     # fast-syntax-highlighting
     if ! { is_dotfiles_package_installed "$_package_name" "zinit-plugin" "$_package_id" }; then
-        zinit ice lucid id-as"$_package_name"
+        zinit ice lucid id-as"$_package_name" blockf \
+              atclone'ln -sf $(realpath ./_fast-theme) $DOTFILES_ZSH_COMP_DIR/_fast-theme' \
+              atpull'%atclone'
+
         install_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_id"
     else
         install_dotfiles_packages --upgrade "$_package_name" "zinit-plugin" "$_package_name"
@@ -1392,8 +1395,9 @@ function dotfiles_install_pyenv() {
         log_dotfiles_package_installation "$_package_name" "sys-name-not-supported"
         return $RC_UNSUPPORTED
     fi
-    if ! command_exists "python"; then
+    if { ! command_exists "python" && ! command_exists "python3" }; then
         log_dotfiles_package_installation "$_package_name" "dependency-missing"
+        return $RC_DEPENDENCY_MISSING
     fi
 
     # install or update
@@ -1411,7 +1415,7 @@ function dotfiles_install_pyenv() {
         fi
     else
         if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
-            install_dotfiles_packages "$_package_name" "package-manager" "$_package_id $_package_plugin_id"
+            install_dotfiles_packages "$_package_name" "package-manager" "$_package_id" "$_package_plugin_id"
         elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
             install_dotfiles_packages --upgrade "$_package_name" "git-repo-pull" "$_package_id"
             install_dotfiles_packages --upgrade "$_package_name" "git-repo-pull" "$_package_plugin_id"

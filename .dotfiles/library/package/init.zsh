@@ -455,7 +455,7 @@ function dotfiles_init_fast-syntax-highlighting() {
         return $RC_ERROR
     fi
 
-    zinit ice wait"0b" lucid
+    zinit ice wait"0b" lucid blockf
     zinit light "$_package_name"
 }
 
@@ -559,8 +559,9 @@ function dotfiles_init_fzf() {
     if command_exists "fd"; then
         export FZF_DEFAULT_COMMAND="fd --follow --hidden --ignore-case --color=always --exclude .git "
     fi
-    export FZF_DEFAULT_OPTS="--layout=reverse --ansi "
 
+    source <(fzf --zsh)  # set up fzf key bindings and fuzzy completion
+    export FZF_DEFAULT_OPTS="--layout=reverse --ansi "
     alias fzf="fzf --style full --preview 'fzf-preview.sh {}' --bind 'focus:transform-header:file --brief {}' "
 
     # sanity check
@@ -570,7 +571,7 @@ function dotfiles_init_fzf() {
     fi
 
     # fzf-tab
-    zinit ice wait"1" lucid
+    zinit ice wait"1" lucid blockf
     zinit light "$_package_plugin_name"
 }
 
@@ -920,6 +921,10 @@ function dotfiles_init_powerlevel10k() {
     # p10k: should stay close to the top of ~/.zshrc.
     local _cache_script_path="${DOTFILES_LOCAL_CACHE_DIR:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
     [[ -r $_cache_script_path ]] && source $_cache_script_path
+
+    # ----- load
+    zinit ice depth"1"
+    zinit light "$_package_name"
 
     # ----- user config
     # load powerlevel10k theme
