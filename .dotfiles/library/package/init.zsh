@@ -1161,8 +1161,8 @@ function dotfiles_init_ssh() {
 #   - https://man7.org/linux/man-pages/man1/tmux.1.html
 #
 # - Environment Variables
-#   - TMUX_CONF (used by oh-my-zsh)
-#   - TMUX_CONF_LOCAL (used by oh-my-zsh)
+#   - TMUX_CONF (used by oh-my-tmux)
+#   - TMUX_CONF_LOCAL (used by oh-my-tmux)
 #
 # ------------------------------------------------------------------------------
 
@@ -1177,6 +1177,11 @@ function dotfiles_init_tmux() {
         return $RC_ERROR
     fi
 
+    # home dir
+    local _home_dir="$DOTFILES_LOCAL_SHARE_DIR/$_package_name"
+    local _plugin_dir="$_home_dir/plugins"
+    ensure_directory "$_plugin_dir"
+
     # dot config
     local _dot_config_link=$(link_dotfiles_dot_config_to_local "$_package_name" "tmux.conf" "$_package_name" "tmux.conf")
     if [[ $? -ne $RC_SUCCESS ]]; then
@@ -1184,11 +1189,18 @@ function dotfiles_init_tmux() {
         log_dotfiles_package_initialization "$_package_name" "fail"
         return $RC_ERROR
     fi
-    export TMUX_CONF=$_dot_config_link
+    [[ -f "$_dot_config_link" ]] && alias tmux="tmux -f $_dot_config_link "
+
+    # oh-my-tmux
+    local _oh_my_tmux_conf_path="$DOTFILES_LOCAL_CONFIG_DIR/tmux/tmux.oh-my-tmux.conf"
+    if { is_dotfiles_managed_package "oh-my-tmux" } && [[ -f $_oh_my_tmux_conf_path ]]; then
+        export TMUX_CONF="$_oh_my_tmux_conf_path"
+        export TMUX_PLUGIN_MANAGER_PATH="$_plugin_dir"
+    fi
 
     # user config
     local _user_config_link=$(link_dotfiles_user_config_to_local "$_package_name" ".tmux.conf" "$_package_name" "tmux.local.conf")
-    if [[ $? == $RC_SUCCESS ]]; then
+    if [[ $? -eq $RC_SUCCESS ]]; then
         export TMUX_CONF_LOCAL=$_user_config_link
     fi
 }
@@ -1462,7 +1474,6 @@ function dotfiles_init_zoxide() {
 # - Environment Variables
 #   - ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE
 #   - ZSH_AUTOSUGGEST_COMPLETION_IGNORE
-#   - ZSH_CUSTOM
 #
 # ------------------------------------------------------------------------------
 
@@ -1481,15 +1492,11 @@ function dotfiles_init_zsh-autosuggestions() {
     zinit ice wait"0a" lucid
     zinit light "$_package_name"
 
-    # env
-    export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
-    export ZSH_AUTOSUGGEST_STRATEGY=(history completion)
-
     # user config to override the default config
     # https://github.com/zsh-users/zsh-autosuggestions/blob/master/src/config.zsh
     local _config_link=$(link_dotfiles_user_config_to_local "$_package_name" "config.zsh" "$_package_name" "config.zsh")
-    if [[ $? == $RC_SUCCESS ]]; then
-        export ZSH_CUSTOM="$_config_link"
+    if [[ $? -eq $RC_SUCCESS ]] && [[ -f $_config_link ]]; then
+        source $_config_link
     fi
 }
 

@@ -1230,7 +1230,7 @@ function dotfiles_install_nvitop() {
 function dotfiles_install_oh-my-tmux() {
 
     local _package_name="oh-my-tmux"
-    local _package_id="https://github.com/gpakosz/.tmux/blob/master/.tmux.conf"
+    local _package_id="gpakosz/.tmux"
 
     # sanity check
     if ! is_supported_system_name; then
@@ -1242,13 +1242,14 @@ function dotfiles_install_oh-my-tmux() {
     local _home_dir="$DOTFILES_LOCAL_CONFIG_DIR/tmux"
     ensure_directory "$_home_dir"
 
-    if ! { is_dotfiles_package_installed "$_package_name" "zinit-snippet" "$_package_id" }; then
-        zinit ice lucid id-as"$_package_name" \
+    # oh-my-tmux tmux config
+    if ! { is_dotfiles_package_installed "$_package_name" "zinit-plugin" "$_package_id" }; then
+        zinit ice lucid as"null" id-as"$_package_name" \
               atclone'ln -sf $(realpath ./.tmux.conf) $_home_dir/tmux.$_package_name.conf' \
               atpull'%atclone'
-        install_dotfiles_packages "$_package_name" "zinit-snippet" "$_package_id"
+        install_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_id"
     else
-        install_dotfiles_packages --upgrade "$_package_name" "zinit-snippet" "$_package_name"
+        install_dotfiles_packages --upgrade "$_package_name" "zinit-plugin" "$_package_name"
     fi
 }
 
@@ -1317,7 +1318,7 @@ function dotfiles_install_powerlevel10k() {
                           ln -sf "$(realpath "$font")" "$DOTFILES_FONT_DIR/"
                       done' \
               atpull'%atclone'
-        install_dotfiles_packages "$_package_media_name" "zinit-plugin" "romkatv/powerlevel10k-media"
+        install_dotfiles_packages "$_package_media_name" "zinit-plugin" "$_package_media_id"
 
         # update font cache
         if [[ $DOTFILES_SYS_NAME == "linux" ]]; then
