@@ -895,6 +895,8 @@ function dotfiles_init_peco() {
 
     # user config
     _=$(link_dotfiles_user_config_to_local "$_package_name" "config.json" "$_package_name" "config.json")
+
+    return $RC_SUCCESS
 }
 
 

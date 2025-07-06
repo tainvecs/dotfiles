@@ -1316,9 +1316,7 @@ function dotfiles_install_powerlevel10k() {
     if ! { is_dotfiles_package_installed "$_package_media_name" "zinit-plugin" "$_package_media_id" }; then
 
         zinit ice lucid as"null" id-as"$_package_media_name" \
-              atclone'for font in ./*\.ttf(.); do
-                          ln -sf "$(realpath "$font")" "$DOTFILES_FONT_DIR/"
-                      done' \
+              atclone'rsync -av --copy-links *.ttf $DOTFILES_FONT_DIR/' \
               atpull'%atclone'
         install_dotfiles_packages "$_package_media_name" "zinit-plugin" "$_package_media_id"
 
