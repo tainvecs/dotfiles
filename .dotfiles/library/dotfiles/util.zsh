@@ -218,6 +218,8 @@ function link_dotfiles_local_history_to_user() {
 
 function init_all_dotfiles_packages() {
 
+    local -a skipped_packages=("powerlevel10k" "zsh-completions")
+
     # init powerlevel10k before other dotfiles packages
     if is_dotfiles_managed_package "powerlevel10k"; then
         dotfiles_init_powerlevel10k
@@ -226,8 +228,8 @@ function init_all_dotfiles_packages() {
     # init dotfiles packages
     for _pkg in ${(k)DOTFILES_PACKAGE_ASC_ARR}; do
 
-        # skip powerlevel10k
-        if [[ "$_pkg" == "powerlevel10k" ]]; then
+        # skip package
+        if [[ " ${skipped_packages[@]} " =~ " $_pkg " ]]; then
             continue
         fi
 
@@ -262,7 +264,7 @@ function install_all_dotfiles_packages() {
     # install dotfiles packages
     for _pkg in ${(k)DOTFILES_PACKAGE_ASC_ARR}; do
 
-        # skip python
+        # skip package
         if [[ " ${skipped_packages[@]} " =~ " $_pkg " ]]; then
             continue
         fi

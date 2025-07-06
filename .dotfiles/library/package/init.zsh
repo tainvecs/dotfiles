@@ -213,7 +213,7 @@ function dotfiles_init_delta() {
         return $RC_ERROR
     fi
 
-    alias diff="delta --line-numbers --side-by-side "
+    alias diff="delta --line-numbers --side-by-side"
 }
 
 
@@ -304,7 +304,7 @@ function dotfiles_init_duf() {
         return $RC_ERROR
     fi
 
-    alias df="duf -width 200 "
+    alias df="duf -width 200"
 }
 
 
@@ -328,7 +328,7 @@ function dotfiles_init_dust() {
         return $RC_ERROR
     fi
 
-    alias du="dust -r "
+    alias du="dust -r"
 }
 
 
@@ -363,7 +363,7 @@ function dotfiles_init_emacs() {
         log_dotfiles_package_initialization "$_package_name" "fail"
         return $RC_ERROR
     fi
-    alias emacs="emacs -q --load \"$_config_link\" "
+    alias emacs="emacs -q --load \"$_config_link\""
 
     # user config
     _=$(link_dotfiles_user_config_to_local "$_package_name" "init.el" "$_package_name" "init.local.el")
@@ -399,7 +399,7 @@ function dotfiles_init_extract() {
     zinit ice wait"2" lucid
     zinit snippet "$_package_name"
 
-    alias x="extract "
+    alias x="extract"
 }
 
 
@@ -425,10 +425,10 @@ function dotfiles_init_eza() {
     fi
 
     # alias
-    alias l="eza -l --total-size --color auto --color-scale size --icons auto --time-style '+%Y-%m-%d %H:%M' "
-    alias ls="eza -l --color auto --color-scale size --icons auto --time-style '+%Y-%m-%d %H:%M' "
-    alias la="eza -la --color auto --color-scale size --icons auto --time-style '+%Y-%m-%d %H:%M' "
-    alias ll="eza -laT -L=2 --color auto --color-scale size --icons auto --time-style '+%Y-%m-%d %H:%M' "
+    alias l="eza -l --total-size --color auto --color-scale size --icons auto --time-style '+%Y-%m-%d %H:%M'"
+    alias ls="eza -l --color auto --color-scale size --icons auto --time-style '+%Y-%m-%d %H:%M'"
+    alias la="eza -la --color auto --color-scale size --icons auto --time-style '+%Y-%m-%d %H:%M'"
+    alias ll="eza -laT -L=2 --color auto --color-scale size --icons auto --time-style '+%Y-%m-%d %H:%M'"
 
     # TODO: custom eza theme
     # https://github.com/eza-community/eza-themes
@@ -480,7 +480,7 @@ function dotfiles_init_fd() {
         return $RC_ERROR
     fi
 
-    alias fd="fd --follow --hidden --ignore-case --color=always --exclude .git "
+    alias fd="fd --follow --hidden --ignore-case --color=always --exclude .git"
 }
 
 
@@ -562,7 +562,7 @@ function dotfiles_init_fzf() {
 
     source <(fzf --zsh)  # set up fzf key bindings and fuzzy completion
     export FZF_DEFAULT_OPTS="--layout=reverse --ansi "
-    alias fzf="fzf --style full --preview 'fzf-preview.sh {}' --bind 'focus:transform-header:file --brief {}' "
+    alias fzf="fzf --style full --preview 'fzf-preview.sh {}' --bind 'focus:transform-header:file --brief {}'"
 
     # sanity check
     if ! { is_dotfiles_package_installed "$_package_plugin_name" "zinit-plugin" "$_package_plugin_name" }; then
@@ -984,8 +984,8 @@ function dotfiles_init_python() {
     fi
 
     # ----- python
-    alias python="python3 "
-    alias pip="pip3 "
+    alias python="python3"
+    alias pip="pip3"
 
     local _package_home_dir="$DOTFILES_LOCAL_SHARE_DIR/$_package_name"
     ensure_directory "$_package_home_dir"
@@ -1016,7 +1016,7 @@ function dotfiles_init_python() {
     local _ipython_home_dir="$_package_home_dir/ipython"
     ensure_directory "$_ipython_home_dir"
     export IPYTHONDIR=$_ipython_home_dir
-    alias ipython="python -c 'import IPython; IPython.terminal.ipapp.launch_new_instance()' "
+    alias ipython="python -c 'import IPython; IPython.terminal.ipapp.launch_new_instance()'"
 
     # ----- pyenv
     local _package_plugin_home_dir="$_package_home_dir/$_package_plugin_name"
@@ -1088,12 +1088,12 @@ function dotfiles_init_ripgrep() {
     fi
 
     # rg
-    alias rg="rg -p "
+    alias rg="rg -p"
 
     # batgrep
     # dependency: bat-extras
     if command_exists "batgrep"; then
-        alias rgb="batgrep -p --hidden --no-follow --glob '!.git' "
+        alias rgb="batgrep -p --hidden --no-follow --glob '!.git'"
     fi
 
     # user config
@@ -1129,24 +1129,25 @@ function dotfiles_init_ssh() {
         return $RC_ERROR
     fi
 
-    # home
-    local _home_dir="$DOTFILES_LOCAL_CONFIG_DIR/$_package_name"
-    ensure_directory "$_home_dir"
-    export SSH_HOME=$_home_dir
-
-    # known host
-    local _known_host_path="$_home_dir/known_hosts"
+    # config dir
+    local _config_dir="$DOTFILES_LOCAL_CONFIG_DIR/$_package_name"
+    ensure_directory "$_config_dir"
+    export SSH_CONFIG_DIR=$_config_dir
 
     # user config
     local _user_config_link=$(link_dotfiles_user_config_to_local "$_package_name" "config" "$_package_name" "config")
 
+    # known host
+    local _known_host_path="$_config_dir/known_hosts"
+
     # keys
     local _credentials_link=$(link_dotfiles_user_credential_to_local "ssh" "keys" "ssh" "keys")
+    export SSH_CRED_DIR=$_credentials_link
 
     # ssh cmd alias
-    local _cmd="ssh -o UserKnownHostsFile=$_known_host_path "
+    local _cmd="ssh -o UserKnownHostsFile=$_known_host_path"
     if [[ -f $_user_config_link ]]; then
-        _cmd="ssh -F $_user_config_link -o UserKnownHostsFile=$_known_host_path "
+        _cmd="ssh -F $_user_config_link -o UserKnownHostsFile=$_known_host_path"
     fi
     alias ssh=$_cmd
     export GIT_SSH_COMMAND=$_cmd
@@ -1189,7 +1190,7 @@ function dotfiles_init_tmux() {
         log_dotfiles_package_initialization "$_package_name" "fail"
         return $RC_ERROR
     fi
-    [[ -f "$_dot_config_link" ]] && alias tmux="tmux -f $_dot_config_link "
+    [[ -f "$_dot_config_link" ]] && alias tmux="tmux -f $_dot_config_link"
 
     # oh-my-tmux
     local _oh_my_tmux_conf_path="$DOTFILES_LOCAL_CONFIG_DIR/tmux/tmux.oh-my-tmux.conf"
@@ -1229,7 +1230,7 @@ function dotfiles_init_universalarchive() {
     zinit ice wait"2" lucid
     zinit snippet "$_package_name"
 
-    alias a="ua "
+    alias a="ua"
 }
 
 
@@ -1357,7 +1358,7 @@ function dotfiles_init_wget() {
     local _state_dir="$DOTFILES_LOCAL_STATE_DIR/$_package_name"
     ensure_directory "$_state_dir"
     local _hsts_file_path="$_state_dir/.wget-hsts"
-    alias wget="wget --hsts-file $_hsts_file_path "
+    alias wget="wget --hsts-file $_hsts_file_path"
 }
 
 
@@ -1521,8 +1522,12 @@ function dotfiles_init_zsh-completions() {
         return $RC_ERROR
     fi
 
-    local _dot_lib_zsh_cmp_path="$DOTFILES_DOT_LIB_DIR/zsh/completion.zsh"
-
-    zinit ice wait"1" lucid
+    zinit ice wait"1" lucid blockf \
+          atload'_dot_lib_zsh_cmp_path="$DOTFILES_DOT_LIB_DIR/zsh/completion.zsh"
+                 if [[ -f $_dot_lib_zsh_cmp_path ]]; then
+                     source $_dot_lib_zsh_cmp_path
+                 else
+                     log_message "Completion script \"$_dot_lib_zsh_cmp_path\" not found." "error"
+                 fi'
     zinit light "$_package_name"
 }

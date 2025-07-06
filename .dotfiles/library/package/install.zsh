@@ -333,9 +333,11 @@ function dotfiles_install_delta() {
               atclone'ln -sf $(realpath ./etc/completion/completion.zsh) $DOTFILES_ZSH_COMP_DIR/_delta;      # completion
                       delta --help > delta.1;                                                                # manual
                       ln -sf $(realpath delta.1) $DOTFILES_LOCAL_MAN_DIR/man1/delta.1;
-                      '"$_sed_command"' ./themes.gitconfig;                                                  # theme config
+                      cp ./themes.gitconfig ./themes.prune.gitconfig                                         # theme config
+                      '"$_sed_command"' ./themes.prune.gitconfig;
                       mkdir -p $DOTFILES_LOCAL_SHARE_DIR/delta;
-                      ln -sf $(realpath ./themes.gitconfig) $DOTFILES_LOCAL_SHARE_DIR/delta/themes.gitconfig;' \
+                      ln -sf $(realpath ./themes.prune.gitconfig) $DOTFILES_LOCAL_SHARE_DIR/delta/themes.gitconfig;' \
+
               atpull'%atclone'
         install_dotfiles_packages "$_package_res_name" "zinit-plugin" "$_package_res_id"
 
@@ -1770,12 +1772,8 @@ function dotfiles_install_zsh-completions() {
     local _package_name="zsh-completions"
     local _package_id="zsh-users/zsh-completions"
 
-    local _dot_lib_zsh_cmp_path="$DOTFILES_DOT_LIB_DIR/zsh/completion.zsh"
-
     if ! { is_dotfiles_package_installed "$_package_name" "zinit-plugin" "$_package_id" }; then
-        zinit ice lucid id-as"$_package_name" blockf \
-              atload'[[ -f $_dot_lib_zsh_cmp_path ]] && source $_dot_lib_zsh_cmp_path || \
-                     log_message "Completion script $_dot_lib_zsh_cmp_path not found." "error"'
+        zinit ice lucid id-as"$_package_name" blockf
         install_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_id"
     else
         install_dotfiles_packages --upgrade "$_package_name" "zinit-plugin" "$_package_name"
