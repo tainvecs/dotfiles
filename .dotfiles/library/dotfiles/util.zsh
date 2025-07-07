@@ -246,9 +246,6 @@ function init_all_dotfiles_packages() {
 
         # init package
         $_init_func
-        if [[ $? -ne $RC_SUCCESS ]]; then
-            log_dotfiles_package_initialization "$_pkg" "fail"
-        fi
     done
 }
 
@@ -569,7 +566,7 @@ function install_dotfiles_packages() {
         local _return_code=$?
 
         # handle return code
-        if [[ $_return_code == $RC_SKIPPED ]]; then
+        if [[ $_return_code -eq $RC_SKIPPED ]]; then
             log_dotfiles_package_installation "$_pkg_id" "dependency-skip"
         elif [[ $_return_code != $RC_SUCCESS ]]; then
             case $_return_code in

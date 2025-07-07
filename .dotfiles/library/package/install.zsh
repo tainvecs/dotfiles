@@ -422,7 +422,7 @@ function dotfiles_install_docker() {
         docker completion zsh > $_docker_cmp_path || log_message "Failed to generate docker completion $_docker_cmp_path" "error"
     fi
 
-    # docker compose completion
+    # docker-compose completion
     local _docker_comp_cmp_name="_docker-compose"
     local _docker_comp_cmp_id="https://raw.githubusercontent.com/docker/compose/1.29.2/contrib/completion/zsh/_docker-compose"
 

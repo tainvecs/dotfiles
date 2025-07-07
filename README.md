@@ -36,7 +36,7 @@
 | ripgrep                   | ✅               | ✅                  | ripgrep/.ripgreprc                         |                 | ✅              |
 | tmux                      | ✅               | ✅                  | tmux/.tmux.conf                            |                 |                 |
 | oh-my-tmux                | ✅               | ✅                  | tmux/.tmux.conf                            |                 |                 |
-| ssh                       |                  |                     | ssh/config                                 | ssh/keys/       | ✅              |
+| ssh                       |                  |                     | ssh/config,</br>ssh/colors                 | ssh/keys/       | ✅              |
 | tree                      | ✅               | ✅                  |                                            |                 | ✅              |
 | universalarchive          | ✅               | ✅                  |                                            |                 | ✅              |
 | vim                       | ✅               | ✅                  | vim/.vimrc                                 |                 |                 |

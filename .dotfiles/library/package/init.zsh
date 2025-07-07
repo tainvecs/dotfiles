@@ -51,16 +51,11 @@ function dotfiles_init_autoenv() {
     local _package_name="autoenv"
 
     # activation script
-    local _init_script_path
-    if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
-        _init_script_path="$BREW_HOME/opt/$_package_name/activate.sh"
-    elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
-        _init_script_path="$DOTFILES_LOCAL_SHARE_DIR/$_package_name/$_package_name.git/activate.sh"
-    fi
+    export AUTOENV_INIT_SCRIPT_PATH="$DOTFILES_LOCAL_SHARE_DIR/$_package_name/$_package_name.git/activate.sh"
 
     # sanity check
-    if [[ ! -f $_init_script_path ]]; then
-        log_dotfiles_package_installation "$_package_name" "fail"
+    if [[ ! -f $AUTOENV_INIT_SCRIPT_PATH ]]; then
+        log_dotfiles_package_initialization "$_package_name" "fail"
         return $RC_ERROR
     fi
 
@@ -83,7 +78,7 @@ function dotfiles_init_autoenv() {
     function _lazy_load_autoenv() {
         add-zsh-hook -d chpwd _lazy_load_autoenv  # Remove hook before unfunctioning
         unfunction _lazy_load_autoenv             # Remove trigger after first use
-        source "$_init_script_path"
+        source "$AUTOENV_INIT_SCRIPT_PATH"
         cd "$PWD"                                 # Trigger autoenv
     }
 
@@ -113,7 +108,7 @@ function dotfiles_init_aws() {
 
     # sanity check
     if ! command_exists "$_package_name"; then
-        log_dotfiles_package_installation "$_package_name" "fail"
+        log_dotfiles_package_initialization "$_package_name" "fail"
         return $RC_ERROR
     fi
 
@@ -278,7 +273,7 @@ function dotfiles_init_docker() {
     if command_exists "dockerd"; then
         local _d_config_link=$(link_dotfiles_user_config_to_local "$_package_name" "daemon.json" "$_package_name" "daemon.json")
         if [[ $? == $RC_SUCCESS ]]; then
-            alias dockerd="dockerd --config-file $_d_config_link "
+            alias dockerd="dockerd --config-file $_d_config_link"
         fi
     fi
 }
@@ -834,14 +829,14 @@ function dotfiles_init_kubectl() {
 
     # user config and credentials
     local _config_link=$(link_dotfiles_user_credential_to_local "$_package_name" "config" "$_package_name" "config")
-    if [[ $? == $RC_SUCCESS ]]; then
+    if [[ $? -eq $RC_SUCCESS ]]; then
         export KUBECONFIG="$_config_link:$KUBECONFIG"
     fi
 
     # cache
     local _cache_dir="$DOTFILES_LOCAL_CACHE_DIR/$_package_name"
     ensure_directory "$_cache_dir"
-    alias kubectl="kubectl --cache-dir $_cache_dir "
+    alias kubectl="kubectl --cache-dir $_cache_dir"
 }
 
 
@@ -895,8 +890,6 @@ function dotfiles_init_peco() {
 
     # user config
     _=$(link_dotfiles_user_config_to_local "$_package_name" "config.json" "$_package_name" "config.json")
-
-    return $RC_SUCCESS
 }
 
 
@@ -932,9 +925,7 @@ function dotfiles_init_powerlevel10k() {
     # load powerlevel10k theme
     # to customize prompt, run `p10k configure` or edit user/powerlevel10k/p10k.zsh.
     local _config_link=$(link_dotfiles_user_config_to_local "$_package_name" "p10k.zsh" "$_package_name" "p10k.zsh")
-    if [[ -f $_config_link ]]; then
-        source $_config_link
-    fi
+    [[ -f $_config_link ]] && source $_config_link
 }
 
 
@@ -1260,6 +1251,16 @@ function dotfiles_init_vim() {
         return $RC_ERROR
     fi
 
+    # home
+    local _home_dir="$DOTFILES_LOCAL_SHARE_DIR/$_package_name"
+    ensure_directory "$_home_dir"
+    export VIM_HOME=$_home_dir
+
+    # state
+    local _state_dir="$DOTFILES_LOCAL_STATE_DIR/$_package_name"
+    ensure_directory "$_state_dir"
+    export VIM_STATE_HOME=$_state_dir
+
     # dot config
     local _dot_config_link=$(link_dotfiles_dot_config_to_local "$_package_name" ".vimrc" "$_package_name" ".vimrc")
     if [[ $? -ne $RC_SUCCESS ]]; then
@@ -1271,9 +1272,10 @@ function dotfiles_init_vim() {
 
     # user config
     local _user_config_link=$(link_dotfiles_user_config_to_local "$_package_name" ".vimrc" "$_package_name" ".local.vimrc")
-    if [[ $? == $RC_SUCCESS ]]; then
+    if [[ $? -eq $RC_SUCCESS ]]; then
         export VIM_LOCAL_CONFIG_PATH="$_user_config_link"
     fi
+    local _user_config_link=$(link_dotfiles_user_config_to_local "$_package_name" "colors" "$_package_name" "colors")
 
     # macs alias
     if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
