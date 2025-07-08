@@ -888,7 +888,11 @@ function dotfiles_install_gcp() {
     fi
 
     # completion
-    link_dotfiles_share_completion_to_local "$_package_name/google-cloud-sdk" "completion.zsh.inc" "gcp.zsh.inc"
+    _=$(link_dotfiles_share_completion_to_local "$_package_name/google-cloud-sdk" "completion.zsh.inc" "gcp.zsh.inc")
+
+    # path
+    local _bin_dir="$_home_dir/google-cloud-sdk/bin"
+    append_dir_to_path "PATH" "$_bin_dir"
 }
 
 
@@ -1633,10 +1637,13 @@ function dotfiles_install_volta() {
         return $RC_ERROR
     fi
 
+    # path
+    append_dir_to_path "PATH" "$_home_dir/bin"
+
     # completion
     local _cmp_path="$DOTFILES_ZSH_COMP_DIR/_$_package_name"
     if [[ ! -f $_cmp_path ]]; then
-        volta completions --output $_cmp_path || log_message "Failed to generate $_package_name completion" "error"
+        volta completions --output $_cmp_path zsh || log_message "Failed to generate $_package_name completion" "error"
     fi
 }
 

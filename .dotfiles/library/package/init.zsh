@@ -114,13 +114,13 @@ function dotfiles_init_aws() {
 
     # user config
     local _config_link=$(link_dotfiles_user_config_to_local "$_package_name" "config" "$_package_name" "config")
-    if [[ $? == $RC_SUCCESS ]]; then
+    if [[ $? -eq $RC_SUCCESS ]]; then
         export AWS_CONFIG_FILE="$_config_link"
     fi
 
     # user credentials
     local _cred_link=$(link_dotfiles_user_credential_to_local "$_package_name" "credentials" "$_package_name" "credentials")
-    if [[ $? == $RC_SUCCESS ]]; then
+    if [[ $? -eq $RC_SUCCESS ]]; then
         export AWS_SHARED_CREDENTIALS_FILE="$_cred_link"
     fi
 }
@@ -171,7 +171,7 @@ function dotfiles_init_bat() {
 
     # user config
     local _config_link=$(link_dotfiles_user_config_to_local "$_package_name" "bat.conf" "$_package_name" "bat.conf")
-    if [[ $? == $RC_SUCCESS ]]; then
+    if [[ $? -eq $RC_SUCCESS ]]; then
         export BAT_CONFIG_PATH="$_config_link"
     fi
 
@@ -265,14 +265,14 @@ function dotfiles_init_docker() {
 
     # user config
     local _=$(link_dotfiles_user_config_to_local "$_package_name" "config.json" "$_package_name" "config.json")
-    if [[ $? == $RC_SUCCESS ]]; then
+    if [[ $? -eq $RC_SUCCESS ]]; then
         export DOCKER_CONFIG="$DOTFILES_LOCAL_CONFIG_DIR/$_package_name"
     fi
 
     # dockerd daemon user config
     if command_exists "dockerd"; then
         local _d_config_link=$(link_dotfiles_user_config_to_local "$_package_name" "daemon.json" "$_package_name" "daemon.json")
-        if [[ $? == $RC_SUCCESS ]]; then
+        if [[ $? -eq $RC_SUCCESS ]]; then
             alias dockerd="dockerd --config-file $_d_config_link"
         fi
     fi
@@ -588,6 +588,11 @@ function dotfiles_init_gcp() {
 
     local _package_name="gcp"
 
+    # path
+    local _home_dir="$DOTFILES_LOCAL_SHARE_DIR/$_package_name"
+    local _bin_dir="$_home_dir/google-cloud-sdk/bin"
+    [[ -d $_bin_dir ]] && append_dir_to_path "PATH" "$_bin_dir"
+
     # sanity check
     if ! command_exists "gcloud"; then
         log_dotfiles_package_initialization "$_package_name" "fail"
@@ -597,6 +602,8 @@ function dotfiles_init_gcp() {
     alias gcp="gcloud compute "
 
     # user config
+    local _config_dir="$DOTFILES_LOCAL_CONFIG_DIR/$_package_name"
+    ensure_directory "$_config_dir/configurations"
     _=$(link_dotfiles_user_config_to_local "$_package_name" "config_default" "$_package_name" "configurations/config_default")
     export CLOUDSDK_CONFIG="$DOTFILES_LOCAL_CONFIG_DIR/$_package_name"
 }
@@ -1330,7 +1337,7 @@ function dotfiles_init_volta() {
 
     # user config
     local _user_config_link=$(link_dotfiles_user_config_to_local "$_package_name" ".npmrc" "$_package_name/npm" "volta.user.npmrc")
-    if [[ $? == $RC_SUCCESS ]]; then
+    if [[ $? -eq $RC_SUCCESS ]]; then
         export NPM_CONFIG_USERCONFIG="$_user_config_link"
     else
         export NPM_CONFIG_USERCONFIG="$_npm_config_dir/volta.npmrc"

@@ -63,7 +63,7 @@ fi
 if command_exists "volta"; then
     local _cmp_path="$DOTFILES_ZSH_COMP_DIR/_volta"
     if [[ ! -f $_cmp_path ]]; then
-        volta completions --output $_cmp_path || log_message "Failed to generate volta completion $_cmp_path" "error"
+        volta completions --output $_cmp_path zsh || log_message "Failed to generate volta completion $_cmp_path" "error"
     fi
 fi
 
