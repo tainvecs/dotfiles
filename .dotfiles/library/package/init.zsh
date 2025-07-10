@@ -511,7 +511,7 @@ function dotfiles_init_forgit() {
 
     # forgit
     export FORGIT_LOG_GRAPH_ENABLE=false
-    export FORGIT_NO_ALIASES=true
+    # export FORGIT_NO_ALIASES=true
 
     zinit ice wait"1" lucid
     zinit light "$_package_name"
