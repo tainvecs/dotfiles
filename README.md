@@ -23,7 +23,6 @@
 | git                       |                  |                     | git/config                                 |                 | ✅              |
 | go                        | ✅               | ✅                  |                                            |                 |                 |
 | htop                      | ✅               | ✅                  | htop/htoprc                                |                 | ✅              |
-| hyperfine                 | ✅               | ✅                  |                                            |                 |                 |
 | iterm                     | ✅               |                     |                                            |                 |                 |
 | jdk                       | ✅               | ✅                  |                                            |                 | ✅              |
 | keyd                      |                  | ✅                  | keyd/default.conf                          |                 |                 |
@@ -47,32 +46,8 @@
 | zsh-completions           | ✅               | ✅                  |                                            |                 | ✅              |
 
 
-# Deprecated Packages
+# Archived Packages
 
-| Name              |
-|:------------------|
-| bottom            |
-| clojure           |
-| copybuffer        |
-| elasticsearch     |
-| lazydocker        |
-| meilisearch       |
-| nvtop             |
-| openvpn           |
-| svn               |
-| urltools          |
-| vscode            |
-| wget              |
-| dotfiles-aws      |
-| dotfiles-docker   |
-| dotfiles-es       |
-| dotfiles-fail2ban |
-| dotfiles-git      |
-| dotfiles-info     |
-| dotfiles-kube     |
-| dotfiles-mac      |
-| dotfiles-misc     |
-| dotfiles-ms       |
-| dotfiles-network  |
-| dotfiles-update   |
-| dotfiles-vim      |
+| Name      | Mac Installation | Ubuntu Installation | User Config | User Secret | Default Enabled |
+|:----------|:----------------:|:-------------------:|:-----------:|:-----------:|:---------------:|
+| hyperfine | ✅               | ✅                  |             |             |                 |

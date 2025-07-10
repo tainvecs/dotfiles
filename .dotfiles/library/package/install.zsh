@@ -991,38 +991,6 @@ function dotfiles_install_htop() {
 
 # ------------------------------------------------------------------------------
 #
-# hyperfine: a command-line benchmarking tool
-#
-# - References
-#   - https://github.com/sharkdp/hyperfine
-#
-# ------------------------------------------------------------------------------
-
-
-function dotfiles_install_hyperfine() {
-
-    local _package_name="hyperfine"
-    local _package_id="sharkdp/hyperfine"
-
-    # binary, completions and manual
-    if ! { is_dotfiles_package_installed "$_package_name" "zinit-plugin" "$_package_id" }; then
-
-        zinit ice lucid from"gh-r" id-as"$_package_name" as"null" \
-              mv"hyperfine* -> hyperfine" \
-              atclone'ln -sf $(realpath ./hyperfine/hyperfine) $DOTFILES_LOCAL_BIN_DIR/$_package_name;           # binary
-                      ln -sf $(realpath ./hyperfine/autocomplete/_hyperfine) $DOTFILES_ZSH_COMP_DIR/_hyperfine;  # completion
-                      ln -sf $(realpath ./hyperfine/hyperfine.1) $DOTFILES_LOCAL_MAN_DIR/man1/hyperfine.1;       # manual' \
-              atpull'%atclone'
-        install_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_id"
-
-    else
-        install_dotfiles_packages --upgrade "$_package_name" "zinit-plugin" "$_package_name"
-    fi
-}
-
-
-# ------------------------------------------------------------------------------
-#
 # iterm: terminal emulator (macOS only)
 #
 # - References
@@ -1644,6 +1612,69 @@ function dotfiles_install_volta() {
     local _cmp_path="$DOTFILES_ZSH_COMP_DIR/_$_package_name"
     if [[ ! -f $_cmp_path ]]; then
         volta completions --output $_cmp_path zsh || log_message "Failed to generate $_package_name completion" "error"
+    fi
+}
+
+
+# ------------------------------------------------------------------------------
+#
+# vscode: code editor
+#
+# - References
+#   - https://github.com/microsoft/vscode
+#
+# - Dependency
+#   - wget (Linux only)
+#
+# ------------------------------------------------------------------------------
+
+
+function dotfiles_install_vscode() {
+
+    local _package_name="vscode"
+
+    # sanity check
+    if ! is_supported_system_name; then
+        log_dotfiles_package_installation "$_package_name" "sys-name-not-supported"
+        return $RC_UNSUPPORTED
+    fi
+
+    # install or upgrade
+    if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
+
+        local _package_id="visual-studio-code"
+
+        if ! command_exists "$_package_name" && \
+           ! { is_dotfiles_package_installed "$_package_name" "brew-cask" "$_package_id" }; then
+            install_dotfiles_packages "$_package_name" "brew-cask" "$_package_id"
+        else
+            install_dotfiles_packages --upgrade "$_package_name" "brew-cask" "$_package_id"
+        fi
+
+    elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
+
+        local _package_id="code"
+
+        if ! command_exists "$_package_id"; then
+            log_dotfiles_package_installation "$_package_name" "dependency-missing"
+            return $RC_DEPENDENCY_MISSING
+        fi
+
+        if ! command_exists "$_package_id" && \
+           ! { is_dotfiles_package_installed "$_package_name" "brew-cask" "$_package_id" }; then
+
+            wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
+            sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
+            echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] \
+                 https://packages.microsoft.com/repos/code stable main" | \
+                sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null
+            rm -f packages.microsoft.gpg
+            sudo apt-get update
+
+            install_dotfiles_packages "$_package_name" "package-manager" "$_package_id"
+        else
+            install_dotfiles_packages --upgrade "$_package_name" "package-manager" "$_package_id"
+        fi
     fi
 }
 

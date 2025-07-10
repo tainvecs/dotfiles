@@ -296,31 +296,35 @@ function _install_dotfiles_package_with_package_manager() {
     # install or upgrade
     if ! { command_exists "$_package_id" || is_dotfiles_package_installed "$_package_name" "$_package_type" "$_package_id" }; then
 
-        case "$DOTFILES_SYS_NAME" in
+        if [[ "$DOTFILES_SYS_NAME" == "mac" ]]; then
 
-            "mac")
-                brew install "$_package_id" || return $RC_ERROR ;;
+            if [[ "$_package_type" == "brew-cask" ]]; then
+                brew install --cask "$_package_id" || return $RC_ERROR
+            else
+                brew install "$_package_id" || return $RC_ERROR
+            fi
 
-            "linux")
-                sudo apt-get install --no-install-recommends --no-install-suggests -y "$_package_id" || return $RC_ERROR ;;
-
-            *)
-                return $RC_UNSUPPORTED ;;
-        esac
+        elif [[ "$DOTFILES_SYS_NAME" == "linux" ]]; then
+            sudo apt-get install --no-install-recommends --no-install-suggests -y "$_package_id" || return $RC_ERROR
+        else
+            return $RC_UNSUPPORTED
+        fi
 
     elif $_upgrade_bool; then
 
-        case "$DOTFILES_SYS_NAME" in
+        if [[ "$DOTFILES_SYS_NAME" == "mac" ]]; then
 
-            "mac")
-                brew upgrade "$_package_id" || return $RC_ERROR ;;
+            if [[ "$_package_type" == "brew-cask" ]]; then
+                brew upgrade --cask "$_package_id" || return $RC_ERROR
+            else
+                brew upgrade "$_package_id" || return $RC_ERROR
+            fi
 
-            "linux")
-                sudo apt-get install --only-upgrade "$_package_id" || return $RC_ERROR ;;
-
-            *)
-                return $RC_UNSUPPORTED ;;
-        esac
+        elif [[ "$DOTFILES_SYS_NAME" == "linux" ]]; then
+            sudo apt-get install --only-upgrade "$_package_id" || return $RC_ERROR
+        else
+            return $RC_UNSUPPORTED
+        fi
 
     else
         return $RC_SKIPPED
@@ -461,7 +465,7 @@ function _install_dotfiles_package() {
         "git-repo-pull" | "git-repo-make-install")
             _install_dotfiles_package_with_git_repo $_package_name $_package_type $_upgrade_bool $_package_id ;;
 
-        "package-manager")
+        "package-manager" | "brew-cask")
             _install_dotfiles_package_with_package_manager $_package_name $_package_type $_upgrade_bool $_package_id ;;
 
         "pip")
@@ -531,6 +535,7 @@ function _install_dotfiles_package_parse_argument() {
 #        <options: --upgrade> <package_name> <package_management_type> <package_ids>
 #
 # package management type: (
+#    "brew-cask"
 #    "git-repo-make-install",
 #    "git-repo-pull",
 #    "package-manager",
@@ -541,9 +546,11 @@ function _install_dotfiles_package_parse_argument() {
 # package_ids: space separated multiple package ids to install
 function install_dotfiles_packages() {
 
+    local _return_code
+
     # parse arguments
     local _parsed_args=($(_install_dotfiles_package_parse_argument "$@"))
-    local _return_code=$?
+    _return_code=$?
     if [[ $_return_code != $RC_SUCCESS ]]; then
         log_dotfiles_package_installation "$_package_name" "fail"
         return $_return_code
@@ -563,7 +570,7 @@ function install_dotfiles_packages() {
     for _pkg_id in "${_parsed_args[@]:3}"; do
 
         _install_dotfiles_package "$_package_name" "$_package_type" "$_upgrade_bool" "$_pkg_id"
-        local _return_code=$?
+        _return_code=$?
 
         # handle return code
         if [[ $_return_code -eq $RC_SKIPPED ]]; then
@@ -649,6 +656,9 @@ function is_dotfiles_package_installed() {
                 log_message "Unsupported system name $DOTFILES_SYS_NAME." "error"
                 return $RC_UNSUPPORTED
             fi ;;
+
+        "brew-cask")
+            { brew list "$_package_id" --quiet &>/dev/null } ;;
 
         "pip")
             { pip show "$_package_name" &> /dev/null } || { python -c "import $_package_name" } ;;

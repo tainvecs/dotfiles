@@ -757,32 +757,6 @@ function dotfiles_init_htop() {
 
 # ------------------------------------------------------------------------------
 #
-# hyperfine: a command-line benchmarking tool
-#
-# - References
-#   - https://github.com/sharkdp/hyperfine
-#
-# ------------------------------------------------------------------------------
-
-
-function dotfiles_init_hyperfine() {
-
-    local _package_name="hyperfine"
-
-    # sanity check
-    if ! command_exists "$_package_name"; then
-        log_dotfiles_package_initialization "$_package_name" "fail"
-        return $RC_ERROR
-    fi
-
-    # alias
-    alias bm="hyperfine "
-    alias bm-zsh='hyperfine "zsh -i -c exit" '
-}
-
-
-# ------------------------------------------------------------------------------
-#
 # keyd: keyboard remapping (linux only)
 #
 # - References
