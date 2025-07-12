@@ -1,0 +1,5 @@
+[include]
+    path = ./user.gitconfig
+
+[include]
+    path = ./delta.gitconfig

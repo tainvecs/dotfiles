@@ -1,0 +1,13 @@
+import os
+import sys
+
+# Define the user pythonrc path
+dotfiles_dir = os.environ.get('DOTFILES_LOCAL_CONFIG_DIR')
+if dotfiles_dir:
+    user_pythonrc = os.path.join(dotfiles_dir, 'python', 'user.pythonrc')
+    if os.path.isfile(user_pythonrc):
+        try:
+            with open(user_pythonrc, 'r') as f:
+                exec(f.read())
+        except Exception as e:
+            print(f"Error loading user pythonrc: {e}", file=sys.stderr)
