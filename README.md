@@ -20,7 +20,6 @@
 | forgit                    | ✅               | ✅                  |                                            |                 | ✅              |
 | fzf                       | ✅               | ✅                  |                                            |                 | ✅              |
 | gcp                       | ✅               | ✅                  | gcp/config_default                         |                 |                 |
-| git                       |                  |                     | git/config                                 |                 | ✅              |
 | go                        | ✅               | ✅                  |                                            |                 |                 |
 | htop                      | ✅               | ✅                  | htop/htoprc                                |                 | ✅              |
 | iterm                     | ✅               |                     |                                            |                 |                 |
@@ -35,10 +34,9 @@
 | ripgrep                   | ✅               | ✅                  | ripgrep/.ripgreprc                         |                 | ✅              |
 | tmux                      | ✅               | ✅                  | tmux/.tmux.conf                            |                 |                 |
 | oh-my-tmux                | ✅               | ✅                  | tmux/.tmux.conf                            |                 |                 |
-| ssh                       |                  |                     | ssh/config,</br>ssh/colors                 | ssh/keys/       | ✅              |
 | tree                      | ✅               | ✅                  |                                            |                 | ✅              |
 | universalarchive          | ✅               | ✅                  |                                            |                 | ✅              |
-| vim                       | ✅               | ✅                  | vim/.vimrc                                 |                 |                 |
+| vim                       | ✅               | ✅                  | vim/.vimrc, vim/colors                     |                 |                 |
 | volta                     | ✅               | ✅                  | volta/.npmrc                               |                 |                 |
 | watch                     | ✅               |                     |                                            |                 |                 |
 | zoxide                    | ✅               | ✅                  |                                            |                 | ✅              |
@@ -48,6 +46,15 @@
 
 # Archived Packages
 
-| Name      | Mac Installation | Ubuntu Installation | User Config | User Secret | Default Enabled |
-|:----------|:----------------:|:-------------------:|:-----------:|:-----------:|:---------------:|
-| hyperfine | ✅               | ✅                  |             |             |                 |
+| Name      | Mac Installation | Ubuntu Installation |
+|:----------|:----------------:|:-------------------:|
+| hyperfine | ✅               | ✅                  |
+
+
+# Built-in Configuration
+
+| Name | User Config                                 | User Secret |
+|:-----|:-------------------------------------------:|:-----------:|
+| git  | git/config                                  |             |
+| ssh  | ssh/config                                  | ssh/keys/   |
+| zsh  | zsh/.zshrc, zsh/alias.zsh, zsh/function.zsh |             |

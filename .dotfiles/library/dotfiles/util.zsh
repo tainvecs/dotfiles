@@ -16,6 +16,7 @@
 #     - .dotfiles/env/return_code.env
 #
 #   - Environment Variables
+#     - DOTFILES_BUILT_IN_CONFIG_ARR
 #     - DOTFILES_PACKAGE_ASC_ARR
 #     - DOTFILES_SYS_NAME
 #     - DOTFILES_SYS_ARCHT
@@ -249,9 +250,22 @@ function init_all_dotfiles_packages() {
     done
 }
 
+function init_dotfiles_built_in_config() {
+
+    local _key
+    for _key in "${DOTFILES_BUILT_IN_CONFIG_ARR[@]}"; do
+
+        local _conf_func="dotfiles_config_${_key}"
+        if (( ! ${+functions[$_conf_func]} )); then
+            continue
+        fi
+        $_conf_func
+    done
+}
+
 function install_all_dotfiles_packages() {
 
-    local -a skipped_packages=("python" "git" "ssh")
+    local -a skipped_packages=("python")
 
     # install python before other dotfiles packages
     if is_dotfiles_managed_package "python"; then

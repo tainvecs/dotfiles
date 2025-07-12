@@ -66,6 +66,7 @@ fi
 _scripts=(
     "util.zsh"
     "dotfiles/util.zsh"
+    "package/built_in.zsh"
     "package/install.zsh"
     "package/init.zsh"
 )
@@ -139,3 +140,17 @@ ensure_directory "$DOTFILES_LOCAL_MAN_DIR/man1"
 ensure_directory "$DOTFILES_LOCAL_STATE_DIR/zsh"
 export HISTFILE="$DOTFILES_ZSH_HISTFILE_PATH"
 ensure_directory "$SHELL_SESSION_DIR"
+
+
+# ------------------------------------------------------------------------------
+# User: history and secret
+# ------------------------------------------------------------------------------
+
+
+# user zsh history -> local zsh history
+_=$(link_dotfiles_local_history_to_user "zsh" "history")
+
+# check user secret directory permission
+if [[ -d "$DOTFILES_USER_SECRET_DIR" ]] && [[ $(get_permission "$DOTFILES_USER_SECRET_DIR") != "700" ]]; then
+    chmod 700 "$DOTFILES_USER_SECRET_DIR"
+fi

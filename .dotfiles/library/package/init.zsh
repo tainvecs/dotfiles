@@ -611,48 +611,6 @@ function dotfiles_init_gcp() {
 
 # ------------------------------------------------------------------------------
 #
-# git
-#
-# - References
-#   - https://github.com/dandavison/delta
-#
-# - Dependencies
-#   - (optional) delta, themes.gitconfig
-#
-# ------------------------------------------------------------------------------
-
-
-function dotfiles_init_git() {
-
-    local _package_name="git"
-
-    # sanity check
-    if ! command_exists "$_package_name"; then
-        log_dotfiles_package_initialization "$_package_name" "fail"
-        return $RC_ERROR
-    fi
-
-    # delta
-    if command_exists "delta"; then
-
-        # themes.gitconfig
-        _=$(link_dotfiles_share_config_to_local "delta" "themes.gitconfig" "$_package_name" "themes.gitconfig")
-
-        # delta.gitconfig
-        _=$(link_dotfiles_user_config_to_local "delta" "config" "$_package_name" "delta.gitconfig")
-        if [[ $? != $RC_SUCCESS ]]; then
-            _=$(link_dotfiles_dot_config_to_local "delta" "config" "$_package_name" "delta.gitconfig")
-        fi
-    fi
-
-    # git
-    _=$(link_dotfiles_user_config_to_local "$_package_name" "config" "$_package_name" "user.gitconfig")
-    _=$(link_dotfiles_dot_config_to_local "$_package_name" "config" "$_package_name" "config")
-}
-
-
-# ------------------------------------------------------------------------------
-#
 # go
 #
 # - Environment Variables
@@ -1075,56 +1033,6 @@ function dotfiles_init_ripgrep() {
     if [[ $? -eq $RC_SUCCESS ]]; then
         export RIPGREP_CONFIG_PATH="$_config_link"
     fi
-}
-
-
-# ------------------------------------------------------------------------------
-#
-# ssh: a network protocol that provides a secure way
-#      to access and manage remote computers
-#
-# - References
-#   - https://man7.org/linux/man-pages/man1/ssh.1.html
-#
-# - Environment Variables
-#   - SSH_HOME
-#   - GIT_SSH_COMMAND
-#
-# ------------------------------------------------------------------------------
-
-
-function dotfiles_init_ssh() {
-
-    local _package_name="ssh"
-
-    # sanity check
-    if ! command_exists "$_package_name"; then
-        log_dotfiles_package_initialization "$_package_name" "fail"
-        return $RC_ERROR
-    fi
-
-    # config dir
-    local _config_dir="$DOTFILES_LOCAL_CONFIG_DIR/$_package_name"
-    ensure_directory "$_config_dir"
-    export SSH_CONFIG_DIR=$_config_dir
-
-    # user config
-    local _user_config_link=$(link_dotfiles_user_config_to_local "$_package_name" "config" "$_package_name" "config")
-
-    # known host
-    local _known_host_path="$_config_dir/known_hosts"
-
-    # keys
-    local _credentials_link=$(link_dotfiles_user_credential_to_local "ssh" "keys" "ssh" "keys")
-    export SSH_CRED_DIR=$_credentials_link
-
-    # ssh cmd alias
-    local _cmd="ssh -o UserKnownHostsFile=$_known_host_path"
-    if [[ -f $_user_config_link ]]; then
-        _cmd="ssh -F $_user_config_link -o UserKnownHostsFile=$_known_host_path"
-    fi
-    alias ssh=$_cmd
-    export GIT_SSH_COMMAND=$_cmd
 }
 
 

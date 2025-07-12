@@ -84,20 +84,6 @@ source "$_dotfiles_dot_lib_dot_init_path"
 
 
 # ------------------------------------------------------------------------------
-# User: history and secret
-# ------------------------------------------------------------------------------
-
-
-# user zsh history -> local zsh history
-_=$(link_dotfiles_local_history_to_user "zsh" "history")
-
-# check user secret directory permission
-if [[ -d "$DOTFILES_USER_SECRET_DIR" ]] && [[ $(get_permission "$DOTFILES_USER_SECRET_DIR") != "700" ]]; then
-    chmod 700 "$DOTFILES_USER_SECRET_DIR"
-fi
-
-
-# ------------------------------------------------------------------------------
 #
 # Init Packages
 #
@@ -134,6 +120,19 @@ if [[ ${#DOTFILES_PACKAGE_ASC_ARR[@]} -eq 0 ]]; then
 else
     init_all_dotfiles_packages
 fi
+
+
+# ------------------------------------------------------------------------------
+#
+# Configure Built-in Config
+#
+# - Dependencies
+#   - DOTFILES_BUILT_IN_CONFIG_ARR
+#
+# ------------------------------------------------------------------------------
+
+
+init_dotfiles_built_in_config
 
 
 # ------------------------------------------------------------------------------
