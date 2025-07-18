@@ -68,9 +68,14 @@ function link_dotfiles_dot_config_to_local() {
 function link_dotfiles_user_config_to_local() {
 
     # local package user config link -> user config file
-    local _source_path="$DOTFILES_USER_CONFIG_DIR/$1/$2"
-    local _link_path="$DOTFILES_LOCAL_CONFIG_DIR/$3/$4"
+    local _source_path
+    if [[ -n $DOTFILES_USER_PROFILE ]] && [[ -e "$DOTFILES_USER_CONFIG_DIR/$1/$DOTFILES_USER_PROFILE-$2" ]];then
+        _source_path="$DOTFILES_USER_CONFIG_DIR/$1/$DOTFILES_USER_PROFILE-$2"
+    else
+        _source_path="$DOTFILES_USER_CONFIG_DIR/$1/$2"
+    fi
 
+    local _link_path="$DOTFILES_LOCAL_CONFIG_DIR/$3/$4"
     ensure_directory "$DOTFILES_LOCAL_CONFIG_DIR/$3"
 
     local _rc
@@ -93,10 +98,15 @@ function link_dotfiles_user_config_to_local() {
 # Returns: credentials link path via echo
 function link_dotfiles_user_credential_to_local() {
 
-    # local package user credential link -> user credential file
-    local _source_path="$DOTFILES_USER_SECRET_DIR/$1/$2"
-    local _link_path="$DOTFILES_LOCAL_CONFIG_DIR/$3/$4"
+    # local package user credential link -> user credential file/directory
+    local _source_path
+    if [[ -n $DOTFILES_USER_PROFILE ]] && [[ -e "$DOTFILES_USER_SECRET_DIR/$1/$DOTFILES_USER_PROFILE-$2" ]];then
+        _source_path="$DOTFILES_USER_SECRET_DIR/$1/$DOTFILES_USER_PROFILE-$2"
+    else
+        _source_path="$DOTFILES_USER_SECRET_DIR/$1/$2"
+    fi
 
+    local _link_path="$DOTFILES_LOCAL_CONFIG_DIR/$3/$4"
     ensure_directory "$DOTFILES_LOCAL_CONFIG_DIR/$3"
 
     local _rc
