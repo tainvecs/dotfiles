@@ -1113,6 +1113,34 @@ function dotfiles_init_tmux() {
 
 # ------------------------------------------------------------------------------
 #
+# tre: a 'tree' alternative
+#
+# - References
+#   - https://github.com/dduan/tre
+#
+# ------------------------------------------------------------------------------
+
+
+function dotfiles_init_tre() {
+
+    local _package_name="tre"
+
+    # sanity check
+    if ! command_exists "$_package_name"; then
+        log_dotfiles_package_initialization "$_package_name" "fail"
+        return $RC_ERROR
+    fi
+
+    if [[ -n $EDITOR ]]; then
+        function tre() {
+            command tre "$@" -e && source "/tmp/tre_aliases_$USER" 2>/dev/null;
+        }
+    fi
+}
+
+
+# ------------------------------------------------------------------------------
+#
 # universalarchive: a convenient command-line interface for archiving files
 #
 # - References

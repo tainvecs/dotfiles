@@ -1494,6 +1494,36 @@ function dotfiles_install_tmux() {
 
 # ------------------------------------------------------------------------------
 #
+# tre: a 'tree' alternative
+#
+# - References
+#   - https://github.com/dduan/tre
+#
+# ------------------------------------------------------------------------------
+
+
+function dotfiles_install_tre() {
+
+    local _package_name="tre"
+    local _package_id="tre-command"
+
+    # sanity check
+    if ! is_supported_system_name; then
+        log_dotfiles_package_installation "$_package_name" "sys-name-not-supported"
+        return $RC_UNSUPPORTED
+    fi
+
+    # install or upgrade
+    if ! command_exists "$_package_name"; then
+        install_dotfiles_packages "$_package_name" "package-manager" "$_package_id"
+    else
+        install_dotfiles_packages --upgrade "$_package_name" "package-manager" "$_package_id"
+    fi
+}
+
+
+# ------------------------------------------------------------------------------
+#
 # tree: recursive directory listing program
 #
 # - References
