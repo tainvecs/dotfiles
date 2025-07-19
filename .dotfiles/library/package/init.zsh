@@ -6,8 +6,8 @@
 # Utility Functions for Package Configuration Setup and Initialization
 #
 #
-# Version: 0.0.6
-# Last Modified: 2025-07-03
+# Version: 0.0.7
+# Last Modified: 2025-07-19
 #
 # Dependencies:
 #   - Environment Variable File
@@ -710,6 +710,28 @@ function dotfiles_init_htop() {
 
     # user config
     _=$(link_dotfiles_user_config_to_local "$_package_name" "htoprc" "$_package_name" "htoprc")
+}
+
+
+# ------------------------------------------------------------------------------
+#
+# hyperfine: a command-line benchmarking tool
+#
+# - References
+#   - https://github.com/sharkdp/hyperfine
+#
+# ------------------------------------------------------------------------------
+
+
+function dotfiles_init_hyperfine() {
+
+    local _package_name="hyperfine"
+
+    # sanity check
+    if ! command_exists "$_package_name"; then
+        log_dotfiles_package_initialization "$_package_name" "fail"
+        return $RC_ERROR
+    fi
 }
 
 
