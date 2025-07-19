@@ -991,6 +991,37 @@ function dotfiles_install_htop() {
 
 # ------------------------------------------------------------------------------
 #
+# hwatch: a 'watch' alternative
+#
+# - References
+#   - https://github.com/blacknon/hwatch
+#
+# ------------------------------------------------------------------------------
+
+
+function dotfiles_install_hwatch() {
+
+    local _package_name="hwatch"
+    local _package_id="blacknon/hwatch"
+
+    # binary, completions and manual
+    if ! { is_dotfiles_package_installed "$_package_name" "zinit-plugin" "$_package_id" }; then
+
+        zinit ice lucid from"gh-r" id-as"$_package_name" as"null" \
+              atclone'ln -sf $(realpath ./bin/$_package_name) $DOTFILES_LOCAL_BIN_DIR/$_package_name;             # binary
+                      ln -sf $(realpath ./completion/zsh/_$_package_name) $DOTFILES_ZSH_COMP_DIR/_$_package_name; # completion
+                      ln -sf $(realpath ./man/$_package_name.1) $DOTFILES_LOCAL_MAN_DIR/man1/$_package_name.1;    # manual' \
+              atpull'%atclone'
+        install_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_id"
+
+    else
+        install_dotfiles_packages --upgrade "$_package_name" "zinit-plugin" "$_package_name"
+    fi
+}
+
+
+# ------------------------------------------------------------------------------
+#
 # hyperfine: a command-line benchmarking tool
 #
 # - References
