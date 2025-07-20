@@ -761,6 +761,7 @@ function dotfiles_init_keyd() {
 
     # user config
     _=$(link_dotfiles_user_config_to_local "$_package_name" "default.conf" "$_package_name" "default.conf")
+    _=$(link_dotfiles_user_config_to_local "$_package_name" ".Xmodmap" "$_package_name" ".Xmodmap")
 }
 
 
