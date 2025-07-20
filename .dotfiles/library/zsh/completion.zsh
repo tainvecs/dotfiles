@@ -6,8 +6,8 @@
 # Zsh Completion: Load and Trigger Completion with Zinit
 #
 #
-# Version: 0.0.6
-# Last Modified: 2025-07-06
+# Version: 0.0.7
+# Last Modified: 2025-07-20
 #
 # - Dependency
 #   - Tool
@@ -48,7 +48,7 @@ fi
 
 # gcp
 if command_exists "gcloud"; then
-    _=$(link_dotfiles_share_completion_to_local "gcp/google-cloud-sdk" "completion.zsh.inc" "gcp.zsh.inc")
+    : $(link_dotfiles_share_completion_to_local "gcp/google-cloud-sdk" "completion.zsh.inc" "gcp.zsh.inc")
 fi
 
 # kubectl
@@ -69,7 +69,7 @@ fi
 
 # zinit
 if command_exists "zinit"; then
-    _=$(link_dotfiles_share_completion_to_local "zinit/zinit.git" "_zinit" "_zinit")
+    : $(link_dotfiles_share_completion_to_local "zinit/zinit.git" "_zinit" "_zinit")
 fi
 
 

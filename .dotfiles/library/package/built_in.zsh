@@ -28,18 +28,18 @@ function dotfiles_config_git() {
     if command_exists "delta"; then
 
         # themes.gitconfig
-        _=$(link_dotfiles_share_config_to_local "delta" "themes.gitconfig" "$_package_name" "themes.gitconfig")
+        : $(link_dotfiles_share_config_to_local "delta" "themes.gitconfig" "$_package_name" "themes.gitconfig")
 
         # delta.gitconfig
-        _=$(link_dotfiles_user_config_to_local "delta" "config" "$_package_name" "delta.gitconfig")
+        : $(link_dotfiles_user_config_to_local "delta" "config" "$_package_name" "delta.gitconfig")
         if [[ $? != $RC_SUCCESS ]]; then
-            _=$(link_dotfiles_dot_config_to_local "delta" "config" "$_package_name" "delta.gitconfig")
+            : $(link_dotfiles_dot_config_to_local "delta" "config" "$_package_name" "delta.gitconfig")
         fi
     fi
 
     # git
-    _=$(link_dotfiles_user_config_to_local "$_package_name" "config" "$_package_name" "user.gitconfig")
-    _=$(link_dotfiles_dot_config_to_local "$_package_name" "config" "$_package_name" "config")
+    : $(link_dotfiles_user_config_to_local "$_package_name" "config" "$_package_name" "user.gitconfig")
+    : $(link_dotfiles_dot_config_to_local "$_package_name" "config" "$_package_name" "config")
 }
 
 

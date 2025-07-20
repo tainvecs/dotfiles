@@ -888,7 +888,7 @@ function dotfiles_install_gcp() {
     fi
 
     # completion
-    _=$(link_dotfiles_share_completion_to_local "$_package_name/google-cloud-sdk" "completion.zsh.inc" "gcp.zsh.inc")
+    : $(link_dotfiles_share_completion_to_local "$_package_name/google-cloud-sdk" "completion.zsh.inc" "gcp.zsh.inc")
 
     # path
     local _bin_dir="$_home_dir/google-cloud-sdk/bin"
@@ -1825,7 +1825,7 @@ function dotfiles_install_zinit() {
     fi
 
     # completion
-    _=$(link_dotfiles_share_completion_to_local "$_package_name/zinit.git" "_zinit" "_$_package_name")
+    : $(link_dotfiles_share_completion_to_local "$_package_name/zinit.git" "_zinit" "_$_package_name")
 }
 
 
