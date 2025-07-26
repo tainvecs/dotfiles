@@ -6,8 +6,8 @@
 # Dotfiles Utility Functions
 #
 #
-# Version: 0.0.6
-# Last Modified: 2025-07-03
+# Version: 0.0.7
+# Last Modified: 2025-07-27
 #
 # - Dependency
 #   - Environment Variable Files
@@ -229,7 +229,13 @@ function link_dotfiles_local_history_to_user() {
 
 function init_all_dotfiles_packages() {
 
-    local -a skipped_packages=("powerlevel10k" "zsh-completions")
+    local -a skipped_packages=(
+        "fast-syntax-highlighting"
+        "fzf"
+        "powerlevel10k"
+        "zsh-autosuggestions"
+        "zsh-completions"
+    )
 
     # init powerlevel10k before other dotfiles packages
     if is_dotfiles_managed_package "powerlevel10k"; then

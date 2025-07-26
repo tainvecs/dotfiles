@@ -6,8 +6,8 @@
 # Zsh Completion: Load and Trigger Completion with Zinit
 #
 #
-# Version: 0.0.7
-# Last Modified: 2025-07-20
+# Version: 0.0.8
+# Last Modified: 2025-07-27
 #
 # - Dependency
 #   - Tool
@@ -28,6 +28,16 @@
 #   - zinit
 #
 # ------------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------------------
+# Load the zsh-completions Plugin
+# ------------------------------------------------------------------------------
+
+
+if is_dotfiles_managed_package "zsh-completions"; then
+    dotfiles_init_zsh-completions
+fi
 
 
 # ------------------------------------------------------------------------------
@@ -80,6 +90,41 @@ fi
 
 zpcompinit
 zpcdreplay
+
+
+# ------------------------------------------------------------------------------
+#
+# Load fzf-tab and Other Plugins
+#
+# - Reference
+#   - https://github.com/Aloxaf/fzf-tab?tab=readme-ov-file#install
+#     ```
+#     fzf-tab needs to be loaded after compinit, but before plugins which will wrap
+#     widgets, such as zsh-autosuggestions or fast-syntax-highlighting
+#     ```
+#
+# ------------------------------------------------------------------------------
+
+
+local -a _packages=(
+    "fzf"
+    "zsh-autosuggestions"
+    "fast-syntax-highlighting"
+)
+
+for _pkg in $_packages; do
+
+    if ! is_dotfiles_managed_package "$_pkg"; then
+        continue
+    fi
+
+    local _init_func="dotfiles_init_${_pkg}"
+    if (( ! ${+functions[$_init_func]} )); then
+        continue
+    fi
+
+    $_init_func
+done
 
 
 # ------------------------------------------------------------------------------

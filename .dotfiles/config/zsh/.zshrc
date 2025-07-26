@@ -145,13 +145,8 @@ init_dotfiles_built_in_config
 # ------------------------------------------------------------------------------
 
 
-# trigger zsh completions
-if is_dotfiles_managed_package "zsh-completions"; then
-    dotfiles_init_zsh-completions
-else
-    zpcompinit
-    zpcdreplay
-fi
+zinit ice wait"1a" lucid
+zinit snippet "$DOTFILES_DOT_LIB_DIR/zsh/completion.zsh"
 
 
 # ------------------------------------------------------------------------------

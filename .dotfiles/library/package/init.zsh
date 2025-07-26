@@ -6,8 +6,8 @@
 # Utility Functions for Package Configuration Setup and Initialization
 #
 #
-# Version: 0.0.7
-# Last Modified: 2025-07-19
+# Version: 0.0.8
+# Last Modified: 2025-07-27
 #
 # Dependencies:
 #   - Environment Variable File
@@ -450,7 +450,7 @@ function dotfiles_init_fast-syntax-highlighting() {
         return $RC_ERROR
     fi
 
-    zinit ice wait"0b" lucid blockf
+    zinit ice wait"1c" lucid blockf
     zinit light "$_package_name"
 }
 
@@ -513,7 +513,7 @@ function dotfiles_init_forgit() {
     export FORGIT_LOG_GRAPH_ENABLE=false
     # export FORGIT_NO_ALIASES=true
 
-    zinit ice wait"1" lucid
+    zinit ice wait"1c" lucid
     zinit light "$_package_name"
 }
 
@@ -566,7 +566,7 @@ function dotfiles_init_fzf() {
     fi
 
     # fzf-tab
-    zinit ice wait"1" lucid blockf
+    zinit ice wait"1b" lucid blockf
     zinit light "$_package_plugin_name"
 }
 
@@ -1434,7 +1434,8 @@ function dotfiles_init_zsh-autosuggestions() {
     fi
 
     # init
-    zinit ice wait"0a" lucid
+    zinit ice wait"1c" lucid \
+          atload"_zsh_autosuggest_start"
     zinit light "$_package_name"
 
     # user config to override the default config
@@ -1466,12 +1467,6 @@ function dotfiles_init_zsh-completions() {
         return $RC_ERROR
     fi
 
-    zinit ice wait"1" lucid blockf \
-          atload'_dot_lib_zsh_cmp_path="$DOTFILES_DOT_LIB_DIR/zsh/completion.zsh"
-                 if [[ -f $_dot_lib_zsh_cmp_path ]]; then
-                     source $_dot_lib_zsh_cmp_path
-                 else
-                     log_message "Completion script \"$_dot_lib_zsh_cmp_path\" not found." "error"
-                 fi'
+    zinit ice wait"1b" lucid blockf
     zinit light "$_package_name"
 }
