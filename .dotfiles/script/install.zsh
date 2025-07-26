@@ -67,8 +67,7 @@ if [[ -d "$DOTFILES_ROOT_DIR" ]]; then
     echo "Info: Dotfiles directory $DOTFILES_ROOT_DIR already exists. Pulling latest changes..."
     git -C "$DOTFILES_ROOT_DIR" pull
 else
-    # git clone https://github.com/tainvecs/dotfiles.git "$DOTFILES_ROOT_DIR"
-    git clone -b refactor/dotfiles-v2 https://github.com/tainvecs/dotfiles.git "$DOTFILES_ROOT_DIR"
+    git clone https://github.com/tainvecs/dotfiles.git "$DOTFILES_ROOT_DIR"
 fi
 
 # check if ~/.zshenv already set DOTFILES_ROOT_DIR

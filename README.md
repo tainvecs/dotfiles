@@ -18,8 +18,8 @@ This dotfiles project provides a framework for managing these setups across macO
 - Install dotfiles by running the `curl` or `wget` command in the terminal.
     | Method   | Command                                                                                              |
     |:---------|:-----------------------------------------------------------------------------------------------------|
-    | **curl** | `sh -c "$(curl -fsSL https://raw.githubusercontent.com/tainvecs/dotfiles/refs/heads/main/.dotfiles/script/install.zsh)"` |
-    | **wget** | `sh -c "$(wget -O- https://raw.githubusercontent.com/tainvecs/dotfiles/refs/heads/main/.dotfiles/script/install.zsh)"`   |
+    | **curl** | `zsh -c "$(curl -fsSL https://raw.githubusercontent.com/tainvecs/dotfiles/refs/heads/main/.dotfiles/script/install.zsh)"` |
+    | **wget** | `zsh -c "$(wget -O- https://raw.githubusercontent.com/tainvecs/dotfiles/refs/heads/main/.dotfiles/script/install.zsh)"`   |
 
 ## Overview
 There are three main directories in this dotfiles framework.
