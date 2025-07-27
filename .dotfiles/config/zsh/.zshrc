@@ -105,12 +105,12 @@ source "$_dotfiles_dot_lib_dot_init_path"
 # init homebrew and zinit, and check dependencies
 if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
     if { ! dotfiles_init_homebrew } || { ! command_exists "brew" }; then
-        log_dotfiles_package_initialization "homebrew" "error"
+        log_dotfiles_package_initialization "homebrew" "fail"
         return $RC_DEPENDENCY_MISSING
     fi
 fi
 if { ! dotfiles_init_zinit } || { ! command_exists "zinit" }; then
-    log_dotfiles_package_initialization "zinit" "error"
+    log_dotfiles_package_initialization "zinit" "fail"
     return $RC_DEPENDENCY_MISSING
 fi
 

@@ -6,8 +6,8 @@
 # Utility Functions for Package Installation
 #
 #
-# Version: 0.0.5
-# Last Modified: 2025-07-03
+# Version: 0.0.6
+# Last Modified: 2025-07-27
 #
 # - Dependency
 #   - Environment Variable File
@@ -176,10 +176,11 @@ function dotfiles_install_aws() {
 
         # tmp directory for installer
         local _tmp_dir=$(mktemp -d)
+        trap 'rm -rf "$_tmp_dir"' EXIT  # Ensure cleanup on exit
+
         local _bin_dir="$DOTFILES_LOCAL_BIN_DIR"
         local _install_dir="$DOTFILES_LOCAL_SHARE_DIR/$_package_name"
 
-        # prepare installer
         local _bin_archt
         if [[ $DOTFILES_SYS_ARCHT == "arm64" ]]; then
             _bin_archt="aarch64"
@@ -187,33 +188,35 @@ function dotfiles_install_aws() {
             _bin_archt="x86_64"
         fi
 
-        {
-            curl -fL "https://awscli.amazonaws.com/awscli-exe-linux-$_bin_archt.zip" \
-                 -o "$_tmp_dir/awscliv2.zip" && \
-            unzip "$_tmp_dir/awscliv2.zip" -d "$_tmp_dir" && \
-            rm -f "$_tmp_dir/awscliv2.zip"
+        local _zip_url="https://awscli.amazonaws.com/awscli-exe-linux-$_bin_archt.zip"
+        local _zip_path="$_tmp_dir/awscliv2.zip"
 
-        } || {
+        # Download the installer
+        curl -fL "$_zip_url" -o "$_zip_path" || {
             log_dotfiles_package_installation "$_package_name" "fail"
-            rm -rf "$_tmp_dir/aws" "$_tmp_dir/awscliv2.zip"
             return $RC_ERROR
         }
 
-        # install or upgrade
+        # Unzip the installer
+        unzip "$_zip_path" -d "$_tmp_dir" || {
+            log_dotfiles_package_installation "$_package_name" "fail"
+            return $RC_ERROR
+        }
+
+        # Install or upgrade
         if ! command_exists "$_package_name"; then
             log_dotfiles_package_installation "$_package_name" "install"
-            sudo "$_home_dir/aws/install" --bin-dir "$_bin_dir" --install-dir "$_install_dir"
+            sudo "$_tmp_dir/aws/install" --bin-dir "$_bin_dir" --install-dir "$_install_dir"
         else
             log_dotfiles_package_installation "$_package_name" "upgrade"
-            sudo "$_home_dir/aws/install" --bin-dir "$_bin_dir" --install-dir "$_install_dir" --update
+            sudo "$_tmp_dir/aws/install" --bin-dir "$_bin_dir" --install-dir "$_install_dir" --update
         fi
 
         if [[ $? -eq $RC_SUCCESS ]]; then
             log_dotfiles_package_installation "$_package_name" "success"
-            rm -rf "$_tmp_dir/aws"
         else
             log_dotfiles_package_installation "$_package_name" "fail"
-            rm -rf "$_tmp_dir/aws" "$_install_dir"
+            rm -rf "$_install_dir"  # Clean up partial install
             return $RC_ERROR
         fi
     fi
@@ -261,14 +264,13 @@ function dotfiles_install_bat() {
     if ! { is_dotfiles_package_installed "$_package_name" "zinit-plugin" "$_package_id" }; then
 
         zinit ice lucid from"gh-r" as"null" id-as"$_package_name" \
-              $( [[ $DOTFILES_SYS_NAME == "linux" ]] && echo "bpick\"bat*$(uname -m)*linux-gnu.tar.gz\"" ) \
               mv"bat* -> bat" \
               atclone'ln -sf $(realpath ./bat/bat) $DOTFILES_LOCAL_BIN_DIR/bat;                   # binary
                       ln -sf $(realpath ./bat/bat.1) $DOTFILES_LOCAL_MAN_DIR/man1;                # manual
                       ln -sf $(realpath ./bat/autocomplete/bat.zsh) $DOTFILES_ZSH_COMP_DIR/_bat;  # completion ' \
               atpull'%atclone'
-
         install_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_id"
+
     else
         install_dotfiles_packages --upgrade "$_package_name" "zinit-plugin" "$_package_name"
     fi
@@ -393,9 +395,9 @@ function dotfiles_install_docker() {
             sudo chmod a+r /etc/apt/keyrings/docker.asc
 
             # add the repository to apt sources:
-            echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc]
-                 https://download.docker.com/linux/ubuntu
-                 $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+            echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] \
+                 https://download.docker.com/linux/ubuntu \
+                 $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") \
                  stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
             sudo apt-get update
 
@@ -809,7 +811,10 @@ function dotfiles_install_forgit() {
 function dotfiles_install_fzf() {
 
     local _package_name="fzf"
-    local _package_id="fzf"
+    local _package_id="junegunn/fzf"
+
+    local _package_res_name="fzf-res"
+    local _package_res_id="junegunn/fzf"
 
     local _package_plugin_name="fzf-tab"
     local _package_plugin_id="Aloxaf/fzf-tab"
@@ -821,10 +826,26 @@ function dotfiles_install_fzf() {
     fi
 
     # fzf
-    if ! command_exists "$_package_name"; then
-        install_dotfiles_packages "$_package_name" "package-manager" "$_package_id"
+    if ! { is_dotfiles_package_installed "$_package_name" "zinit-plugin" "$_package_id" }; then
+        zinit ice lucid from"gh-r" id-as"$_package_name" as"null" blockf \
+              atclone'ln -sf $(realpath ./$_package_name) $DOTFILES_LOCAL_BIN_DIR/$_package_name' \
+              atpull'%atclone'
+        install_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_id"
     else
-        install_dotfiles_packages --upgrade "$_package_name" "package-manager" "$_package_id"
+        install_dotfiles_packages --upgrade "$_package_name" "zinit-plugin" "$_package_name"
+    fi
+
+    # fzf-res
+    if ! { is_dotfiles_package_installed "$_package_res_name" "zinit-plugin" "$_package_res_id" }; then
+        zinit ice lucid id-as"$_package_res_name" as"null" blockf \
+              atclone'ln -sf $(realpath ./bin/fzf-tmux) $DOTFILES_LOCAL_BIN_DIR/fzf-tmux;                # binary
+                      ln -sf $(realpath ./bin/fzf-preview.sh) $DOTFILES_LOCAL_BIN_DIR/fzf-preview.sh;
+                      ln -sf $(realpath ./man/man1/fzf.1) $DOTFILES_LOCAL_MAN_DIR/man1/fzf.1;            # manual
+                      ln -sf $(realpath ./man/man1/fzf-tmux.1) $DOTFILES_LOCAL_MAN_DIR/man1/fzf-tmux.1;' \
+              atpull'%atclone'
+        install_dotfiles_packages "$_package_res_name" "zinit-plugin" "$_package_res_id"
+    else
+        install_dotfiles_packages --upgrade "$_package_res_name" "zinit-plugin" "$_package_res_name"
     fi
 
     # fzf-tab
@@ -1141,7 +1162,6 @@ function dotfiles_install_keyd() {
         if [[ $? != $RC_SUCCESS ]]; then
             sudo systemctl enable "$_package_name" && sudo systemctl start "$_package_name"
         fi
-
     else
         install_dotfiles_packages --upgrade "$_package_name" "git-repo-make-install" "$_package_id"
     fi
