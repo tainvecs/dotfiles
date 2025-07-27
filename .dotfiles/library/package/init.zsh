@@ -241,8 +241,9 @@ function dotfiles_init_delta() {
 
 function dotfiles_init_docker() {
 
+    local _
     local _package_name="docker"
-    local _package_plugin_name="docker-compose"
+    local _package_plugin_name="docker compose"
 
     # sanity check
     if ! is_supported_system_archt; then
@@ -255,7 +256,7 @@ function dotfiles_init_docker() {
         return $RC_ERROR
     fi
 
-    if ! command_exists "$_package_plugin_name"; then
+    if ! { docker compose >/dev/null 2>&1 }; then
         log_dotfiles_package_initialization "$_package_plugin_name" "fail"
         return $RC_ERROR
     fi
@@ -264,7 +265,7 @@ function dotfiles_init_docker() {
     export DOCKER_DEFAULT_PLATFORM="linux/$DOTFILES_SYS_ARCHT"
 
     # user config
-    local _=$(link_dotfiles_user_config_to_local "$_package_name" "config.json" "$_package_name" "config.json")
+    _=$(link_dotfiles_user_config_to_local "$_package_name" "config.json" "$_package_name" "config.json")
     if [[ $? -eq $RC_SUCCESS ]]; then
         export DOCKER_CONFIG="$DOTFILES_LOCAL_CONFIG_DIR/$_package_name"
     fi
@@ -343,6 +344,7 @@ function dotfiles_init_dust() {
 
 function dotfiles_init_emacs() {
 
+    local _
     local _package_name="emacs"
 
     # sanity check
@@ -511,7 +513,7 @@ function dotfiles_init_forgit() {
 
     # forgit
     export FORGIT_LOG_GRAPH_ENABLE=false
-    # export FORGIT_NO_ALIASES=true
+    export FORGIT_NO_ALIASES=true
 
     zinit ice wait"1c" lucid
     zinit light "$_package_name"
@@ -586,6 +588,7 @@ function dotfiles_init_fzf() {
 
 function dotfiles_init_gcp() {
 
+    local _
     local _package_name="gcp"
 
     # path
@@ -700,6 +703,7 @@ function dotfiles_init_homebrew() {
 
 function dotfiles_init_htop() {
 
+    local _
     local _package_name="htop"
 
     # sanity check
@@ -747,6 +751,7 @@ function dotfiles_init_hyperfine() {
 
 function dotfiles_init_keyd() {
 
+    local _
     local _package_name="keyd"
 
     # sanity check
@@ -760,7 +765,17 @@ function dotfiles_init_keyd() {
     fi
 
     # user config
-    _=$(link_dotfiles_user_config_to_local "$_package_name" "default.conf" "$_package_name" "default.conf")
+    local _keyd_config_path
+    _keyd_config_path=$(link_dotfiles_user_config_to_local "$_package_name" "default.conf" "$_package_name" "default.conf")
+    if [[ $? -eq $RC_SUCCESS ]]; then
+        _=$(create_validated_symlink $_keyd_config_path "/etc/keyd/default.conf")
+        if [[ $? -ne $RC_SUCCESS ]];then
+             local _cmd="sudo ln -sf $_keyd_config_path /etc/keyd/default.conf"
+             log_message "Failed to link keyd config." "error"
+             log_message "Run the command as follow to fix it.\n$_cmd" "info"
+        fi
+    fi
+
     _=$(link_dotfiles_user_config_to_local "$_package_name" ".Xmodmap" "$_package_name" ".Xmodmap")
 }
 
@@ -842,6 +857,7 @@ function dotfiles_init_nvitop() {
 
 function dotfiles_init_peco() {
 
+    local _
     local _package_name="peco"
 
     # sanity check
@@ -929,6 +945,7 @@ function dotfiles_init_powerlevel10k() {
 
 function dotfiles_init_python() {
 
+    local _
     local _package_name="python"
     local _package_plugin_name="pyenv"
 
@@ -954,7 +971,7 @@ function dotfiles_init_python() {
     fi
 
     # user config
-    local _=$(link_dotfiles_user_config_to_local "$_package_name" ".pythonrc" "$_package_name" "user.pythonrc")
+    _=$(link_dotfiles_user_config_to_local "$_package_name" ".pythonrc" "$_package_name" "user.pythonrc")
 
     # local history and user history
     local _hist_file_dir="$DOTFILES_LOCAL_STATE_DIR/python"

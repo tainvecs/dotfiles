@@ -26,7 +26,7 @@
 # ------------------------------------------------------------------------------
 
 
-export DOTFILES_ROOT_DIR="${${DOTFILES_ROOT_DIR:-$HOME/dotfiles}:A}"
+export DOTFILES_ROOT_DIR="${${${DOTFILES_ROOT_DIR:-$HOME/dotfiles}/#\~/${HOME}}:A}"
 
 
 # ------------------------------------------------------------------------------
