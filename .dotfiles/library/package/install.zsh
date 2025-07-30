@@ -1324,19 +1324,18 @@ function dotfiles_install_oh-my-tmux() {
 function dotfiles_install_peco() {
 
     local _package_name="peco"
-    local _package_id="peco"
+    local _package_id="peco/peco"
 
-    # sanity check
-    if ! is_supported_system_name; then
-        log_dotfiles_package_installation "$_package_name" "sys-name-not-supported"
-        return $RC_UNSUPPORTED
-    fi
+    if ! { is_dotfiles_package_installed "$_package_name" "zinit-plugin" "$_package_id" }; then
 
-    # peco
-    if ! command_exists "$_package_name"; then
-        install_dotfiles_packages "$_package_name" "package-manager" "$_package_id"
+        zinit ice lucid from"gh-r" as"null" id-as"$_package_name" \
+              mv"peco* -> peco/" \
+              atclone'ln -sf $(realpath ./$_package_name/$_package_name) $DOTFILES_LOCAL_BIN_DIR/$_package_name;' \
+              atpull'%atclone'
+        install_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_id"
+
     else
-        install_dotfiles_packages --upgrade "$_package_name" "package-manager" "$_package_id"
+        install_dotfiles_packages --upgrade "$_package_name" "zinit-plugin" "$_package_name"
     fi
 }
 
