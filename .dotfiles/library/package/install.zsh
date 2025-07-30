@@ -1639,6 +1639,36 @@ function dotfiles_install_universalarchive() {
 
 # ------------------------------------------------------------------------------
 #
+# uv: Python package and project manager
+#
+# - References
+#   - https://github.com/astral-sh/uv
+#
+# ------------------------------------------------------------------------------
+
+
+function dotfiles_install_uv() {
+
+    local _package_name="uv"
+    local _package_id="astral-sh/uv"
+
+    if ! { is_dotfiles_package_installed "$_package_name" "zinit-plugin" "$_package_id" }; then
+
+        zinit ice lucid from"gh-r" as"null" id-as"$_package_name" \
+              mv"uv* -> uv/" \
+              atclone'ln -sf $(realpath ./$_package_name/uv) $DOTFILES_LOCAL_BIN_DIR/uv;
+                      ln -sf $(realpath ./$_package_name/uvx) $DOTFILES_LOCAL_BIN_DIR/uvx;' \
+              atpull'%atclone'
+        install_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_id"
+
+    else
+        install_dotfiles_packages --upgrade "$_package_name" "zinit-plugin" "$_package_name"
+    fi
+}
+
+
+# ------------------------------------------------------------------------------
+#
 # vim: a text editors
 #
 # - References
