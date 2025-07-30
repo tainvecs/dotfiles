@@ -806,7 +806,7 @@ function dotfiles_init_kubectl() {
 
     # user config and credentials
     local _config_link=$(link_dotfiles_user_credential_to_local "$_package_name" "config" "$_package_name" "config")
-    if [[ $? -eq $RC_SUCCESS ]]; then
+    if [[ $? -eq $RC_SUCCESS ]] && [[ -n $KUBECONFIG ]]; then
         export KUBECONFIG="$_config_link:$KUBECONFIG"
     fi
 
@@ -861,7 +861,7 @@ function dotfiles_init_peco() {
     local _package_name="peco"
 
     # sanity check
-    if ! command_exists "$_package_name"; then
+    if ! { is_dotfiles_package_installed "$_package_name" "zinit-snippet" "$_package_name" }; then
         log_dotfiles_package_initialization "$_package_name" "fail"
         return $RC_ERROR
     fi
@@ -991,7 +991,7 @@ function dotfiles_init_python() {
     alias ipython="python -c 'import IPython; IPython.terminal.ipapp.launch_new_instance()'"
 
     # ----- pyenv
-    local _package_plugin_home_dir="$_package_home_dir/$_package_plugin_name"
+    local _package_plugin_home_dir="$DOTFILES_LOCAL_SHARE_DIR/$_package_plugin_name"
     local _package_plugin_git_dir="$_package_plugin_home_dir/$_package_plugin_name.git"
 
     if command_exists "$_package_plugin_name" || [[ -d $_package_plugin_git_dir ]]; then
