@@ -1442,7 +1442,7 @@ function dotfiles_install_pyenv() {
         _package_plugin_id="pyenv-virtualenv"
     elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
         _package_id="pyenv/pyenv"
-        _package_plugin_id="pyenv-virtualenv/pyenv-virtualenv"
+        _package_plugin_id="pyenv/pyenv-virtualenv"
     fi
 
     # sanity check
@@ -1466,14 +1466,24 @@ function dotfiles_install_pyenv() {
                             libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev"
             install_dotfiles_packages "$_package_name" "package-manager" "$_pkg_str"
             install_dotfiles_packages "$_package_name" "git-repo-pull" "$_package_id"
-            install_dotfiles_packages "$_package_name" "git-repo-pull" "$_package_plugin_id"
+            install_dotfiles_packages "$_package_plugin_name" "git-repo-pull" "$_package_plugin_id"
+
+            # link pyenv plugin
+            local _from_link="$DOTFILES_LOCAL_SHARE_DIR/$_package_plugin_name/$_package_plugin_name.git"
+            local _to_link="$DOTFILES_LOCAL_SHARE_DIR/$_package_name/$_package_name.git/plugins"
+            create_validated_symlink $_from_link $_to_link
         fi
     else
         if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
             install_dotfiles_packages "$_package_name" "package-manager" "$_package_id $_package_plugin_id"
         elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
             install_dotfiles_packages --upgrade "$_package_name" "git-repo-pull" "$_package_id"
-            install_dotfiles_packages --upgrade "$_package_name" "git-repo-pull" "$_package_plugin_id"
+            install_dotfiles_packages --upgrade "$_package_plugin_name" "git-repo-pull" "$_package_plugin_id"
+
+            # link pyenv plugin
+            local _from_link="$DOTFILES_LOCAL_SHARE_DIR/$_package_plugin_name/$_package_plugin_name.git"
+            local _to_link="$DOTFILES_LOCAL_SHARE_DIR/$_package_name/$_package_name.git/plugins"
+            create_validated_symlink $_from_link $_to_link
         fi
     fi
 }
