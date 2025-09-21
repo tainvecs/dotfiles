@@ -6,8 +6,8 @@
 # Zsh Completion: Load and Trigger Completion with Zinit
 #
 #
-# Version: 0.0.8
-# Last Modified: 2025-07-27
+# Version: 0.0.9
+# Last Modified: 2025-07-31
 #
 # - Dependency
 #   - Tool
@@ -24,6 +24,7 @@
 #   - docker
 #   - gcp
 #   - kubectl
+#   - uv
 #   - volta
 #   - zinit
 #
@@ -66,6 +67,14 @@ if command_exists "kubectl"; then
     local _cmp_path="$DOTFILES_ZSH_COMP_DIR/_kubectl"
     if [[ ! -f $_cmp_path ]]; then
         kubectl completion zsh > $_cmp_path || log_message "Failed to generate kubectl completion $_cmp_path" "error"
+    fi
+fi
+
+# uv
+if command_exists "uv"; then
+    local _cmp_path="$DOTFILES_ZSH_COMP_DIR/_uv"
+    if [[ ! -f $_cmp_path ]]; then
+        uv generate-shell-completion zsh > $DOTFILES_ZSH_COMP_DIR/_uv || log_message "Failed to generate uv completion $_cmp_path" "error"
     fi
 fi
 

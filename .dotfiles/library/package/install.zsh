@@ -1666,8 +1666,9 @@ function dotfiles_install_uv() {
 
         zinit ice lucid from"gh-r" as"null" id-as"$_package_name" \
               mv"uv* -> uv/" \
-              atclone'ln -sf $(realpath ./$_package_name/uv) $DOTFILES_LOCAL_BIN_DIR/uv;
-                      ln -sf $(realpath ./$_package_name/uvx) $DOTFILES_LOCAL_BIN_DIR/uvx;' \
+              atclone'ln -sf $(realpath ./$_package_name/uv) $DOTFILES_LOCAL_BIN_DIR/uv;    # binary
+                      ln -sf $(realpath ./$_package_name/uvx) $DOTFILES_LOCAL_BIN_DIR/uvx;
+                      uv generate-shell-completion zsh > $DOTFILES_ZSH_COMP_DIR/_uv;        # completion' \
               atpull'%atclone'
         install_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_id"
 
