@@ -190,6 +190,44 @@ function dotfiles_init_bat() {
 
 # ------------------------------------------------------------------------------
 #
+# claude-code: an agentic coding tool
+#
+# - References
+#   - https://docs.anthropic.com/en/docs/claude-code
+#
+# - Note
+#   - Auto-updater manages binary versions in $XDG_DATA_HOME/claude/
+#   - Credentials (.credentials.json) are never managed by dotfiles
+#
+# ------------------------------------------------------------------------------
+
+
+function dotfiles_init_claude-code() {
+
+    local _package_name="claude-code"
+    local _package_dir_name="claude"
+    local _bin_name="claude"
+
+    # sanity check
+    if ! command_exists "$_bin_name"; then
+        log_dotfiles_package_initialization "$_package_name" "fail"
+        return $RC_ERROR
+    fi
+
+    # config: redirect ~/.claude/ to local config dir via CLAUDE_CONFIG_DIR
+    export CLAUDE_CONFIG_DIR="$DOTFILES_LOCAL_CONFIG_DIR/$_package_dir_name"
+
+    # completion: link user-provided completion to local completion dir
+    local _user_comp_source="$DOTFILES_USER_CONFIG_DIR/$_package_dir_name/_$_bin_name"
+    local _comp_link="$DOTFILES_ZSH_COMP_DIR/_$_bin_name"
+    if [[ -f "$_user_comp_source" ]] && [[ ! -f "$_comp_link" ]]; then
+        : $(create_validated_symlink "$_user_comp_source" "$_comp_link")
+    fi
+}
+
+
+# ------------------------------------------------------------------------------
+#
 # delta: a git, diff and grep syntax-highlighting pager
 #
 # - References
