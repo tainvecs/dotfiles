@@ -49,6 +49,17 @@ fi
 ensure_directory "$DOTFILES_ZSH_COMP_DIR"
 
 
+# claude-code
+if command_exists "claude"; then
+    local _cmp_path="$DOTFILES_ZSH_COMP_DIR/_claude"
+    if [[ ! -f $_cmp_path ]]; then
+        local _user_cmp="$DOTFILES_USER_CONFIG_DIR/claude-code/_claude"
+        if [[ -f "$_user_cmp" ]]; then
+            create_validated_symlink "$_user_cmp" "$_cmp_path"
+        fi
+    fi
+fi
+
 # docker
 if command_exists "docker"; then
     local _cmp_path="$DOTFILES_ZSH_COMP_DIR/_docker"

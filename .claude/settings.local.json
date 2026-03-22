@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /home/local/KLASS/chinho.lin/dotfiles -maxdepth 3 -type f \\\\\\(-name *.sh -o -name *install* -o -name *setup* \\\\\\))",
+      "Bash(grep -E \"\\\\.\\(zsh|sh|lua|vim|json|yaml|toml\\)$\")",
+      "Bash(find /home/local/KLASS/chinho.lin/dotfiles/.dotfiles/env -type f -exec wc -l {} +)",
+      "Bash(wc -l /home/local/KLASS/chinho.lin/dotfiles/.dotfiles/config/*/*)",
+      "Bash(find /home/local/KLASS/chinho.lin/dotfiles -path */.local/share* -prune -o -path */.git* -prune -o -type f -name .bat* -o -name .ripgrep* -o -name .delta* -o -name .fzf*)",
+      "Bash(du -sh /home/local/KLASS/chinho.lin/dotfiles/.local/*/)",
+      "Bash(grep:*)",
+      "Bash(wc:*)",
+      "Read(//home/local/KLASS/chinho.lin/.claude/**)",
+      "Bash(claude --version)"
+    ]
+  }
+}
