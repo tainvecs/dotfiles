@@ -63,7 +63,7 @@ function dotfiles_install_7z() {
     if ! command_exists "$_package_name"; then
         install_dotfiles_packages "$_package_name" "package-manager" "$_package_id"
     else
-        install_dotfiles_packages --upgrade "$_package_name" "package-manager" "$_package_id"
+        dotfiles_update_7z
     fi
 }
 
@@ -93,7 +93,7 @@ function dotfiles_install_alt-tab() {
     if ! { is_dotfiles_package_installed "$_package_name" "package-manager" "$_package_id" }; then
         install_dotfiles_packages "$_package_name" "package-manager" "$_package_id"
     else
-        install_dotfiles_packages --upgrade "$_package_name" "package-manager" "$_package_id"
+        dotfiles_update_alt-tab
     fi
 }
 
@@ -123,7 +123,7 @@ function dotfiles_install_autoenv() {
     if ! { is_dotfiles_package_installed "$_package_name" "git-repo-pull" "$_package_id" }; then
         install_dotfiles_packages "$_package_name" "git-repo-pull" "$_package_id"
     else
-        install_dotfiles_packages --upgrade "$_package_name" "git-repo-pull" "$_package_id"
+        dotfiles_update_autoenv
     fi
 }
 
@@ -169,7 +169,7 @@ function dotfiles_install_aws() {
         if ! command_exists "$_package_name"; then
             install_dotfiles_packages "$_package_name" "package-manager" "$_package_id"
         else
-            install_dotfiles_packages --upgrade "$_package_name" "package-manager" "$_package_id"
+            update_dotfiles_packages "$_package_name" "package-manager" "$_package_id"
         fi
 
     elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
@@ -208,8 +208,7 @@ function dotfiles_install_aws() {
             log_dotfiles_package_installation "$_package_name" "install"
             sudo "$_tmp_dir/aws/install" --bin-dir "$_bin_dir" --install-dir "$_install_dir"
         else
-            log_dotfiles_package_installation "$_package_name" "upgrade"
-            sudo "$_tmp_dir/aws/install" --bin-dir "$_bin_dir" --install-dir "$_install_dir" --update
+            dotfiles_update_aws
         fi
 
         if [[ $? -eq $RC_SUCCESS ]]; then
@@ -272,7 +271,7 @@ function dotfiles_install_bat() {
         install_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_id"
 
     else
-        install_dotfiles_packages --upgrade "$_package_name" "zinit-plugin" "$_package_name"
+        update_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_name"
     fi
 
     # bat-extras
@@ -285,7 +284,7 @@ function dotfiles_install_bat() {
         install_dotfiles_packages "$_package_plugin_name" "zinit-plugin" "$_package_plugin_id"
 
     else
-        install_dotfiles_packages --upgrade "$_package_plugin_name" "zinit-plugin" "$_package_plugin_name"
+        update_dotfiles_packages "$_package_plugin_name" "zinit-plugin" "$_package_plugin_name"
     fi
 }
 
@@ -340,13 +339,7 @@ function dotfiles_install_claude-code() {
             return $RC_ERROR
         fi
     else
-        log_dotfiles_package_installation "$_package_name" "upgrade"
-
-        if $_bin_name update; then
-            log_dotfiles_package_installation "$_package_name" "success"
-        else
-            log_dotfiles_package_installation "$_package_name" "up-to-date"
-        fi
+        dotfiles_update_claude-code
     fi
 }
 
@@ -379,7 +372,7 @@ function dotfiles_install_delta() {
         install_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_id"
 
     else
-        install_dotfiles_packages --upgrade "$_package_name" "zinit-plugin" "$_package_name"
+        update_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_name"
     fi
 
     # completion and theme config
@@ -405,7 +398,7 @@ function dotfiles_install_delta() {
         install_dotfiles_packages "$_package_res_name" "zinit-plugin" "$_package_res_id"
 
     else
-        install_dotfiles_packages --upgrade "$_package_res_name" "zinit-plugin" "$_package_res_name"
+        update_dotfiles_packages "$_package_res_name" "zinit-plugin" "$_package_res_name"
     fi
 }
 
@@ -472,10 +465,10 @@ function dotfiles_install_docker() {
 
     else
         if [[ $DOTFILES_SYS_NAME == "linux" ]]; then
-            install_dotfiles_packages --upgrade "$_package_name" "package-manager" \
-                                     "docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin"
+            update_dotfiles_packages "$_package_name" "package-manager" \
+                                     "docker-ce" "docker-ce-cli" "containerd.io" "docker-buildx-plugin" "docker-compose-plugin"
         elif [[ $DOTFILES_SYS_NAME == "mac" ]]; then
-            install_dotfiles_packages --upgrade "$_package_name" "package-manager" "docker docker-compose"
+            update_dotfiles_packages "$_package_name" "package-manager" "docker" "docker-compose"
         fi
     fi
 
@@ -493,7 +486,7 @@ function dotfiles_install_docker() {
         zinit ice lucid as"completion" id-as"$_docker_comp_cmp_name"
         install_dotfiles_packages "$_docker_comp_cmp_name" "zinit-snippet" "$_docker_comp_cmp_id"
     else
-        install_dotfiles_packages --upgrade "$_docker_comp_cmp_name" "zinit-snippet" "$_docker_comp_cmp_name"
+        update_dotfiles_packages "$_docker_comp_cmp_name" "zinit-snippet" "$_docker_comp_cmp_name"
     fi
 }
 
@@ -542,7 +535,7 @@ function dotfiles_install_docker-credential-helpers() {
         install_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_id"
 
     else
-        install_dotfiles_packages --upgrade "$_package_name" "zinit-plugin" "$_package_name"
+        dotfiles_update_docker-credential-helpers
     fi
 }
 
@@ -574,7 +567,7 @@ function dotfiles_install_duf() {
         install_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_id"
 
     else
-        install_dotfiles_packages --upgrade "$_package_name" "zinit-plugin" "$_package_name"
+        update_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_name"
     fi
 
     # manual
@@ -586,7 +579,7 @@ function dotfiles_install_duf() {
         install_dotfiles_packages "$_package_res_name" "zinit-plugin" "$_package_res_id"
 
     else
-        install_dotfiles_packages --upgrade "$_package_res_name" "zinit-plugin" "$_package_res_name"
+        update_dotfiles_packages "$_package_res_name" "zinit-plugin" "$_package_res_name"
     fi
 }
 
@@ -619,7 +612,7 @@ function dotfiles_install_dust() {
         install_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_id"
 
     else
-        install_dotfiles_packages --upgrade "$_package_name" "zinit-plugin" "$_package_name"
+        update_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_name"
     fi
 
     # manual and completion
@@ -632,7 +625,7 @@ function dotfiles_install_dust() {
         install_dotfiles_packages "$_package_res_name" "zinit-plugin" "$_package_res_id"
 
     else
-        install_dotfiles_packages --upgrade "$_package_res_name" "zinit-plugin" "$_package_res_name"
+        update_dotfiles_packages "$_package_res_name" "zinit-plugin" "$_package_res_name"
     fi
 }
 
@@ -666,7 +659,7 @@ function dotfiles_install_emacs() {
     if ! command_exists "$_package_name"; then
         install_dotfiles_packages "$_package_name" "package-manager" "$_package_id"
     else
-        install_dotfiles_packages --upgrade "$_package_name" "package-manager" "$_package_id"
+        dotfiles_update_emacs
     fi
 }
 
@@ -693,7 +686,7 @@ function dotfiles_install_extract() {
         zinit ice lucid id-as"$_package_name"
         install_dotfiles_packages "$_package_name" "zinit-snippet" "$_package_id"
     else
-        install_dotfiles_packages --upgrade "$_package_name" "zinit-snippet" "$_package_name"
+        update_dotfiles_packages "$_package_name" "zinit-snippet" "$_package_name"
     fi
 
     # completion
@@ -701,7 +694,7 @@ function dotfiles_install_extract() {
         zinit ice lucid as"completion" id-as"$_comp_name"
         install_dotfiles_packages "$_comp_name" "zinit-snippet" "$_comp_id"
     else
-        install_dotfiles_packages --upgrade "$_comp_name" "zinit-snippet" "$_comp_name"
+        update_dotfiles_packages "$_comp_name" "zinit-snippet" "$_comp_name"
     fi
 }
 
@@ -753,7 +746,7 @@ function dotfiles_install_eza() {
 
         install_dotfiles_packages "$_package_name" "package-manager" "$_package_id"
     else
-        install_dotfiles_packages --upgrade "$_package_name" "package-manager" "$_package_id"
+        dotfiles_update_eza
     fi
 }
 
@@ -781,7 +774,7 @@ function dotfiles_install_fast-syntax-highlighting() {
 
         install_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_id"
     else
-        install_dotfiles_packages --upgrade "$_package_name" "zinit-plugin" "$_package_name"
+        dotfiles_update_fast-syntax-highlighting
     fi
 }
 
@@ -813,7 +806,7 @@ function dotfiles_install_fd() {
         install_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_id"
 
     else
-        install_dotfiles_packages --upgrade "$_package_name" "zinit-plugin" "$_package_name"
+        dotfiles_update_fd
     fi
 }
 
@@ -848,7 +841,7 @@ function dotfiles_install_forgit() {
         zinit ice lucid id-as"$_package_name"
         install_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_id"
     else
-        install_dotfiles_packages --upgrade "$_package_name" "zinit-plugin" "$_package_name"
+        dotfiles_update_forgit
     fi
 }
 
@@ -893,7 +886,7 @@ function dotfiles_install_fzf() {
               atpull'%atclone'
         install_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_id"
     else
-        install_dotfiles_packages --upgrade "$_package_name" "zinit-plugin" "$_package_name"
+        update_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_name"
     fi
 
     # fzf-res
@@ -906,7 +899,7 @@ function dotfiles_install_fzf() {
               atpull'%atclone'
         install_dotfiles_packages "$_package_res_name" "zinit-plugin" "$_package_res_id"
     else
-        install_dotfiles_packages --upgrade "$_package_res_name" "zinit-plugin" "$_package_res_name"
+        update_dotfiles_packages "$_package_res_name" "zinit-plugin" "$_package_res_name"
     fi
 
     # fzf-tab
@@ -914,7 +907,7 @@ function dotfiles_install_fzf() {
         zinit ice lucid id-as"$_package_plugin_name" blockf
         install_dotfiles_packages "$_package_plugin_name" "zinit-plugin" "$_package_plugin_id"
     else
-        install_dotfiles_packages --upgrade "$_package_plugin_name" "zinit-plugin" "$_package_plugin_name"
+        update_dotfiles_packages "$_package_plugin_name" "zinit-plugin" "$_package_plugin_name"
     fi
 }
 
@@ -1007,7 +1000,7 @@ function dotfiles_install_go() {
     if ! command_exists "$_package_name"; then
         install_dotfiles_packages "$_package_name" "package-manager" "$_package_id"
     else
-        install_dotfiles_packages --upgrade "$_package_name" "package-manager" "$_package_id"
+        dotfiles_update_go
     fi
 }
 
@@ -1036,7 +1029,7 @@ function dotfiles_install_homebrew() {
     if ! command_exists "brew"; then
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     else
-        brew update
+        dotfiles_update_homebrew
     fi
 }
 
@@ -1066,7 +1059,7 @@ function dotfiles_install_htop() {
     if ! command_exists "$_package_name"; then
         install_dotfiles_packages "$_package_name" "package-manager" "$_package_id"
     else
-        install_dotfiles_packages --upgrade "$_package_name" "package-manager" "$_package_id"
+        dotfiles_update_htop
     fi
 }
 
@@ -1097,7 +1090,7 @@ function dotfiles_install_hwatch() {
         install_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_id"
 
     else
-        install_dotfiles_packages --upgrade "$_package_name" "zinit-plugin" "$_package_name"
+        dotfiles_update_hwatch
     fi
 }
 
@@ -1129,7 +1122,7 @@ function dotfiles_install_hyperfine() {
         install_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_id"
 
     else
-        install_dotfiles_packages --upgrade "$_package_name" "zinit-plugin" "$_package_name"
+        dotfiles_update_hyperfine
     fi
 }
 
@@ -1191,7 +1184,7 @@ function dotfiles_install_jdk() {
     if ! command_exists "java"; then
         install_dotfiles_packages "$_package_name" "package-manager" "$_package_id"
     else
-        install_dotfiles_packages --upgrade "$_package_name" "package-manager" "$_package_id"
+        dotfiles_update_jdk
     fi
 }
 
@@ -1224,7 +1217,7 @@ function dotfiles_install_keyd() {
             sudo systemctl enable "$_package_name" && sudo systemctl start "$_package_name"
         fi
     else
-        install_dotfiles_packages --upgrade "$_package_name" "git-repo-make-install" "$_package_id"
+        dotfiles_update_keyd
     fi
 }
 
@@ -1272,7 +1265,7 @@ function dotfiles_install_kubectl() {
             zinit ice lucid id-as"$_package_name"
             install_dotfiles_packages "$_package_name" "zinit-snippet" "$_package_id"
         else
-            install_dotfiles_packages --upgrade "$_package_name" "zinit-snippet" "$_package_name"
+            dotfiles_update_kubectl
         fi
 
     elif [[ $DOTFILES_SYS_NAME == "mac" ]]; then
@@ -1282,7 +1275,7 @@ function dotfiles_install_kubectl() {
         if ! command_exists "$_package_name"; then
             install_dotfiles_packages "$_package_name" "package-manager" "$_package_id"
         else
-            install_dotfiles_packages --upgrade "$_package_name" "package-manager" "$_package_id"
+            dotfiles_update_kubectl
         fi
     fi
 
@@ -1327,7 +1320,7 @@ function dotfiles_install_nvitop() {
     if ! command_exists "$_package_name"; then
         install_dotfiles_packages "$_package_name" "pip" "$_package_id"
     else
-        install_dotfiles_packages --upgrade "$_package_name" "pip" "$_package_id"
+        dotfiles_update_nvitop
     fi
 }
 
@@ -1367,7 +1360,7 @@ function dotfiles_install_oh-my-tmux() {
               atpull'%atclone'
         install_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_id"
     else
-        install_dotfiles_packages --upgrade "$_package_name" "zinit-plugin" "$_package_name"
+        dotfiles_update_oh-my-tmux
     fi
 }
 
@@ -1396,7 +1389,7 @@ function dotfiles_install_peco() {
         install_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_id"
 
     else
-        install_dotfiles_packages --upgrade "$_package_name" "zinit-plugin" "$_package_name"
+        dotfiles_update_peco
     fi
 }
 
@@ -1424,7 +1417,7 @@ function dotfiles_install_powerlevel10k() {
         zinit ice lucid id-as"$_package_name" depth"1"
         install_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_id"
     else
-        install_dotfiles_packages --upgrade "$_package_name" "zinit-plugin" "$_package_name"
+        update_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_name"
     fi
 
     # p10k-media
@@ -1440,7 +1433,7 @@ function dotfiles_install_powerlevel10k() {
             fc-cache -fv
         fi
     else
-        install_dotfiles_packages --upgrade "$_package_media_name" "zinit-plugin" "$_package_media_name"
+        update_dotfiles_packages "$_package_media_name" "zinit-plugin" "$_package_media_name"
     fi
 }
 
@@ -1475,7 +1468,7 @@ function dotfiles_install_python() {
             install_dotfiles_packages "$_package_name" "package-manager" "$_package_id"
         fi
     else
-        install_dotfiles_packages --upgrade "$_package_name" "package-manager" "$_package_id"
+        dotfiles_update_python
     fi
 }
 
@@ -1536,15 +1529,10 @@ function dotfiles_install_pyenv() {
         fi
     else
         if [[ $DOTFILES_SYS_NAME == "mac" ]]; then
-            install_dotfiles_packages "$_package_name" "package-manager" "$_package_id $_package_plugin_id"
+            update_dotfiles_packages "$_package_name" "package-manager" "$_package_id" "$_package_plugin_id"
         elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
-            install_dotfiles_packages --upgrade "$_package_name" "git-repo-pull" "$_package_id"
-            install_dotfiles_packages --upgrade "$_package_plugin_name" "git-repo-pull" "$_package_plugin_id"
-
-            # link pyenv plugin
-            local _from_link="$DOTFILES_LOCAL_SHARE_DIR/$_package_plugin_name/$_package_plugin_name.git"
-            local _to_link="$DOTFILES_LOCAL_SHARE_DIR/$_package_name/$_package_name.git/plugins"
-            create_validated_symlink $_from_link $_to_link
+            update_dotfiles_packages "$_package_name" "git-repo-pull" "$_package_id"
+            update_dotfiles_packages "$_package_plugin_name" "git-repo-pull" "$_package_plugin_id"
         fi
     fi
 }
@@ -1578,7 +1566,7 @@ function dotfiles_install_ripgrep() {
         install_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_id"
 
     else
-        install_dotfiles_packages --upgrade "$_package_name" "zinit-plugin" "$_package_name"
+        dotfiles_update_ripgrep
     fi
 }
 
@@ -1608,7 +1596,7 @@ function dotfiles_install_tmux() {
     if ! command_exists "$_package_name"; then
         install_dotfiles_packages "$_package_name" "package-manager" "$_package_id"
     else
-        install_dotfiles_packages --upgrade "$_package_name" "package-manager" "$_package_id"
+        dotfiles_update_tmux
     fi
 }
 
@@ -1638,7 +1626,7 @@ function dotfiles_install_tre() {
     if ! command_exists "$_package_name"; then
         install_dotfiles_packages "$_package_name" "package-manager" "$_package_id"
     else
-        install_dotfiles_packages --upgrade "$_package_name" "package-manager" "$_package_id"
+        dotfiles_update_tre
     fi
 }
 
@@ -1668,7 +1656,7 @@ function dotfiles_install_tree() {
     if ! command_exists "$_package_name"; then
         install_dotfiles_packages "$_package_name" "package-manager" "$_package_id"
     else
-        install_dotfiles_packages --upgrade "$_package_name" "package-manager" "$_package_id"
+        dotfiles_update_tree
     fi
 }
 
@@ -1695,7 +1683,7 @@ function dotfiles_install_universalarchive() {
         zinit ice lucid id-as"$_package_name"
         install_dotfiles_packages "$_package_name" "zinit-snippet" "$_package_id"
     else
-        install_dotfiles_packages --upgrade "$_package_name" "zinit-snippet" "$_package_name"
+        update_dotfiles_packages "$_package_name" "zinit-snippet" "$_package_name"
     fi
 
     # completion
@@ -1703,7 +1691,7 @@ function dotfiles_install_universalarchive() {
         zinit ice lucid as"completion" id-as"$_comp_name"
         install_dotfiles_packages "$_comp_name" "zinit-snippet" "$_comp_id"
     else
-        install_dotfiles_packages --upgrade "$_comp_name" "zinit-snippet" "$_comp_name"
+        update_dotfiles_packages "$_comp_name" "zinit-snippet" "$_comp_name"
     fi
 }
 
@@ -1734,7 +1722,7 @@ function dotfiles_install_uv() {
         install_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_id"
 
     else
-        install_dotfiles_packages --upgrade "$_package_name" "zinit-plugin" "$_package_name"
+        dotfiles_update_uv
     fi
 }
 
@@ -1764,7 +1752,7 @@ function dotfiles_install_vim() {
     if ! command_exists "$_package_name"; then
         install_dotfiles_packages "$_package_name" "package-manager" "$_package_id"
     else
-        install_dotfiles_packages --upgrade "$_package_name" "package-manager" "$_package_id"
+        dotfiles_update_vim
     fi
 }
 
@@ -1806,17 +1794,17 @@ function dotfiles_install_volta() {
     export VOLTA_HOME=$_home_dir
 
     # install or upgrade
-    if ! command_exists "$_package_name"; then
+    if command_exists "$_package_name"; then
+        dotfiles_update_volta
+    else
         log_dotfiles_package_installation "$_package_name" "install"
-    else
-        log_dotfiles_package_installation "$_package_name" "upgrade"
-    fi
 
-    if curl https://get.volta.sh | bash -s -- --skip-setup; then
-        log_dotfiles_package_installation "$_package_name" "success"
-    else
-        log_dotfiles_package_installation "$_package_name" "fail"
-        return $RC_ERROR
+        if curl https://get.volta.sh | bash -s -- --skip-setup; then
+            log_dotfiles_package_installation "$_package_name" "success"
+        else
+            log_dotfiles_package_installation "$_package_name" "fail"
+            return $RC_ERROR
+        fi
     fi
 
     # path
@@ -1862,7 +1850,7 @@ function dotfiles_install_vscode() {
            ! { is_dotfiles_package_installed "$_package_name" "brew-cask" "$_package_id" }; then
             install_dotfiles_packages "$_package_name" "brew-cask" "$_package_id"
         else
-            install_dotfiles_packages --upgrade "$_package_name" "brew-cask" "$_package_id"
+            dotfiles_update_vscode
         fi
 
     elif [[ $DOTFILES_SYS_NAME == "linux" ]]; then
@@ -1887,7 +1875,7 @@ function dotfiles_install_vscode() {
 
             install_dotfiles_packages "$_package_name" "package-manager" "$_package_id"
         else
-            install_dotfiles_packages --upgrade "$_package_name" "package-manager" "$_package_id"
+            dotfiles_update_vscode
         fi
     fi
 }
@@ -1918,7 +1906,7 @@ function dotfiles_install_watch() {
     if ! command_exists "$_package_name"; then
         install_dotfiles_packages "$_package_name" "package-manager" "$_package_id"
     else
-        install_dotfiles_packages --upgrade "$_package_name" "package-manager" "$_package_id"
+        dotfiles_update_watch
     fi
 }
 
@@ -1942,7 +1930,7 @@ function dotfiles_install_zinit() {
     if ! { is_dotfiles_package_installed "$_package_name" "git-repo-pull" "$_package_id" }; then
         install_dotfiles_packages "$_package_name" "git-repo-pull" "$_package_id"
     else
-        install_dotfiles_packages --upgrade "$_package_name" "git-repo-pull" "$_package_id"
+        dotfiles_update_zinit
     fi
 
     # completion
@@ -1977,7 +1965,7 @@ function dotfiles_install_zoxide() {
         install_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_id"
 
     else
-        install_dotfiles_packages --upgrade "$_package_name" "zinit-plugin" "$_package_name"
+        dotfiles_update_zoxide
     fi
 }
 
@@ -2002,7 +1990,7 @@ function dotfiles_install_zsh-autosuggestions() {
               atload"_zsh_autosuggest_start"
         install_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_id"
     else
-        install_dotfiles_packages --upgrade "$_package_name" "zinit-plugin" "$_package_name"
+        dotfiles_update_zsh-autosuggestions
     fi
 }
 
@@ -2026,6 +2014,6 @@ function dotfiles_install_zsh-completions() {
         zinit ice lucid id-as"$_package_name" blockf
         install_dotfiles_packages "$_package_name" "zinit-plugin" "$_package_id"
     else
-        install_dotfiles_packages --upgrade "$_package_name" "zinit-plugin" "$_package_name"
+        dotfiles_update_zsh-completions
     fi
 }

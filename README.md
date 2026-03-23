@@ -46,6 +46,31 @@ dotfiles
   - Files in this directory will be symlinked to `dotfiles/.local` and sourced when the shell starts.
   - For more information, please check out the examples at [dotfiles-user].
 
+## Update
+Update all managed packages:
+```zsh
+source .dotfiles/script/update.zsh
+```
+
+Update a specific package:
+```zsh
+source .dotfiles/script/update.zsh bat
+```
+
+List managed packages:
+```zsh
+source .dotfiles/script/update.zsh --list
+```
+
+## Delete
+Delete a specific package (removes binary, symlinks in `.local/`, completions, and man pages):
+```zsh
+source .dotfiles/script/delete.zsh bat
+```
+- A package name is always required; there is no "delete all" option.
+- User configs (`user/config/`, `user/history/`, `user/secret/`) are never removed.
+- After deletion, also remove the package from your `user/env/package.env` to persist the change.
+
 ## Uninstallation
 Simply remove the following commands from your `~/.zshenv` file.
 ```zsh

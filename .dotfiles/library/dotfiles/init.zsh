@@ -67,7 +67,9 @@ _scripts=(
     "util.zsh"
     "dotfiles/util.zsh"
     "package/built_in.zsh"
+    "package/update.zsh"
     "package/install.zsh"
+    "package/delete.zsh"
     "package/init.zsh"
 )
 for _script in $_scripts; do

@@ -314,16 +314,15 @@ function install_all_dotfiles_packages() {
 }
 
 # Usage: _install_dotfiles_package_with_package_manager
-#        <package_name> <package_management_type> <upgrade_bool> <package_id>
+#        <package_name> <package_management_type> <package_id>
 function _install_dotfiles_package_with_package_manager() {
 
     # input argument
     local _package_name="$1"
     local _package_type="$2"
-    local _upgrade_bool="$3"
-    local _package_id="$4"
+    local _package_id="$3"
 
-    # install or upgrade
+    # install
     if ! { command_exists "$_package_id" || is_dotfiles_package_installed "$_package_name" "$_package_type" "$_package_id" }; then
 
         if [[ "$DOTFILES_SYS_NAME" == "mac" ]]; then
@@ -340,22 +339,6 @@ function _install_dotfiles_package_with_package_manager() {
             return $RC_UNSUPPORTED
         fi
 
-    elif $_upgrade_bool; then
-
-        if [[ "$DOTFILES_SYS_NAME" == "mac" ]]; then
-
-            if [[ "$_package_type" == "brew-cask" ]]; then
-                brew upgrade --cask "$_package_id" || return $RC_ERROR
-            else
-                brew upgrade "$_package_id" || return $RC_ERROR
-            fi
-
-        elif [[ "$DOTFILES_SYS_NAME" == "linux" ]]; then
-            sudo apt-get install --only-upgrade "$_package_id" || return $RC_ERROR
-        else
-            return $RC_UNSUPPORTED
-        fi
-
     else
         return $RC_SKIPPED
     fi
@@ -364,16 +347,15 @@ function _install_dotfiles_package_with_package_manager() {
 }
 
 # Usage: _install_dotfiles_package_with_zinit
-#        <package_name> <package_management_type> <upgrade_bool> <package_id>
+#        <package_name> <package_management_type> <package_id>
 function _install_dotfiles_package_with_zinit() {
 
     # input argument
     local _package_name="$1"
     local _package_type="$2"
-    local _upgrade_bool="$3"
-    local _package_id="$4"
+    local _package_id="$3"
 
-    # install or upgrade
+    # install
     if ! { is_dotfiles_package_installed "$_package_name" "$_package_type" "$_package_id" }; then
 
         if [[ "$_package_type" == "zinit-plugin" ]]; then
@@ -382,8 +364,6 @@ function _install_dotfiles_package_with_zinit() {
             zinit snippet "$_package_id" || return $RC_ERROR
         fi
 
-    elif [[ "$_upgrade_bool" == "true" ]]; then
-        zinit update "$_package_id"
     else
         return $RC_SKIPPED
     fi
@@ -392,18 +372,17 @@ function _install_dotfiles_package_with_zinit() {
 }
 
 # Usage: _install_dotfiles_package_with_git_repo
-#        <package_name> <package_management_type> <upgrade_bool> <package_id>
+#        <package_name> <package_management_type> <package_id>
 function _install_dotfiles_package_with_git_repo() {
 
     # check input argument
     local _package_name="$1"
     local _package_type="$2"
-    local _upgrade_bool="$3"
-    local _package_id="$4"
+    local _package_id="$3"
 
     local _package_git_url="https://github.com/$_package_id.git"
 
-    # install or upgrade
+    # install
     local _package_home_dir="$DOTFILES_LOCAL_SHARE_DIR/$_package_name"
     local _package_git_dir="$_package_home_dir/$_package_name.git"
     ensure_directory "$_package_home_dir"
@@ -432,26 +411,6 @@ function _install_dotfiles_package_with_git_repo() {
                 } ;;
         esac
 
-    elif [[ "$_upgrade_bool" == "true" ]]; then
-
-        case $_package_type in
-
-            "git-repo-pull")
-                git -C $_package_git_dir pull || return $RC_ERROR  ;;
-
-            "git-repo-make-install")
-                {
-                    # TODO: make upgrade
-                    git -C $_package_git_dir pull && \
-                    pushd $_package_git_dir >/dev/null && \
-                    popd >/dev/null
-
-                } || {
-                    popd >/dev/null
-                    return $RC_ERROR
-                } ;;
-        esac
-
     else
         return $RC_SKIPPED
     fi
@@ -460,20 +419,17 @@ function _install_dotfiles_package_with_git_repo() {
 }
 
 # Usage: _install_dotfiles_package_with_pip
-#        <package_name> <package_management_type> <upgrade_bool> <package_id>
+#        <package_name> <package_management_type> <package_id>
 function _install_dotfiles_package_with_pip() {
 
     # input argument
     local _package_name="$1"
     local _package_type="$2"
-    local _upgrade_bool="$3"
-    local _package_id="$4"
+    local _package_id="$3"
 
-    # install or upgrade
+    # install
     if ! { is_dotfiles_package_installed "$_package_name" "$_package_type" "$_package_id" }; then
         pip install "$_package_id" || return $RC_ERROR
-    elif [[ "$_upgrade_bool" == "true" ]]; then
-        pip install --upgrade "$_package_id" || return $RC_ERROR
     else
         return $RC_SKIPPED
     fi
@@ -486,23 +442,22 @@ function _install_dotfiles_package() {
 
     local _package_name="$1"
     local _package_type="$2"
-    local _upgrade_bool="$3"
-    local _package_id="$4"
+    local _package_id="$3"
 
-    # install or upgrade
+    # install
     case $_package_type in
 
         "git-repo-pull" | "git-repo-make-install")
-            _install_dotfiles_package_with_git_repo $_package_name $_package_type $_upgrade_bool $_package_id ;;
+            _install_dotfiles_package_with_git_repo $_package_name $_package_type $_package_id ;;
 
         "package-manager" | "brew-cask")
-            _install_dotfiles_package_with_package_manager $_package_name $_package_type $_upgrade_bool $_package_id ;;
+            _install_dotfiles_package_with_package_manager $_package_name $_package_type $_package_id ;;
 
         "pip")
-            _install_dotfiles_package_with_pip $_package_name $_package_type $_upgrade_bool $_package_id ;;
+            _install_dotfiles_package_with_pip $_package_name $_package_type $_package_id ;;
 
         "zinit-plugin" | "zinit-snippet")
-            _install_dotfiles_package_with_zinit $_package_name $_package_type $_upgrade_bool $_package_id ;;
+            _install_dotfiles_package_with_zinit $_package_name $_package_type $_package_id ;;
 
         *)
             log_message "Unknown package management type $_package_type provided for package $_package_name." "error"
@@ -513,15 +468,9 @@ function _install_dotfiles_package() {
 function _install_dotfiles_package_parse_argument() {
 
     # parse input
-    local _upgrade_bool="false"
     local _package_name
     local _package_type
     local _package_ids
-
-    if [[ "$1" == "--upgrade" ]]; then
-        _upgrade_bool="true"
-        shift
-    fi
 
     if [[ -z "$1" ]]; then
         log_message "No package name provided." "error"
@@ -558,11 +507,11 @@ function _install_dotfiles_package_parse_argument() {
     esac
 
     # return parsed arguements
-    echo "$_upgrade_bool" "$_package_name" "$_package_type" "$_package_ids"
+    echo "$_package_name" "$_package_type" "$_package_ids"
 }
 
 # Usage: install_dotfiles_packages
-#        <options: --upgrade> <package_name> <package_management_type> <package_ids>
+#        <package_name> <package_management_type> <package_ids>
 #
 # package management type: (
 #    "brew-cask"
@@ -586,20 +535,15 @@ function install_dotfiles_packages() {
         return $_return_code
     fi
 
-    local _upgrade_bool="${_parsed_args[1]}"
-    local _package_name="${_parsed_args[2]}"
-    local _package_type="${_parsed_args[3]}"
+    local _package_name="${_parsed_args[1]}"
+    local _package_type="${_parsed_args[2]}"
 
     # loop through package ids for installation
-    if [[ "$_upgrade_bool" == "true" ]]; then
-        log_dotfiles_package_installation "$_package_name" "upgrade"
-    else
-        log_dotfiles_package_installation "$_package_name" "install"
-    fi
+    log_dotfiles_package_installation "$_package_name" "install"
 
-    for _pkg_id in "${_parsed_args[@]:3}"; do
+    for _pkg_id in "${_parsed_args[@]:2}"; do
 
-        _install_dotfiles_package "$_package_name" "$_package_type" "$_upgrade_bool" "$_pkg_id"
+        _install_dotfiles_package "$_package_name" "$_package_type" "$_pkg_id"
         _return_code=$?
 
         # handle return code
@@ -822,6 +766,424 @@ function log_dotfiles_package_installation() {
             _usage_message+="skip, success, sys-name-not-supported, sys-archt-not-supported, up-to-date, upgrade."
             log_message "$_usage_message" "info" ;;
     esac
+}
+
+# Logs a message related to the update of a package based on the provided status code.
+#
+# Parameters:
+#   $1 - The name of the package.
+#   $2 - The status code indicating the result of the update attempt.
+#        Possible values:
+#          "fail" - Update failed.
+#          "not-found" - Package is not installed.
+#          "skip" - No update function available.
+#          "success" - Update succeeded.
+#          "sys-name-not-supported" - Package not supported on this system name.
+#          "sys-archt-not-supported" - Package not supported on this system architecture.
+#          "update" - Starting update.
+function log_dotfiles_package_update() {
+
+    local _package_name=$1
+    local _status_code=$2
+
+    case $_status_code in
+
+        "fail")
+            log_message "Failed to update package \"$_package_name\"." "error" ;;
+
+        "not-found")
+            log_message "Package \"$_package_name\" is not installed. Cannot update." "warn" ;;
+
+        "skip")
+            log_message "No update function for package \"$_package_name\". Skipping." "info" ;;
+
+        "success")
+            log_message "Successfully updated package \"$_package_name\"." "info" ;;
+
+        "sys-name-not-supported")
+            log_message "Package \"$_package_name\" is not supported on system '$DOTFILES_SYS_NAME'. Update skipped." "warn" ;;
+
+        "sys-archt-not-supported")
+            log_message "Package \"$_package_name\" is not supported on architecture '$DOTFILES_SYS_ARCHT'. Update skipped." "warn" ;;
+
+        "update")
+            log_message "Updating package \"$_package_name\"." "info" ;;
+
+        *)
+            log_message "log_dotfiles_package_update: Invalid status code \"$_status_code\"" "error"
+
+            local _usage_message="Usage: log_dotfiles_package_update <package_name> <status_code>"
+            _usage_message+="\n\t<status_code> should be one of: fail, not-found, skip, success, "
+            _usage_message+="sys-name-not-supported, sys-archt-not-supported, update."
+            log_message "$_usage_message" "info" ;;
+    esac
+}
+
+# Logs a message related to the deletion of a package based on the provided status code.
+#
+# Parameters:
+#   $1 - The name of the package.
+#   $2 - The status code indicating the result of the deletion attempt.
+#        Possible values:
+#          "delete" - Starting deletion.
+#          "fail" - Deletion failed.
+#          "not-found" - Package is not installed.
+#          "success" - Deletion succeeded.
+#          "sys-name-not-supported" - Package not supported on this system name.
+function log_dotfiles_package_deletion() {
+
+    local _package_name=$1
+    local _status_code=$2
+
+    case $_status_code in
+
+        "delete")
+            log_message "Deleting package \"$_package_name\"." "info" ;;
+
+        "fail")
+            log_message "Failed to delete package \"$_package_name\"." "error" ;;
+
+        "not-found")
+            log_message "Package \"$_package_name\" is not installed. Nothing to delete." "warn" ;;
+
+        "success")
+            log_message "Successfully deleted package \"$_package_name\"." "info" ;;
+
+        "sys-name-not-supported")
+            log_message "Package \"$_package_name\" is not supported on system '$DOTFILES_SYS_NAME'. Deletion skipped." "warn" ;;
+
+        *)
+            log_message "log_dotfiles_package_deletion: Invalid status code \"$_status_code\"" "error"
+
+            local _usage_message="Usage: log_dotfiles_package_deletion <package_name> <status_code>"
+            _usage_message+="\n\t<status_code> should be one of: delete, fail, not-found, success, sys-name-not-supported."
+            log_message "$_usage_message" "info" ;;
+    esac
+}
+
+# ------------------------------------------------------------------------------
+#
+# Update
+#
+# - Dependency
+#   - Environment Variables
+#     - DOTFILES_SYS_NAME
+#     - DOTFILES_LOCAL_SHARE_DIR
+#
+# ------------------------------------------------------------------------------
+
+
+# Update a package by type
+# $1: package name
+# $2: package management type
+# $3: package id
+function _update_dotfiles_package() {
+
+    local _package_name="$1"
+    local _package_type="$2"
+    local _package_id="$3"
+
+    case $_package_type in
+
+        "package-manager")
+            if [[ "$DOTFILES_SYS_NAME" == "mac" ]]; then
+                brew upgrade "$_package_id" 2>/dev/null || return $RC_ERROR
+            elif [[ "$DOTFILES_SYS_NAME" == "linux" ]]; then
+                sudo apt-get install --only-upgrade -y "$_package_id" 2>/dev/null || return $RC_ERROR
+            else
+                return $RC_UNSUPPORTED
+            fi ;;
+
+        "brew-cask")
+            brew upgrade --cask "$_package_id" 2>/dev/null || return $RC_ERROR ;;
+
+        "zinit-plugin" | "zinit-snippet")
+            zinit update "$_package_id" || return $RC_ERROR ;;
+
+        "git-repo-pull")
+            local _git_dir="$DOTFILES_LOCAL_SHARE_DIR/$_package_name/$_package_name.git"
+            git -C "$_git_dir" pull || return $RC_ERROR ;;
+
+        "git-repo-make-install")
+            local _git_dir="$DOTFILES_LOCAL_SHARE_DIR/$_package_name/$_package_name.git"
+            git -C "$_git_dir" pull || return $RC_ERROR ;;
+
+        "pip")
+            pip install --upgrade "$_package_id" || return $RC_ERROR ;;
+
+        *)
+            log_message "Unknown package management type $_package_type for update of $_package_name." "error"
+            return $RC_INVALID_ARGS ;;
+    esac
+
+    return $RC_SUCCESS
+}
+
+# Usage: update_dotfiles_packages <package_name> <package_management_type> <package_ids...>
+function update_dotfiles_packages() {
+
+    local _package_name="$1"
+    local _package_type="$2"
+    shift 2
+
+    log_dotfiles_package_update "$_package_name" "update"
+
+    for _pkg_id in "$@"; do
+        _update_dotfiles_package "$_package_name" "$_package_type" "$_pkg_id"
+        local _rc=$?
+        if [[ $_rc -ne $RC_SUCCESS ]]; then
+            log_dotfiles_package_update "$_package_name" "fail"
+            return $_rc
+        fi
+    done
+
+    log_dotfiles_package_update "$_package_name" "success"
+}
+
+
+# ------------------------------------------------------------------------------
+#
+# Delete
+#
+# - Dependency
+#   - Environment Variables
+#     - DOTFILES_SYS_NAME
+#     - DOTFILES_LOCAL_SHARE_DIR
+#     - DOTFILES_LOCAL_BIN_DIR
+#     - DOTFILES_LOCAL_CONFIG_DIR
+#     - DOTFILES_LOCAL_STATE_DIR
+#     - DOTFILES_LOCAL_MAN_DIR
+#     - DOTFILES_ZSH_COMP_DIR
+#     - ZINIT_PLUGIN_DIR
+#     - ZINIT_SNIPPET_DIR
+#
+# ------------------------------------------------------------------------------
+
+
+# Delete a package by type
+# $1: package name
+# $2: package management type
+# $3: package id
+function _delete_dotfiles_package() {
+
+    local _package_name="$1"
+    local _package_type="$2"
+    local _package_id="$3"
+
+    case $_package_type in
+
+        "package-manager")
+            if [[ "$DOTFILES_SYS_NAME" == "mac" ]]; then
+                brew uninstall "$_package_id" 2>/dev/null || return $RC_ERROR
+            elif [[ "$DOTFILES_SYS_NAME" == "linux" ]]; then
+                sudo apt-get remove -y "$_package_id" 2>/dev/null || return $RC_ERROR
+            else
+                return $RC_UNSUPPORTED
+            fi ;;
+
+        "brew-cask")
+            brew uninstall --cask "$_package_id" 2>/dev/null || return $RC_ERROR ;;
+
+        "zinit-plugin" | "zinit-snippet")
+            zinit delete "$_package_id" --yes 2>/dev/null
+            # also clean up directory manually
+            [[ -d "$ZINIT_PLUGIN_DIR/$_package_name" ]] && rm -rf "$ZINIT_PLUGIN_DIR/$_package_name"
+            [[ -d "$ZINIT_SNIPPET_DIR/$_package_name" ]] && rm -rf "$ZINIT_SNIPPET_DIR/$_package_name"
+            [[ -d "$ZINIT_PLUGIN_DIR/$_package_id" ]] && rm -rf "$ZINIT_PLUGIN_DIR/$_package_id"
+            [[ -d "$ZINIT_SNIPPET_DIR/$_package_id" ]] && rm -rf "$ZINIT_SNIPPET_DIR/$_package_id" ;;
+
+        "git-repo-pull" | "git-repo-make-install")
+            local _pkg_dir="$DOTFILES_LOCAL_SHARE_DIR/$_package_name"
+            [[ -d "$_pkg_dir" ]] && rm -rf "$_pkg_dir" ;;
+
+        "pip")
+            pip uninstall -y "$_package_id" 2>/dev/null || return $RC_ERROR ;;
+
+        *)
+            log_message "Unknown package management type $_package_type for deletion of $_package_name." "error"
+            return $RC_INVALID_ARGS ;;
+    esac
+
+    return $RC_SUCCESS
+}
+
+# Usage: delete_dotfiles_packages <package_name> <package_management_type> <package_ids...>
+function delete_dotfiles_packages() {
+
+    local _package_name="$1"
+    local _package_type="$2"
+    shift 2
+
+    log_dotfiles_package_deletion "$_package_name" "delete"
+
+    for _pkg_id in "$@"; do
+        _delete_dotfiles_package "$_package_name" "$_package_type" "$_pkg_id"
+        local _rc=$?
+        if [[ $_rc -ne $RC_SUCCESS ]]; then
+            log_dotfiles_package_deletion "$_package_name" "fail"
+            return $_rc
+        fi
+    done
+
+    log_dotfiles_package_deletion "$_package_name" "success"
+}
+
+# Remove symlinks in $DOTFILES_LOCAL_BIN_DIR that point to paths containing the package name
+function _cleanup_dotfiles_bin_symlinks() {
+    local _package_name="$1"
+    [[ -d "$DOTFILES_LOCAL_BIN_DIR" ]] || return $RC_SUCCESS
+
+    for _link in "$DOTFILES_LOCAL_BIN_DIR"/*; do
+        if [[ -L "$_link" ]]; then
+            local _target=$(readlink "$_link")
+            if [[ "$_target" == *"$_package_name"* ]]; then
+                rm -f "$_link"
+            fi
+        fi
+    done
+}
+
+# Remove config symlinks in $DOTFILES_LOCAL_CONFIG_DIR/<package>/
+function _cleanup_dotfiles_config_dir() {
+    local _package_name="$1"
+    local _config_dir="$DOTFILES_LOCAL_CONFIG_DIR/$_package_name"
+    [[ -d "$_config_dir" ]] || return $RC_SUCCESS
+
+    # remove symlinks only (preserve any non-symlink files)
+    for _item in "$_config_dir"/*(.N) "$_config_dir"/*(N@); do
+        [[ -L "$_item" ]] && rm -f "$_item"
+    done
+    # remove directory if empty
+    rmdir "$_config_dir" 2>/dev/null
+}
+
+# Remove completion file for a package
+function _cleanup_dotfiles_completion() {
+    local _comp_name="$1"
+    local _comp_file="$DOTFILES_ZSH_COMP_DIR/$_comp_name"
+    [[ -e "$_comp_file" || -L "$_comp_file" ]] && rm -f "$_comp_file"
+}
+
+# Remove man page symlinks that point to paths containing the package name
+function _cleanup_dotfiles_man_pages() {
+    local _package_name="$1"
+    [[ -d "$DOTFILES_LOCAL_MAN_DIR/man1" ]] || return $RC_SUCCESS
+
+    for _link in "$DOTFILES_LOCAL_MAN_DIR/man1"/*; do
+        if [[ -L "$_link" ]]; then
+            local _target=$(readlink "$_link")
+            if [[ "$_target" == *"$_package_name"* ]]; then
+                rm -f "$_link"
+            fi
+        fi
+    done
+}
+
+# Remove share data directory for a package
+function _cleanup_dotfiles_share_dir() {
+    local _package_name="$1"
+    local _share_dir="$DOTFILES_LOCAL_SHARE_DIR/$_package_name"
+    [[ -d "$_share_dir" ]] && rm -rf "$_share_dir"
+}
+
+# Remove state directory for a package
+function _cleanup_dotfiles_state_dir() {
+    local _package_name="$1"
+    local _state_dir="$DOTFILES_LOCAL_STATE_DIR/$_package_name"
+    [[ -d "$_state_dir" ]] && rm -rf "$_state_dir"
+}
+
+
+# ------------------------------------------------------------------------------
+#
+# Orchestration
+#
+# ------------------------------------------------------------------------------
+
+
+function update_all_dotfiles_packages() {
+
+    local -a skipped_packages=("python")
+
+    # update python before other dotfiles packages
+    if is_dotfiles_managed_package "python"; then
+        dotfiles_update_python
+    fi
+
+    # update dotfiles packages
+    for _pkg in ${(k)DOTFILES_PACKAGE_ASC_ARR}; do
+
+        # skip package
+        if [[ " ${skipped_packages[@]} " =~ " $_pkg " ]]; then
+            continue
+        fi
+
+        # double check and skip false
+        if ! is_dotfiles_managed_package "$_pkg"; then
+            continue
+        fi
+
+        # skip package without update function
+        local _update_func="dotfiles_update_${_pkg}"
+        if (( ! ${+functions[$_update_func]} )); then
+            log_dotfiles_package_update "$_pkg" "skip"
+            continue
+        fi
+
+        # update package
+        $_update_func
+    done
+}
+
+# Update a single dotfiles package by name
+# $1: package name
+function update_dotfiles_package() {
+
+    local _package_name="$1"
+
+    if [[ -z "$_package_name" ]]; then
+        log_message "No package name provided." "error"
+        return $RC_INVALID_ARGS
+    fi
+    if ! is_dotfiles_managed_package "$_package_name"; then
+        log_message "Package \"$_package_name\" is not managed by dotfiles." "error"
+        return $RC_NOT_FOUND
+    fi
+
+    local _update_func="dotfiles_update_${_package_name}"
+    if (( ! ${+functions[$_update_func]} )); then
+        log_message "No update function found for package \"$_package_name\"." "error"
+        return $RC_NOT_FOUND
+    fi
+    $_update_func
+}
+
+# Delete a single dotfiles package by name
+# $1: package name
+function delete_dotfiles_package() {
+
+    local _package_name="$1"
+
+    if [[ -z "$_package_name" ]]; then
+        log_message "No package name provided." "error"
+        return $RC_INVALID_ARGS
+    fi
+
+    local _delete_func="dotfiles_delete_${_package_name}"
+    if (( ! ${+functions[$_delete_func]} )); then
+        log_message "No delete function found for package \"$_package_name\"." "error"
+        return $RC_NOT_FOUND
+    fi
+    $_delete_func
+}
+
+# List all managed dotfiles packages
+function list_dotfiles_managed_packages() {
+
+    log_message "Managed dotfiles packages:" "info"
+    for _pkg in ${(ko)DOTFILES_PACKAGE_ASC_ARR}; do
+        echo "  - $_pkg"
+    done
 }
 
 
