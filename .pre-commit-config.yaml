@@ -17,7 +17,7 @@ repos:
 
       - id: bats-tests
         name: bats unit tests
-        entry: bats .dotfiles/test/*.bats
+        entry: bash -c 'bats .dotfiles/test/*.bats'
         language: system
         always_run: true
         pass_filenames: false
