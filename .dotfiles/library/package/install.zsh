@@ -306,6 +306,7 @@ function dotfiles_install_bat() {
 function dotfiles_install_claude-code() {
 
     local _package_name="claude-code"
+    local _package_dir_name="claude"
     local _bin_name="claude"
 
     # sanity check
@@ -322,10 +323,18 @@ function dotfiles_install_claude-code() {
     if ! command_exists "$_bin_name"; then
         log_dotfiles_package_installation "$_package_name" "install"
 
+        local _config_dir="$DOTFILES_LOCAL_CONFIG_DIR/$_package_dir_name"
+        ensure_directory "$_config_dir"
+        export CLAUDE_CONFIG_DIR="$_config_dir"
+
         # Use the official Claude Code installer
         # This installs the native binary and sets up the auto-updater
         if curl -fsSL https://claude.ai/install.sh | sh; then
             log_dotfiles_package_installation "$_package_name" "success"
+
+            local _from_link="$HOME/.local/bin/$_bin_name"
+            local _to_link="$DOTFILES_LOCAL_BIN_DIR/$_bin_name"
+            create_validated_symlink $_from_link $_to_link
         else
             log_dotfiles_package_installation "$_package_name" "fail"
             return $RC_ERROR
